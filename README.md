@@ -15,6 +15,23 @@ A real-time ticket queue to get mentorship during a hackathon.
   + do we have enough mentors available for hackers when they need them
   + are hackers enjoying the mentorship experience
 
+## high level views
+- login splash page
+- mentor view (mentor only)
+  + see all open tickets
+  + claim/close tickets
+- hacker view
+  + open a ticket
+  + see how many mentors are on duty
+  + tell them if the queue is currently closed (maybe show them the devpost mentorship hotline)
+- stats view (director only)
+  + show all tickets open and closed
+  + show response/close times
+  + other stats (todo)
+- admin view
+  + open/close queue
+  + set how many mentors on duty
+
 ## Contributing
 as with all HackRU projects we welcome pull requests. if you're interested
 in getting involved in rnd contact us at our email on the rnd organization page.
