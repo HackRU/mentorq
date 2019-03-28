@@ -7,6 +7,9 @@ import {MentorqClient} from "./mockapi.js";
 import {horizJuxt} from "./alignment.js";
 import {Login} from "./Login.js";
 import {Queue} from "./Queue.js";
+
+import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
+
 import './App.css';
 
 const clientOptions = {
@@ -28,7 +31,7 @@ class App extends Component {
             this.state = {
                 loggedIn: true,
                 client: new MentorqClient(token, clientOptions)
-            }
+            };
         } else {
             this.state = {
                 loggedIn: false,
@@ -56,20 +59,36 @@ class App extends Component {
     }
 
     render() {
+        const loggedIn = this.state.loggedIn;
+        const client = this.state.client;
+        const ifLoggedIn = (component) =>
+              loggedIn ? component: <Redirect to="/"/>;
         return (
             <div className="App">
               <div style={horizJuxt}>
                 <h1>MentorQ</h1>
-                <Login loggedIn={this.state.loggedIn}
+                <Login loggedIn={loggedIn}
                           onLogin={this.login}
                           onLogout={this.logout} />
-                </div>
-            {this.state.loggedIn?
-             <Queue client={this.state.client} />
-              : <p>please login</p> }
+              </div>
+              <Router>
+                <Route exact path="/queue"
+                       component={
+                           () => ifLoggedIn(<Queue client={client}/>)
+                       }/>
+                <Route exact path="/"
+                       component={() => <Index loggedIn={loggedIn}/>}/>
+              </Router>
             </div>
         );
     }
 }
+
+const Index = ({loggedIn}) => {
+    if (loggedIn) {
+        return <Redirect to="/queue"/>;
+    }
+    return <p>please login</p>;
+};
 
 export default App;
