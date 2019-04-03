@@ -17,6 +17,13 @@ class TicketExists extends Error {
     }
 }
 
+class TicketNotFound extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "TicketNotFound";
+    }
+}
+
 // example review
 // {
 //   rating: 0-5
@@ -36,9 +43,9 @@ const from = (username) => (tickets) => {
     if (Array.isArray(tickets)) {
         return tickets.filter(ticket => ticket.owner === username);
     } else {
-        return tickets.owner === username
+        return tickets.owner === username;
     }
-}
+};
 
 const withStatus = (status) => (tickets) => {
     console.log(tickets);
@@ -47,21 +54,36 @@ const withStatus = (status) => (tickets) => {
     } else {
         return tickets.status === status;
     }
-}
+};
 
 const first = (arr) => arr[0];
+
+const clientDefaults = {
+    role: {mentor: false, admin: false},
+    tickets: [],
+    qStatus: {mentors: 0, onDuty: false},
+};
 
 class MentorqClient {
     tickets = [];
     ticketCallbacks = [];
+    qStatusCallbacks = [];
 
     // you can pass in {role: {role: true}} to give roles to user
-    constructor(token, {role, tickets = []} = {}) {
+    constructor(token, {
+        role = clientDefaults.role,
+        tickets = clientDefaults.tickets,
+        qStatus = clientDefaults.qStatus
+    }) {
+        this.qStatus = qStatus;
         this.tickets = tickets;
         this.userData = {
             token,
             username: "heman",
             role: Object.assign({}, defaultRole, role)
+        };
+        if (role.mentor) {
+            this.setOnDuty(true);
         }
     }
 
@@ -85,7 +107,7 @@ class MentorqClient {
             status: status.open,
             text,
             owner: this.userData.username
-        }
+        };
 
         this.tickets.push(ticket);
         this.ticketCallbacks.forEach(f => f(this.tickets));
@@ -95,12 +117,40 @@ class MentorqClient {
         this.ticketCallbacks.push(callback);
     }
 
-    setStatus(ticket) {
-
+    // update a ticket
+    async saveTicket(ticket) {
+        const id = (tick) => tick.owner + tick.text;
+        for (let other of this.tickets) {
+            if (id(other) === id(ticket)) {
+                other.status = ticket.status;
+                this.ticketCallbacks.forEach(f => f(this.tickets));
+                return;
+            }
+        }
+        throw new TicketNotFound();
     }
 
     // TODO
     // status stuff
+    async getQStatus() {
+        return this.qStatus;
+    }
+    onQStatus(callback) {
+        this.qStatusCallbacks.push(callback);
+    }
+
+    setOnDuty(onDuty) {
+        if (onDuty !== this.qStatus.onDuty) {
+            if (onDuty) {
+                this.qStatus.mentors++;
+            } else {
+                this.qStatus.mentors--;
+            }
+            this.qStatus.onDuty = true;
+            this.qStatusCallbacks.map(cb => cb(this.qStatus));
+        }
+    }
+
 }
 
 export {
