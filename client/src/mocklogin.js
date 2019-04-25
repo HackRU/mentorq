@@ -30,10 +30,18 @@ const tokenStillValid = async (token) => {
     return true;
 };
 
+export default {
+    BadLogin,
+    getToken,
+    tokenStillValid,
+    getStoredToken,
+    setStoredToken
+};
+
 export {
     BadLogin,
     getToken,
     tokenStillValid,
     getStoredToken,
     setStoredToken
-}
+};

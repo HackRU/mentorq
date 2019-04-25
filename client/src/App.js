@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
+    MentorqClient,
     getToken, tokenStillValid, BadLogin,
-    getStoredToken, setStoredToken
-} from "./mocklogin.js";
-import {MentorqClient} from "./mockapi.js";
+    getStoredToken, setStoredToken,
+    clientOptions
+} from "./config.js";
 import {horizJuxt} from "./alignment.js";
 import {Login} from "./Login.js";
 import {Queue} from "./Queue.js";
@@ -11,17 +12,6 @@ import {Queue} from "./Queue.js";
 import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
 
 import './App.css';
-
-const clientOptions = {
-    tickets: [
-        {text:"lmao", owner:"chad", status: "open"},
-        {text:"lmao", owner:"chad", status: "open"},
-        {text:"closed", owner:"chad", status: "closed"},
-        {text:"claimed", owner:"chad", status: "claimed"},
-        {text:"heman", owner:"heman", status: "open"},
-    ],
-    role: {admin: true}
-};
 
 class App extends Component {
     constructor() {

@@ -153,9 +153,16 @@ class MentorqClient {
 
 }
 
+export default {
+    MentorqClient,
+    withStatus,
+    status,
+    from
+};
+
 export {
     MentorqClient,
     withStatus,
     status,
     from
-}
+};
