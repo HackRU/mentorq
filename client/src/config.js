@@ -1,5 +1,7 @@
 import mockclient from "./mockapi.js"; //MentorqClient
 import mocklogin from "./mocklogin.js";
+import firebase from "firebase";
+import {firebaseConfig} from "./secrets.js"
 
 const shouldMockLogin = true;
 const shouldMockClient = true;
@@ -14,6 +16,10 @@ if (shouldMockClient) {
 if (shouldMockLogin) {
     var {getToken, tokenStillValid, BadLogin,
          getStoredToken, setStoredToken} = mocklogin;
+}
+
+if (firebaseConfig.apiKey) {
+    var defaultApp = firebase.initializeApp(firebaseConfig);
 }
 
 const testTicketsAdmin = {
@@ -32,5 +38,6 @@ export {
     MentorqClient,
     getToken, tokenStillValid, BadLogin,
     getStoredToken, setStoredToken,
-    clientOptions
+    clientOptions,
+    defaultApp
 };

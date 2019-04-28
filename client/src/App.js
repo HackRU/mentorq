@@ -13,6 +13,8 @@ import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
 
 import './App.css';
 
+import firebase from "firebase";
+
 class App extends Component {
     constructor() {
         super();
