@@ -4,3 +4,5 @@ const firebaseConfig = {
     projectId: "",
     databaseURL: ""
 }
+
+export {firebaseConfig};
