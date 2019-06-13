@@ -97,7 +97,7 @@ class MentorqClient {
         let myTicket = await this.getTickets()
             .then(from(this.userData.username))
             .then(withStatus(status.open))
-            .then(first);
+            .then(first)
 
         if (myTicket !== undefined && !this.userData.role.admin) {
             throw new TicketExists();

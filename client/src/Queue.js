@@ -6,10 +6,11 @@ const Ticket = ({text}) => {
 };
 
 class Queue extends Component {
+
     constructor({client}) {
         super();
         this.state = {
-            tickets: []
+            tickets: [],
         };
         const setTickets = (tickets) => {
             this.setState({tickets});
@@ -17,9 +18,9 @@ class Queue extends Component {
         client.onTickets(setTickets);
         client.getTickets().then(setTickets);
     }
-    
+
     onTicket(ticket) {
-        
+
     }
     render() {
         const role = this.props.client.userData.role;
@@ -35,9 +36,9 @@ class Queue extends Component {
                 .filter(from(myUsername));
         }
         return (
-            <ul>
-              {tickets.map(ticket => <Ticket {...ticket}/>)}
-            </ul>
+          <ul>
+            {tickets.map(ticket => <Ticket {...ticket}/>)}
+          </ul>
         );
     }
 }

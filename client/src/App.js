@@ -8,6 +8,8 @@ import {
 import {horizJuxt} from "./alignment.js";
 import {Login} from "./Login.js";
 import {Queue} from "./Queue.js";
+import {Dashboard} from "./Dashboard.js";
+import {Ticketpanel} from "./TicketPanel.js";
 
 import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
 
@@ -22,12 +24,12 @@ class App extends Component {
         if (token !== null && tokenStillValid(token)) {
             this.state = {
                 loggedIn: true,
-                client: new MentorqClient(token, clientOptions)
+                client: new MentorqClient(token, clientOptions),
             };
         } else {
             this.state = {
                 loggedIn: false,
-                client: null
+                client: null,
             };
         }
         window.client = this.state.client;
@@ -63,10 +65,13 @@ class App extends Component {
                           onLogin={this.login}
                           onLogout={this.logout} />
               </div>
+              <div>
+                {loggedIn ? this.state.client.userData.username: "Please Login"}
+              </div>
               <Router>
-                <Route exact path="/queue"
+                <Route exact path="/dash"
                        component={
-                           () => ifLoggedIn(<Queue client={client}/>)
+                           () => ifLoggedIn(<Dashboard client={client}/>)
                        }/>
                 <Route exact path="/"
                        component={() => <Index loggedIn={loggedIn}/>}/>
@@ -78,7 +83,7 @@ class App extends Component {
 
 const Index = ({loggedIn}) => {
     if (loggedIn) {
-        return <Redirect to="/queue"/>;
+        return <Redirect to="/dash"/>;
     }
     return <p>please login</p>;
 };
