@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {from, withStatus, status} from "./mockapi";
 import {Queue} from "./Queue.js";
 import {TicketPanel} from "./TicketPanel.js";
+import { Container, Row, Col } from 'reactstrap';
 
 class Dashboard extends Component {
 
@@ -17,13 +18,16 @@ class Dashboard extends Component {
       const isHacker = (component) =>
             this.state.role.hacker ? component: null;
       return(
-        <div className="Dashboard">
-          <div>
-            Dashboard
-            {isHacker(<TicketPanel client={client}/>)}
-          </div>
-          {<Queue client={client}/>}
-        </div>
+        <Container className="Dashboard">
+          <Row>
+            <Col>
+              {isHacker(<TicketPanel client={client}/>)}
+            </Col>
+            <Col>
+              {<Queue client={client}/>}
+            </Col>
+          </Row>
+        </Container>
       );
     }
 }

@@ -1,49 +1,67 @@
 import React, { Component } from 'react';
 import {from, withStatus, status} from "./mockapi";
-
-/*const submit = (handler) => (e) => {
-    const sub = document.querySelector("#complaint").value;
-    //setTimeout(handler(sub), 10000);
-    handler(sub);
-    console.log(sub);
-}*/
+import { Button, Card, CardTitle, Form, FormGroup, Label, Input} from 'reactstrap';
+import './TicketPanel.css';
 
 class TicketPanel extends Component {
 
     constructor({client}) {
         super();
         this.state = {
-          tickets: [],
-        }
-        const setTickets = (tickets) => {
-            this.setState({tickets});
+            complaint: "",
+            slack: "",
+            location: "",
         };
-        client.onTickets(setTickets);
-        client.getTickets().then(setTickets);
     }
 
-    onTicket(ticket) {
+    onComplaintChange = (e) => {
+      //console.log("Complaint: " + e.target.value);
+      this.setState({complaint: e.target.value});
+    }
 
+    onSlackChange = (e) => {
+      //console.log("Slack: " + e.target.value);
+      this.setState({slack: e.target.value});
+    }
+
+    onLocationChange = (e) => {
+      //console.log("Location: " + e.target.value);
+      this.setState({location: e.target.value});
     }
 
     submit = (e) => {
         e.preventDefault();
-        const sub = document.querySelector("#complaint").value;
-        this.props.client.newTicket(sub);
-        console.log(sub);
+        var ticket = {complaint: this.state.complaint, slack: this.state.slack, location: this.state.location};
+        this.props.client.newTicket(ticket);
+        console.log(ticket);
     }
 
     render() {
       const client = this.props.client;
       return(
-        <div className="TicketPanel">
-            <form id="ticket" onSubmit={this.submit}>
-            <input id="complaint" type="text"
-                   placeholder="text"
-                   style={{width: "95%"}}/><br/>
-            <button type="submit"> Submit Ticket </button>
-            </form>
-        </div>
+        <Card className="ticketPanel" body outline color="secondary">
+            <CardTitle>Ticket</CardTitle>
+            <Form id="ticket">
+            <FormGroup className="ticketInput">
+            <Label for="complaint">Complaint</Label>
+            <Input id="complaint" type="text"
+                   placeholder="complaint" onChange={this.onComplaintChange}/><br/>
+            </FormGroup>
+            <FormGroup className="ticketInput">
+            <Label for="slack">Slack</Label>
+            <Input id="slack" type="text"
+                    placeholder="slack" onChange={this.onSlackChange}/><br/>
+            </FormGroup>
+            <FormGroup>
+            <Label for="location">Location</Label>
+            <Input type="select" id="location" onChange={this.onLocationChange}>
+                    <option value="cafeteria">Cafeteria</option>
+                    <option value="lounge">Lounge</option>
+            </Input>
+            </FormGroup>
+            <Button color="primary" type="submit" onClick={this.submit}> Submit Ticket </Button>
+            </Form>
+        </Card>
       );
     }
 }

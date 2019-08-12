@@ -1,0 +1,4 @@
+/* override default form group margin */
+.form-group.ticketInput {
+  margin-bottom: 0px;
+}

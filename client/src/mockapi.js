@@ -33,6 +33,8 @@ class TicketNotFound extends Error {
 // example ticket
 // {
 //   text: "mentors, need help with python"
+//   slack: "slack_id"
+//   location: "graduate lounge"
 //   owner: "username"
 //   status: "open" //or "closed" or "claimed"
 //   mentorReview: Review (optional)
@@ -93,7 +95,7 @@ class MentorqClient {
     }
 
 
-    async newTicket(text) {
+    async newTicket(tick) {
         let myTicket = await this.getTickets()
             .then(from(this.userData.username))
             .then(withStatus(status.open))
@@ -105,7 +107,9 @@ class MentorqClient {
 
         const ticket = {
             status: status.open,
-            text,
+            text: tick.complaint,
+            slack: tick.slack,
+            location: tick.location,
             owner: this.userData.username
         };
 
