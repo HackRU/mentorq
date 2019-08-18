@@ -79,11 +79,21 @@ class MentorqClient {
     }) {
         this.qStatus = qStatus;
         this.tickets = tickets;
-        this.userData = {
-            token,
-            username: "heman",
-            role: Object.assign({}, defaultRole, role)
-        };
+        if(token == "one hashy boi"){
+          this.userData = {
+              token,
+              username: "heman",
+              role: Object.assign({}, defaultRole, role)
+          };
+        }
+        else if(token == "hash"){
+          this.userData = {
+              token,
+              username: "person",
+              role: Object.assign({}, defaultRole, {mentor: true})
+          };
+          this.setOnDuty(true);
+        }
         if (role.mentor) {
             this.setOnDuty(true);
         }

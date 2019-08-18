@@ -10,7 +10,7 @@ class TicketPanel extends Component {
         this.state = {
             complaint: "",
             slack: "",
-            location: "",
+            location: "cafeteria",
         };
     }
 

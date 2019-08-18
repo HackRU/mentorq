@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
 import {from, withStatus, status} from "./mockapi";
+import {Ticket} from "./Ticket.js";
+import './Queue.css';
 
-const Ticket = ({text}) => {
-    return <li>{text}</li>;
+const TicketDisplay = ({text, owner, status, location, slack, client}) => {
+    var ticket = {
+      client: client,
+      text: text,
+      owner: owner,
+      status: status,
+      location: location,
+      slack: slack,
+    };
+    console.log(ticket);
+    return <li><Ticket ticket = {ticket}/></li>;
 };
 
 class Queue extends Component {
@@ -23,6 +34,7 @@ class Queue extends Component {
 
     }
     render() {
+        const client = this.props.client;
         const role = this.props.client.userData.role;
         const myUsername = this.props.client.userData.username;
         let tickets = [];
@@ -36,8 +48,8 @@ class Queue extends Component {
                 .filter(from(myUsername));
         }
         return (
-          <ul>
-            {tickets.map(ticket => <Ticket {...ticket}/>)}
+          <ul className="queue">
+            {tickets.map(ticket => <TicketDisplay {...ticket} client={client}/>)}
           </ul>
         );
     }

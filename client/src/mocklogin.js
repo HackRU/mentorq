@@ -19,11 +19,19 @@ const setStoredToken = (token) => {
 };
 
 const getToken = async (username, password) => {
-    if (username !== "heman" || password !== "ghandi") {
+    var tick = "";
+    if (username == "heman" || password == "ghandi"){
+      setStoredToken("one hashy boi");
+      tick = "one hashy boi";
+    }
+    else if (username == "hack" || password == "ru"){
+      setStoredToken("hash");
+      tick = "hash";
+    }
+    else {
         throw new BadLogin();
     }
-    setStoredToken("one hashy boi");
-    return "one hashy boi";
+    return tick;
 };
 
 const tokenStillValid = async (token) => {

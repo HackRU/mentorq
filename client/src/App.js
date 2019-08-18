@@ -10,6 +10,7 @@ import {Login} from "./Login.js";
 import {Queue} from "./Queue.js";
 import {Dashboard} from "./Dashboard.js";
 import {Ticketpanel} from "./TicketPanel.js";
+import Header from "./Header.js";
 
 import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
 
@@ -59,14 +60,12 @@ class App extends Component {
               loggedIn ? component: <Redirect to="/"/>;
         return (
             <div className="App">
-              <div style={horizJuxt}>
-                <h1>MentorQ</h1>
-                <Login loggedIn={loggedIn}
-                          onLogin={this.login}
-                          onLogout={this.logout} />
-              </div>
-              <div>
-                {loggedIn ? this.state.client.userData.username: "Please Login"}
+              <Header client={client}
+                        loggedIn={loggedIn}
+                        onLogin={this.login}
+                        onLogout={this.logout} />
+              <div id="username">
+                <b>Welcome {loggedIn ? this.state.client.userData.username: null}!</b>
               </div>
               <Router>
                 <Route exact path="/dash"
@@ -85,7 +84,7 @@ const Index = ({loggedIn}) => {
     if (loggedIn) {
         return <Redirect to="/dash"/>;
     }
-    return <p>please login</p>;
+    return <b>Please Login</b>;
 };
 
 export default App;
