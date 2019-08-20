@@ -6,10 +6,7 @@ import {
     clientOptions
 } from "./config.js";
 import {horizJuxt} from "./alignment.js";
-import {Login} from "./Login.js";
-import {Queue} from "./Queue.js";
 import {Dashboard} from "./Dashboard.js";
-import {Ticketpanel} from "./TicketPanel.js";
 import Header from "./Header.js";
 
 import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
@@ -64,9 +61,6 @@ class App extends Component {
                         loggedIn={loggedIn}
                         onLogin={this.login}
                         onLogout={this.logout} />
-              <div id="username">
-                <b>Welcome {loggedIn ? this.state.client.userData.username: null}!</b>
-              </div>
               <Router>
                 <Route exact path="/dash"
                        component={

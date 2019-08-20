@@ -25,7 +25,6 @@ if (firebaseConfig.apiKey) {
 const testTicketsAdmin = {
     tickets: [
         {text:"lmao", slack: "123", location: "lounge", owner:"chad", status: "open"},
-        {text:"lmao", slack: "123", location: "lounge", owner:"chad", status: "open"},
         {text:"closed", slack: "666", location: "cafeteria", owner:"chad", status: "closed"},
         {text:"claimed", slack: "2019", location: "gym", owner:"chad", status: "claimed"},
         {text:"heman", slack: "2019", location: "rutgers", owner:"heman", status: "open"},

@@ -1,20 +1,8 @@
 import React, { Component } from 'react';
 import {from, withStatus, status} from "./mockapi";
-import {Ticket} from "./Ticket.js";
+import Ticket from "./Ticket.js";
+import './WelcomeBox.css';
 import './Queue.css';
-
-const TicketDisplay = ({text, owner, status, location, slack, client}) => {
-    var ticket = {
-      client: client,
-      text: text,
-      owner: owner,
-      status: status,
-      location: location,
-      slack: slack,
-    };
-    console.log(ticket);
-    return <li><Ticket ticket = {ticket}/></li>;
-};
 
 class Queue extends Component {
 
@@ -41,20 +29,18 @@ class Queue extends Component {
         if (role.admin) {
             tickets = this.state.tickets;
         } else if (role.mentor) {
-            tickets = this.state.tickets.filter(withStatus(status.open));
+            tickets = withStatus(status.closed, true)(this.state.tickets);
         } else {
-            tickets = this.state.tickets
-                .filter(withStatus(status.open))
-                .filter(from(myUsername));
+            tickets = from(myUsername)(withStatus(status.open)(this.state.tickets));
         }
         return (
           <ul className="queue">
-            {tickets.map(ticket => <TicketDisplay {...ticket} client={client}/>)}
+            {tickets.map(ticket =>
+              <li key={ticket.owner + ticket.text}><Ticket {...ticket} client={client}/></li>
+            )}
           </ul>
         );
     }
 }
 
-export {
-    Queue
-};
+export default Queue;

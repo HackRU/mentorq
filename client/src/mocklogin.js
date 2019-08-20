@@ -20,11 +20,11 @@ const setStoredToken = (token) => {
 
 const getToken = async (username, password) => {
     var tick = "";
-    if (username == "heman" || password == "ghandi"){
+    if (username === "heman" || password === "ghandi"){
       setStoredToken("one hashy boi");
       tick = "one hashy boi";
     }
-    else if (username == "hack" || password == "ru"){
+    else if (username === "hack" || password === "ru"){
       setStoredToken("hash");
       tick = "hash";
     }

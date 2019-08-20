@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {from, withStatus, status} from "./mockapi";
 import { Button, Card, CardTitle, Form, FormGroup, Label, Input} from 'reactstrap';
 import './TicketPanel.css';
 
@@ -8,58 +7,70 @@ class TicketPanel extends Component {
     constructor({client}) {
         super();
         this.state = {
-            complaint: "",
+            text: "",
             slack: "",
             location: "cafeteria",
+            valid: true,
         };
     }
 
-    onComplaintChange = (e) => {
-      //console.log("Complaint: " + e.target.value);
-      this.setState({complaint: e.target.value});
+    onTextChange = (e) => {
+      this.setState({text: e.target.value});
+      if(this.state.text !== "" && this.state.slack !== ""){
+        this.setState({valid:false});
+      }
     }
 
     onSlackChange = (e) => {
-      //console.log("Slack: " + e.target.value);
       this.setState({slack: e.target.value});
+      if(this.state.text !== "" && this.state.slack !== ""){
+        this.setState({valid:false});
+      }
     }
 
     onLocationChange = (e) => {
-      //console.log("Location: " + e.target.value);
       this.setState({location: e.target.value});
     }
 
     submit = (e) => {
         e.preventDefault();
-        var ticket = {complaint: this.state.complaint, slack: this.state.slack, location: this.state.location};
+        console.log(this.props.client);
+        var ticket = {owner: this.props.client.userData.username, text: this.state.text, slack: this.state.slack, location: this.state.location};
         this.props.client.newTicket(ticket);
-        console.log(ticket);
+        //Refresh fields/page
     }
 
     render() {
       const client = this.props.client;
       return(
-        <Card className="ticketPanel" body outline color="secondary">
-            <CardTitle>Ticket</CardTitle>
+        <Card className="ticketPanel" body outline color="Gainsboro">
+            <CardTitle className="username">Hey, {client.userData.username}!</CardTitle>
+            <CardTitle className="help">How can we help you?</CardTitle>
             <Form id="ticket">
             <FormGroup className="ticketInput">
-            <Label for="complaint">Complaint</Label>
-            <Input id="complaint" type="text"
-                   placeholder="complaint" onChange={this.onComplaintChange}/><br/>
-            </FormGroup>
-            <FormGroup className="ticketInput">
-            <Label for="slack">Slack</Label>
-            <Input id="slack" type="text"
-                    placeholder="slack" onChange={this.onSlackChange}/><br/>
+            <Label for="text">I need help with</Label>
+            <Input id="text" type="text"
+                   placeholder="text" onChange={this.onTextChange}/><br/>
             </FormGroup>
             <FormGroup>
-            <Label for="location">Location</Label>
+            <Label for="location">You can find me at</Label>
             <Input type="select" id="location" onChange={this.onLocationChange}>
                     <option value="cafeteria">Cafeteria</option>
                     <option value="lounge">Lounge</option>
             </Input>
             </FormGroup>
-            <Button color="primary" type="submit" onClick={this.submit}> Submit Ticket </Button>
+            <FormGroup className="ticketInput">
+            <Label for="slack">You can contact me through</Label>
+            <Input id="slack" type="text"
+                    placeholder="slack" onChange={this.onSlackChange}/><br/>
+            </FormGroup>
+            <Button className="button"
+                    color="primary"
+                    type="submit"
+                    block
+                    disabled={this.state.valid}
+                    onClick={this.submit}>
+            HELP ME! </Button>
             </Form>
         </Card>
       );
