@@ -1,7 +1,7 @@
 # generic views
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, mixins
-from mentorq_backend.models import ProfileInfo
+from mentorq_backend.models import ProfileInfo, Tickets
 from .serializers import ProfileInfoSerializer
 from rest_framework.permissions import IsAdminUser
 

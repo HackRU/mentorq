@@ -14,3 +14,18 @@ class ProfileInfo(models.Model):
     def __str__(self):
         return self.username
 
+
+class Tickets(models.Model):
+    id = models.CharField(max_length=120, primary_key=True)
+    #contact
+    #location
+    #mentor
+    owner = models.CharField(max_length=120)
+    complaint = models.CharField(max_length=120)
+
+    class Meta:
+        verbose_name = "Ticket"
+        verbose_name_plural = "Tickets"
+
+    def __str__(self):
+        return self.username
