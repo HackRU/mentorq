@@ -1,9 +1,9 @@
 # generic views
-from django.shortcuts import get_object_or_404
 from rest_framework import generics, mixins
-from mentorq_backend.models import ProfileInfo, Tickets
-from .serializers import ProfileInfoSerializer
 from rest_framework.permissions import IsAdminUser
+
+from mentorq_backend.models import ProfileInfo, Ticket
+from .serializers import ProfileInfoSerializer, TicketSerializer
 
 
 class ProfileInfoCreateView(mixins.CreateModelMixin, generics.ListAPIView):
@@ -21,10 +21,19 @@ class ProfileInfoCreateView(mixins.CreateModelMixin, generics.ListAPIView):
 
 
 class ProfilePostRudView(generics.RetrieveUpdateDestroyAPIView):
-
     serializer_class = ProfileInfoSerializer
     queryset = ProfileInfo.objects.all()
     permission_classes = [IsAdminUser]
 
 
+class TicketList(generics.ListCreateAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    permission_classes = [IsAdminUser]
+
+
+class TicketDetail(generics.RetrieveUpdateAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    permission_classes = [IsAdminUser]
 
