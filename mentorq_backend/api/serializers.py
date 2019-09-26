@@ -11,13 +11,12 @@ class ProfileInfoSerializer(serializers.ModelSerializer):
             'password',
         ]
 
-        # converts data to a JSON format
 
-
+# returns the relevant fields from a Ticket object
 class TicketSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            "owner_email", "mentor", "mentor_email", "status", "title",
+            "id", "owner_email", "mentor", "mentor_email", "status", "title",
             "comment", "contact", "location", "created"
         ]
