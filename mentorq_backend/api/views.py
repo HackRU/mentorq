@@ -3,7 +3,7 @@ from rest_framework import generics, mixins
 from rest_framework.exceptions import NotAuthenticated
 
 from mentorq_backend.models import Ticket
-from .serializers import TicketSerializer
+from .serializers import TicketSerializer, TicketEditableSerializer
 
 
 # extracts the request from any of the http request methods and validates that the lcs_token hasn't expired
@@ -55,6 +55,12 @@ class TicketList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generi
 class TicketDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+        if self.request.method == "PATCH":
+            serializer_class = TicketEditableSerializer
+        return serializer_class
 
     # for a GET request, the queryset is filtered based on role
     @ensure_lcs_authenticated

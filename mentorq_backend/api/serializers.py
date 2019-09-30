@@ -11,3 +11,13 @@ class TicketSerializer(serializers.HyperlinkedModelSerializer):
             "id", "owner_email", "mentor", "mentor_email", "status", "title",
             "comment", "contact", "location", "created"
         ]
+
+
+class TicketEditableSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = [
+            "id", "owner_email", "mentor", "mentor_email", "status", "title",
+            "comment", "contact", "location", "created"
+        ]
+        read_only_fields = ["id", "owner_email", "title", "comment", "contact", "location", "created"]
