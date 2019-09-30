@@ -1,14 +1,10 @@
-from django.conf.urls import url
 from django.urls import path, include
 
-from .views import ProfileInfoCreateView, ProfilePostRudView, TicketList, TicketDetail
+from .views import TicketList, TicketDetail
 
 urlpatterns = [
     # endpoint for Mentorq authentication
     path("auth/", include("mentorq_user.urls")),
-    url('create/', ProfileInfoCreateView.as_view(), name='post-create'),
-    path('rud/<str:pk>/', ProfilePostRudView.as_view(), name='post-rud'),
-
     # endpoint for getting all the tickets or adding a new ticket
     path("tickets/", TicketList.as_view(), name="ticket_list"),
 

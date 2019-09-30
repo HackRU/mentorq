@@ -23,13 +23,8 @@ class MentorqUserBackend:
             raise exceptions.AuthenticationFailed(msg)
 
         # if there is no error, a Mentorq user is fetched (to be used for JWT)
-        try:
-            user = MentorqUser.objects.get(email=email)
-        # if the user doesn't already exist, its created
-        except MentorqUser.DoesNotExist:
-            user = MentorqUser(email=email, lcs_token=lcs_token)
-            user.save()
-
+        user, created = MentorqUser.objects.update_or_create(email=email, defaults={'lcs_token': lcs_token})
+    
         # finally, the associated user is returned
         return user
 

@@ -1,29 +1,9 @@
 # generic views
 from rest_framework import generics, mixins
 from rest_framework.exceptions import NotAuthenticated
-from rest_framework.permissions import IsAdminUser
 
-from mentorq_backend.models import ProfileInfo, Ticket
-from .serializers import ProfileInfoSerializer, TicketSerializer
-
-
-class ProfileInfoCreateView(mixins.CreateModelMixin, generics.ListAPIView):
-    """This class defines the create behavior of our rest api."""
-    queryset = ProfileInfo.objects.all()
-    serializer_class = ProfileInfoSerializer
-    permission_classes = [IsAdminUser]
-
-    def perform_create(self, serializer):
-        """Save the post data when creating a new bucketlist."""
-        serializer.save()
-
-    def post(self, request, *args, **kwargs):
-        self.create(request, *args, **kwargs)
-
-
-class ProfilePostRudView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ProfileInfoSerializer
-    queryset = ProfileInfo.objects.all()
+from mentorq_backend.models import Ticket
+from .serializers import TicketSerializer
 
 
 # extracts the request from any of the http request methods and validates that the lcs_token hasn't expired
@@ -84,7 +64,6 @@ class TicketDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.
         return self.retrieve(request, *args, **kwargs)
 
     # TODO: add validation to only allow certain fields to be editable
-    # for a PUT request, the queryset is filtered based on role
     @ensure_lcs_authenticated
     def put(self, request, *args, **kwargs):
         lcs_profile = kwargs["lcs_profile"]

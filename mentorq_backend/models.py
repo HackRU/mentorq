@@ -1,18 +1,6 @@
 from django.db import models
 
 
-class ProfileInfo(models.Model):
-    username = models.CharField(max_length=120, primary_key=True)
-    password = models.CharField(max_length=120)
-
-    class Meta:
-        verbose_name = "Profile"
-        verbose_name_plural = "Profile Information"
-
-    def __str__(self):
-        return self.username
-
-
 # TODO: limit ticket creation to 5 per user
 # represents a help ticket
 class Ticket(models.Model):
