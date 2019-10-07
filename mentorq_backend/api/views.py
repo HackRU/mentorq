@@ -27,7 +27,7 @@ def ensure_lcs_authenticated(func):
 # filters the given queryset based on role of the lcs user
 def role_filter(lcs_profile, queryset):
     roles = lcs_profile["role"]
-    if not (roles["organizer"] or roles["director"]):
+    if not (roles["organizer"] or roles["director"] or roles["mentor"]):
         queryset = queryset.filter(owner_email=lcs_profile["email"])
     return queryset
 
