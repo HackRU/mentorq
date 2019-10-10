@@ -1,84 +1,34 @@
-import React, { Component } from 'react';
+import React from "react";
 import {
-    MentorqClient,
-    getToken, tokenStillValid, BadLogin,
-    getStoredToken, setStoredToken,
-    clientOptions
-} from "./config.js";
-import {horizJuxt} from "./alignment.js";
-import {Dashboard} from "./Dashboard.js";
-import Header from "./Header.js";
+  Route,
+  BrowserRouter as Router,
+  Switch,
+  Redirect
+} from "react-router-dom";
+import Login from "./pages/Login";
+import { useSelector } from "react-redux";
 
-import {BrowserRouter as Router, Redirect, Route, Link} from "react-router-dom";
+const App = () => {
+  const { isLoggedIn, email } = useSelector(
+    ({ auth: { isLoggedIn, email } }) => ({
+      isLoggedIn,
+      email
+    })
+  );
 
-import './App.css';
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          {isLoggedIn ? <div>{email}</div> : <Redirect to="/login" />}
+        </Route>
 
-import firebase from "firebase";
-
-class App extends Component {
-    constructor() {
-        super();
-        const token = getStoredToken();
-        if (token !== null && tokenStillValid(token)) {
-            this.state = {
-                loggedIn: true,
-                client: new MentorqClient(token, clientOptions),
-            };
-        } else {
-            this.state = {
-                loggedIn: false,
-                client: null,
-            };
-        }
-        window.client = this.state.client;
-    }
-
-    login = (username, pass) => {
-        getToken(username, pass)
-            .then((hash) => new MentorqClient(hash, clientOptions))
-            .then((client) => {
-                this.setState({
-                    client,
-                    loggedIn: true
-                });
-            })
-            .catch(alert);
-    }
-
-    logout = () => {
-        this.setState({loggedIn: false});
-        setStoredToken(null);
-    }
-
-    render() {
-        const loggedIn = this.state.loggedIn;
-        const client = this.state.client;
-        const ifLoggedIn = (component) =>
-              loggedIn ? component: <Redirect to="/"/>;
-        return (
-            <div className="App">
-              <Header client={client}
-                        loggedIn={loggedIn}
-                        onLogin={this.login}
-                        onLogout={this.logout} />
-              <Router>
-                <Route exact path="/dash"
-                       component={
-                           () => ifLoggedIn(<Dashboard client={client}/>)
-                       }/>
-                <Route exact path="/"
-                       component={() => <Index loggedIn={loggedIn}/>}/>
-              </Router>
-            </div>
-        );
-    }
-}
-
-const Index = ({loggedIn}) => {
-    if (loggedIn) {
-        return <Redirect to="/dash"/>;
-    }
-    return <b>Please Login</b>;
+        <Route path="/login">
+          {isLoggedIn ? <Redirect to="/" /> : <Login />}
+        </Route>
+      </Switch>
+    </Router>
+  );
 };
 
-export default App;
+export { App };
