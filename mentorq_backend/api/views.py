@@ -69,9 +69,8 @@ class TicketDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.
         self.queryset = role_filter(lcs_profile, self.queryset)
         return self.retrieve(request, *args, **kwargs)
 
-    # TODO: add validation to only allow certain fields to be editable
     @ensure_lcs_authenticated
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         lcs_profile = kwargs["lcs_profile"]
         self.queryset = role_filter(lcs_profile, self.queryset)
         return self.update(request, *args, **kwargs)
