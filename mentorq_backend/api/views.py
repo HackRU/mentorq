@@ -1,6 +1,9 @@
 # generic views
+from datetime import timedelta
+
 from rest_framework import generics, mixins
 from rest_framework.exceptions import NotAuthenticated
+from rest_framework.response import Response
 
 from mentorq_backend.models import Ticket
 from .serializers import TicketSerializer, TicketEditableSerializer
@@ -74,3 +77,28 @@ class TicketDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.
         lcs_profile = kwargs["lcs_profile"]
         self.queryset = role_filter(lcs_profile, self.queryset)
         return self.update(request, *args, **kwargs)
+
+
+# view for the stats of all the tickets (identified by /tickets/stats)
+class TicketStats(generics.GenericAPIView):
+    @ensure_lcs_authenticated
+    def get(self, request, *args, **kwargs):
+        roles = kwargs["lcs_profile"]["role"]
+        if roles["director"]:
+            raise NotAuthenticated(detail="You do not have sufficient privileges to access tickets stats")
+        claimed_datetime_deltas = list(map(lambda ticket: ticket.claimed_datetime - ticket.created_datetime,
+                                           Ticket.objects.exclude(claimed_datetime__isnull=True).only(
+                                               "created_datetime",
+                                               "claimed_datetime")))
+        num_of_claimed_datetime_deltas = len(claimed_datetime_deltas)
+        closed_datetime_deltas = list(map(lambda ticket: ticket.closed_datetime - ticket.created_datetime,
+                                          Ticket.objects.exclude(closed_datetime__isnull=True).only("created_datetime",
+                                                                                                    "closed_datetime")))
+        num_of_closed_datetime_deltas = len(closed_datetime_deltas)
+        average_claimed_datetime = (sum(claimed_datetime_deltas, timedelta(
+            0)) / num_of_claimed_datetime_deltas) if num_of_claimed_datetime_deltas > 0 else None
+        average_closed_datetime = (sum(closed_datetime_deltas, timedelta(
+            0)) / num_of_closed_datetime_deltas) if num_of_closed_datetime_deltas > 0 else None
+        return Response(
+            {"average_claimed_datetime_seconds": average_claimed_datetime,
+             "average_closed_datetime_seconds": average_closed_datetime})
