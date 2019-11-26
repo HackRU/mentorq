@@ -7,6 +7,7 @@ const Input = styled.input`
   height: 48px;
   padding: 0 8px;
   border: 1px solid lightgray;
+  box-sizing: border-box;
 
   & + & {
     margin-top: 8px;

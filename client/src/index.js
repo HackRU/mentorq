@@ -5,6 +5,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import reducer from "./reducers";
+import "./index.css";
 
 const localStorageMiddleware = ({ getState }) => {
   return next => action => {

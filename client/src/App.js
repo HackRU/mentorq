@@ -7,20 +7,16 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Login";
 import { useSelector } from "react-redux";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
-  const { isLoggedIn, email } = useSelector(
-    ({ auth: { isLoggedIn, email } }) => ({
-      isLoggedIn,
-      email
-    })
-  );
+  const isLoggedIn = useSelector(({ auth: { isLoggedIn } }) => isLoggedIn);
 
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          {isLoggedIn ? <div>{email}</div> : <Redirect to="/login" />}
+          {isLoggedIn ? <Dashboard /> : <Redirect to="/login" />}
         </Route>
 
         <Route path="/login">

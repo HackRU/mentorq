@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import { auth } from "./auth";
+import { tickets } from "./tickets";
 
 const rootReducer = combineReducers({
-  auth
+  auth,
+  tickets
 });
 
 export default rootReducer;
