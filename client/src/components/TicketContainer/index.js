@@ -1,48 +1,36 @@
 /// fetch tickets and list tickets
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Ticket } from "../Ticket";
-import { URL } from "../../constants";
-import { refreshTokens } from "../../actions";
+import { request } from "../../util";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: grid;
+  grid-auto-flow: row;
+  grid-row-gap: 32px;
+`;
 
 const TicketContainer = () => {
   // fetch the tickets in effects
   // dispatch to main . f that, local ticket state. it gets stale
   const token = useSelector(({ auth: { accessToken } }) => accessToken);
   const [tickets, setTickets] = useState([]);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (token) {
       (async () => {
-        // code: token_not_valid
-        // get new token
-
-        // get
-        const data = await fetch(`${URL}/api/tickets/`, {
-          headers: new Headers({ Authorization: `Bearer ${token}` })
-        });
-
-        const response = await data.json();
-        const { code = "" } = response;
-
-        switch (code) {
-          case "token_not_valid":
-            dispatch(refreshTokens());
-            return;
-          default:
-            setTickets(response);
-        }
+        setTickets(await request("/tickets/"));
       })();
     }
   }, [token]);
 
   return (
-    <div>
-      {tickets.map(ticket => (
-        <Ticket ticket={ticket} />
+    <Container>
+      {tickets.map((ticket, i) => (
+        <Ticket key={i} ticket={ticket} />
       ))}
-    </div>
+    </Container>
   );
 };
 

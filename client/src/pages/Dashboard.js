@@ -5,11 +5,7 @@ import { Nav } from "../components/Nav";
 import { TicketContainer } from "../components/TicketContainer";
 import { NewTicket } from "../components/NewTicket";
 import styled from "styled-components";
-
-const DashboardContainer = styled.div`
-  background-color: #f5f8fa;
-  min-height: 100vh;
-`;
+import DashboardConainer from "./DashboardContainer";
 
 const DashboardInnerContainer = styled.div`
   display: grid;
@@ -21,13 +17,12 @@ const DashboardInnerContainer = styled.div`
 
 const Dashboard = () => {
   return (
-    <DashboardContainer>
-      <Nav />
+    <DashboardConainer>
       <DashboardInnerContainer>
         <NewTicket />
         <TicketContainer />
       </DashboardInnerContainer>
-    </DashboardContainer>
+    </DashboardConainer>
   );
 };
 
