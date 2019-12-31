@@ -11,8 +11,6 @@ const DashboardInnerContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 2fr;
   grid-column-gap: 16px;
-  width: 64rem;
-  margin: 32px auto;
 `;
 
 const Dashboard = () => {

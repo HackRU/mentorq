@@ -9,7 +9,7 @@ const NavContainer = styled.div`
   width: 100%;
   padding: 8px 16px;
   border-bottom: 1px solid lightgray;
-  box-shadow: 0 0 10px rgba(16, 22, 26, 0.2);
+  box-shadow: 0 0 4px rgba(16, 22, 26, 0.2);
   background-color: white;
 
   & + & {

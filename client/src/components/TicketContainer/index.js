@@ -8,7 +8,7 @@ import styled from "styled-components";
 const Container = styled.div`
   display: grid;
   grid-auto-flow: row;
-  grid-row-gap: 32px;
+  grid-row-gap: 16px;
 `;
 
 const TicketContainer = () => {

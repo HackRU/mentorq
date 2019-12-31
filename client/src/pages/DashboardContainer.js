@@ -8,11 +8,16 @@ const Container = styled.div`
   min-height: 100vh;
 `;
 
+const InnerContainer = styled.div`
+  width: 64rem;
+  margin: 32px auto;
+`;
+
 const DashboardConainer = ({ children }) => {
   return (
     <Container>
       <Nav />
-      {children}
+      <InnerContainer>{children}</InnerContainer>
     </Container>
   );
 };

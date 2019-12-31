@@ -4,6 +4,7 @@ import { Card } from "../Card";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { createTicket } from "../../actions";
+import Label from "../Label/styled/Label";
 
 const options = {
   OPEN: "Open",
@@ -71,25 +72,25 @@ const NewTicket = () => {
   return (
     <Card>
       <form onSubmit={onSubmit}>
-        <label>Contact</label>
+        <Label>Contact</Label>
         <Input
           onChange={e => setTicket({ ...ticket, contact: e.target.value })}
           value={ticket.contact}
         />
 
-        <label>Title</label>
+        <Label>Title</Label>
         <Input
           onChange={e => setTicket({ ...ticket, title: e.target.value })}
           value={ticket.title}
         />
 
-        <label>Comment</label>
+        <Label>Comment</Label>
         <Input
           onChange={e => setTicket({ ...ticket, comment: e.target.value })}
           value={ticket.comment}
         />
 
-        <label>Location</label>
+        <Label>Location</Label>
         <Input
           onChange={e => setTicket({ ...ticket, location: e.target.value })}
           value={ticket.location}
