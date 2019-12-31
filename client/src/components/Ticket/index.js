@@ -11,7 +11,7 @@ const Ticket = ({
     <Link to={`/ticket/${id}`}>
       <Card>
         <h1> {title}</h1>
-        <h2>{comment}}</h2>
+        <h2>{comment}</h2>
       </Card>
     </Link>
   );
