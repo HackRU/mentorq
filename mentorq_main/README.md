@@ -3,10 +3,7 @@ The backend was made with [Django](https://www.djangoproject.com/)
 # Setting up the backend
 - Ensure you have python3 installed on your machine
     - Run pip3 install -r requirements.txt
-    - Run python3 manage.py makemigrations mentorq_backend
-    - Run python3 manage.py migrate mentorq_backend
-    - Run python3 manage.py makemigrations mentorq_users
-    - Run python3 manage.py migrate mentorq_users
+    - Run python3 manage.py makemigrations 
     - Run python3 manage.py migrate
 
 # Running the backend
@@ -34,29 +31,38 @@ User is not logged in through HackRU:
 
 # API Endpoints
 
-###/api
-####/auth/token/
-\[POST]<br>
+<h3>
+/api
+</h3>
+
+<h4>
+/auth/token/
+</h4>
+[POST]<br>
 obtain a JWT token for Mentorq by passing in a request with the following body<br>
 {<br>
-    “email”: “<user email>”,<br>
-    “lcs_token”: <user lcs auth token><br>
+    “email”: “< user email >”,<br>
+    “lcs_token”: < user lcs auth token ><br>
 }<br>
-    returns a JSON object with an access token and a refresh token. Access tokens are short lived so refresh endpoint will be used to renew the access token
+    returns a JSON object with an access token, a refresh token and booleans that state if a user is a mentor or director. Access tokens are short lived so refresh endpoint will be used to renew the access token
 
-####/auth/refresh/
-\[POST]<br>
+<h4>
+/auth/refresh/
+</h4>
+[POST]<br>
 obtain an access token from a valid refresh token by making a request with the following body<br>
 {<br>
-“refresh”: “<mentorq refresh token>”<br>
+“refresh”: “< mentorq refresh token >”<br>
 }<br>
 returns a JSON object with a new unexpired access token<br>
 <br>
 <br>
 <b><em>The following are secured endpoints, i.e. they require the access token obtained earlier to be put into the Authorization header with token type as “Bearer” </em> </b>
 
-####/tickets/
-\[GET]<br>
+<h4>
+/tickets/
+</h4>
+[GET]<br>
 obtain the list of all tokens visible to the user (mentors, organizers and directors can view all the tickets and everyone else can only view tickets that they made)<br>
 
 \[POST]<br>
@@ -71,23 +77,23 @@ create a ticket with the following minimum request body<br>
 }<br>
 returns JSON with relevant extra fields added such as “id” and “created” as well as optional fields of “mentor” and “mentor_email”
 
-####/tickets/\<id>
-\[GET]<br>
+<h4>
+/tickets/< id >
+</h4>
+[GET]<br>
 use the id of ticket to get all the details about the ticket<br>
-\[PATCH]<br>
+[PATCH]<br>
 update the ticket identified by id to change either “mentor”, “mentor_email” or “status” fields within the request body<br>
 
-####/tickets/stats/
-\[GET]<br>
+<h4>
+/tickets/stats/
+</h4>
+[GET]<br>
 (Requires director permissions in LCS)<br>
 Obtain the statistics of all of the tickets in the database<br>
-Returns a JSON with <br>
+Returns a JSON with:
 
-
-
-<nav class="table-of-contents">
 {<br>
    "average_claimed_datetime_seconds": average_claimed_datetime,<br>
    "average_closed_datetime_seconds": average_closed_datetime<br>
 }<br>
-</nav>
