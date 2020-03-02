@@ -177,6 +177,7 @@ export const loginAction = ({ email, password }) => {
 
         data = await fetch("https://api.hackru.org/prod/authorize", {
           method: "POST",
+          headers: new Headers({ "content-type": "application/json" }),
           body: JSON.stringify({
             email,
             password

@@ -20,7 +20,11 @@ const TicketContainer = () => {
   useEffect(() => {
     if (token) {
       (async () => {
-        setTickets(await request("/tickets/"));
+        setTickets(
+          await request({
+            path: "/tickets/"
+          })
+        );
       })();
     }
   }, [token]);

@@ -12,7 +12,9 @@ const TicketPage = ({
 
   useEffect(() => {
     (async () => {
-      const response = await request(`/tickets/${id}`);
+      const response = await request({
+        path: `/tickets/${id}/`
+      });
 
       setTicket(response);
     })();
