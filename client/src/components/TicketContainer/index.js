@@ -11,23 +11,23 @@ const Container = styled.div`
   grid-row-gap: 16px;
 `;
 
-const TicketContainer = () => {
+const TicketContainer = ({ timeout = 3 }) => {
   // fetch the tickets in effects
   // dispatch to main . f that, local ticket state. it gets stale
-  const token = useSelector(({ auth: { accessToken } }) => accessToken);
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    if (token) {
-      (async () => {
-        setTickets(
-          await request({
-            path: "/tickets/"
-          })
-        );
-      })();
-    }
-  }, [token]);
+    const update = async () => {
+      setTickets(await request({ path: "/tickets/" }));
+    };
+
+    const interval = setInterval(update, timeout * 1000);
+    update();
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <Container>

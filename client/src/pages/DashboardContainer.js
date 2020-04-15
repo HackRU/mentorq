@@ -10,7 +10,8 @@ const Container = styled.div`
 
 const InnerContainer = styled.div`
   width: 64rem;
-  margin: 32px auto;
+  margin: 0 auto;
+  padding: 32px 0;
 `;
 
 const DashboardConainer = ({ children }) => {
