@@ -6,6 +6,7 @@ import { TicketContainer } from "../components/TicketContainer";
 import { NewTicket } from "../components/NewTicket";
 import styled from "styled-components";
 import DashboardConainer from "./DashboardContainer";
+import {Stats} from "../components/Stats"
 
 const DashboardInnerContainer = styled.div`
   display: grid;
@@ -19,6 +20,7 @@ const Dashboard = () => {
       <DashboardInnerContainer>
         <NewTicket />
         <TicketContainer />
+        <Stats />
       </DashboardInnerContainer>
     </DashboardConainer>
   );
