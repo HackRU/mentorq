@@ -2,6 +2,7 @@ import React from "react";
 
 import { Nav } from "../components/Nav";
 import styled from "styled-components";
+import {Stats} from "../components/Stats";
 
 const Container = styled.div`
   background-color: #f5f8fa;
@@ -19,6 +20,8 @@ const DashboardConainer = ({ children }) => {
     <Container>
       <Nav />
       <InnerContainer>{children}</InnerContainer>
+        <Stats />
+
     </Container>
   );
 };
