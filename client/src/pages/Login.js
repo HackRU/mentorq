@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "../components/Input";
 import { loginAction } from "../actions";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 
 const LoginContainer = styled.div`
@@ -25,13 +25,14 @@ const Button = styled.input.attrs(props => ({
 const Login = () => {
   const [{ email, password }, setForm] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
-
+  let failedLogin = useSelector(({ auth: { hasErrors} }) => hasErrors);
   const onSubmit = e => {
     e.preventDefault();
     dispatch(loginAction({ email, password }));
   };
 
   return (
+
     <LoginContainer>
       <h1>Mentor</h1>
       <form onSubmit={onSubmit}>
@@ -51,6 +52,9 @@ const Login = () => {
         />
         <Button />
       </form>
+        <div>
+            <b>{!failedLogin ? '' : 'Invalid credentials provided.'}</b>
+        </div>
     </LoginContainer>
   );
 };

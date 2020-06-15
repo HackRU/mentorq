@@ -16,16 +16,15 @@ const Stats = () => {
         averageClaimed: 0,
         averageClosed: 0
     });
-
+    var response;
     useEffect(() => {
         if (token) {
             (async () => {
                 // console.log(token)
-                const response = await request({
+                response = await request({
                     path: '/tickets/stats/'
                 })
                 // console.log(response)
-
                 setStats({
                     averageClaimed: response.average_claimed_datetime_seconds,
                     averageClosed: response.average_closed_datetime_seconds
@@ -33,7 +32,10 @@ const Stats = () => {
             })();
         }
     }, [token]);
-
+    if(stats.averageClaimed === undefined){
+        console.log("Invalid credentials for stats.");
+        return null;
+    }
     return (
         <Card>
             <Label>Stats</Label>

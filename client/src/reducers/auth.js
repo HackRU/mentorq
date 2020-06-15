@@ -29,19 +29,22 @@ const auth = (
     case LOGOUT:
       return {
         ...state,
-        isLoggedIn: false
+        isLoggedIn: false,
+        hasErrors: false
       };
     case AUTH_REQUEST_LOGIN:
       return {
         ...state,
-        requestedLogin: true
+        requestedLogin: true,
+        hasErrors: false
       };
     case AUTH_RECEIVED_LOGIN:
       return {
         ...state,
         isLoggedIn: true,
         requestedLogin: false,
-        lcsToken,
+        lcsToken: lcsToken,
+        hasErrors: false,
         refreshToken,
         accessToken,
         email,

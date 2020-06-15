@@ -11,7 +11,13 @@ import Dashboard from "./pages/Dashboard";
 import Ticket from "./pages/TIcket";
 
 const App = () => {
-  const isLoggedIn = useSelector(({ auth: { isLoggedIn } }) => isLoggedIn);
+  const isLoggedIn = useSelector(({ auth: { isLoggedIn} }) => isLoggedIn);
+  // Potential way to get the LCS token if ever necessary to switch views
+  // const lcsToken = useSelector(({auth: {lcsToken}}) => lcsToken)
+  // console.log("hello world")
+  // if(isLoggedIn){
+  //   console.log("This is the lcs token:", lcsToken)
+  // }
 
   return (
     <Router>

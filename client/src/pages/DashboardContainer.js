@@ -21,7 +21,6 @@ const DashboardConainer = ({ children }) => {
       <Nav />
       <InnerContainer>{children}</InnerContainer>
         <Stats />
-
     </Container>
   );
 };
