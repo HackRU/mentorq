@@ -32,6 +32,9 @@ def role_filter(lcs_profile, queryset):
     roles = lcs_profile["role"]
     if not (roles["organizer"] or roles["director"] or roles["mentor"]):
         queryset = queryset.filter(owner_email=lcs_profile["email"])
+    if roles["mentor"]:
+        queryset = queryset.exclude(status="CLOSED")
+
     return queryset
 
 
@@ -84,7 +87,7 @@ class TicketStats(generics.GenericAPIView):
     @ensure_lcs_authenticated
     def get(self, request, *args, **kwargs):
         roles = kwargs["lcs_profile"]["role"]
-        if roles["director"]:
+        if not roles["director"]:
             raise NotAuthenticated(detail="You do not have sufficient privileges to access tickets stats")
         claimed_datetime_deltas = list(map(lambda ticket: ticket.claimed_datetime - ticket.created_datetime,
                                            Ticket.objects.exclude(claimed_datetime__isnull=True).only(

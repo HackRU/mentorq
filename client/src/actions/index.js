@@ -7,7 +7,8 @@ import {
   URL,
   REFRESH_TOKEN_RECEIVED,
   REFRESH_TOKEN_REQUEST,
-  CREATE_TICKET_RECEIVED
+  CREATE_TICKET_RECEIVED,
+  HACKRU_URL
 } from "../constants";
 
 export const requestLogin = ({ email, password }) => ({
@@ -175,7 +176,7 @@ export const loginAction = ({ email, password }) => {
       try {
         let data;
 
-        data = await fetch("https://api.hackru.org/prod/authorize", {
+        data = await fetch(`${HACKRU_URL}/authorize`, {
           method: "POST",
           headers: new Headers({ "content-type": "application/json" }),
           body: JSON.stringify({
@@ -216,3 +217,20 @@ export const loginAction = ({ email, password }) => {
     })();
   };
 };
+
+// Start of a function to find out an account version via LCS -> may not be necessary
+// export const  identifyAction = ({email, lcsToken}) => {
+//   return (async () =>{
+//       let token = lcsToken
+//       let query = {"role": "their roles"}
+//       let data = await fetch(`${URL}/read`, {
+//         method: "POST",
+//         headers: new Headers({ "content-type": "application/json" }),
+//         body: JSON.stringify({
+//           email,
+//           token,
+//           query
+//         })
+//       });
+//     })
+// }
