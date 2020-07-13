@@ -1,61 +1,59 @@
 import {
-  AUTH_REQUEST_LOGIN,
-  AUTH_RECEIVED_LOGIN,
-  AUTH_FAILED_LOGIN,
+  REQUEST_LOGIN,
+  RECEIVED_LOGIN,
+  FAILED_LOGIN,
   LOGOUT,
-  REFRESH_TOKEN_REQUEST,
-  REFRESH_TOKEN_RECEIVED
+  REFRESH_TOKEN_RECEIVED,
 } from "../constants";
 
-const auth = (
-  state = {
-    isLoggedIn: false,
-    requestedLogin: false,
-    hasErrors: false,
-    email: "",
-    refreshToken: "",
-    accessToken: "",
-    lcsToken: "",
-    validUntil: ""
-  },
-  { type, email, lcsToken, accessToken, refreshToken, validUntil }
-) => {
+const defaultState = {
+  isLoggedIn: false,
+  hasErrors: false,
+  email: "",
+  refreshToken: "",
+  accessToken: "",
+  lcsToken: "",
+  validUntil: "",
+  director: false,
+  mentor: false,
+  loadingLogin: false
+};
+
+const auth = (state = defaultState, action) => {
+  const {
+    type,
+    email,
+    lcsToken,
+    accessToken,
+    refreshToken,
+    validUntil,
+    director,
+    mentor,
+  } = action;
+
   switch (type) {
     case REFRESH_TOKEN_RECEIVED:
-      return {
-        ...state,
-        accessToken
-      };
+      return { ...state, accessToken };
     case LOGOUT:
-      return {
-        ...state,
-        isLoggedIn: false,
-        hasErrors: false
-      };
-    case AUTH_REQUEST_LOGIN:
-      return {
-        ...state,
-        requestedLogin: true,
-        hasErrors: false
-      };
-    case AUTH_RECEIVED_LOGIN:
+      return defaultState;
+    case REQUEST_LOGIN:
+      return { ...state, hasErrors: false, loadingLogin: true };
+    case RECEIVED_LOGIN:
       return {
         ...state,
         isLoggedIn: true,
-        requestedLogin: false,
+        loadingLogin: true,
         lcsToken: lcsToken,
         hasErrors: false,
         refreshToken,
         accessToken,
         email,
-        validUntil
+        validUntil,
+        director,
+        mentor,
       };
-    case AUTH_FAILED_LOGIN:
-      return {
-        ...state,
-        requestedLogin: false,
-        hasErrors: true
-      };
+    case FAILED_LOGIN:
+      return { ...state, hasErrors: true };
     default:
       return state;
   }

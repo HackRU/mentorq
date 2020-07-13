@@ -4,7 +4,7 @@ import { refreshTokens } from "./actions";
 
 const request = async ({ type: reqType, path: url, body = null }) => {
   const {
-    auth: { accessToken: token }
+    auth: { accessToken: token },
   } = store.getState();
 
   const type = reqType ? reqType : body ? "POST" : "GET";
@@ -18,8 +18,8 @@ const request = async ({ type: reqType, path: url, body = null }) => {
     ...opts,
     headers: new Headers({
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
-    })
+      "Content-Type": "application/json",
+    }),
   });
 
   const response = await data.json();
@@ -29,17 +29,11 @@ const request = async ({ type: reqType, path: url, body = null }) => {
     case "token_not_valid":
       store.dispatch(refreshTokens());
 
-      return new Promise((resolve, reject) => {
-        const unsubscribe = store.subscribe(async type => {
+      return new Promise((resolve) => {
+        const unsubscribe = store.subscribe(async (type) => {
           switch (type) {
             case REFRESH_TOKEN_RECEIVED:
-              resolve(
-                await request({
-                  type,
-                  url,
-                  body
-                })
-              );
+              resolve(await request({ type, url, body }));
               unsubscribe();
               break;
             default:

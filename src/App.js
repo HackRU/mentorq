@@ -3,21 +3,17 @@ import {
   Route,
   BrowserRouter as Router,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
-import Login from "./pages/Login";
 import { useSelector } from "react-redux";
-import Dashboard from "./pages/Dashboard";
-import Ticket from "./pages/TIcket";
+import "./App.css";
 
-const App = () => {
-  const isLoggedIn = useSelector(({ auth: { isLoggedIn} }) => isLoggedIn);
-  // Potential way to get the LCS token if ever necessary to switch views
-  // const lcsToken = useSelector(({auth: {lcsToken}}) => lcsToken)
-  // console.log("hello world")
-  // if(isLoggedIn){
-  //   console.log("This is the lcs token:", lcsToken)
-  // }
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Ticket from "./pages/Ticket";
+
+export default () => {
+  const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
 
   return (
     <Router>
@@ -35,5 +31,3 @@ const App = () => {
     </Router>
   );
 };
-
-export { App };

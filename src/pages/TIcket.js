@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from "react";
-import DashboardConainer from "./DashboardContainer";
 import { request } from "../util";
 import { Ticket } from "../components/Ticket";
+import DashboardContainer from "../components/DashboardContainer";
 
 const TicketPage = ({
   match: {
-    params: { id }
-  }
+    params: { id },
+  },
 }) => {
   const [ticket, setTicket] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const response = await request({
-        path: `/tickets/${id}/`
-      });
-
+      const response = await request({ path: `/tickets/${id}/` });
       setTicket(response);
     })();
   });
 
   return (
-    <DashboardConainer>
+    <DashboardContainer>
       {ticket && <Ticket ticket={ticket}></Ticket>}
-    </DashboardConainer>
+    </DashboardContainer>
   );
 };
 

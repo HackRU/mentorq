@@ -1,34 +1,51 @@
 import React from "react";
-import { NavContainer } from "./styled/NavContainer";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../actions";
-import { Button } from "../Button";
-import { Text } from "../Text";
-import styled from "styled-components";
+import { logoutUser } from "../../actions";
+import {
+  AppBar,
+  Typography,
+  Toolbar,
+  Button,
+  makeStyles,
+} from "@material-ui/core";
 
-const NavGroup = styled.div`
-  display: inline-block;
-`;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  email: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
-const Nav = () => {
+export default () => {
   const dispatch = useDispatch();
-  const email = useSelector(({ auth: { email } }) => email);
+  const email = useSelector((store) => store.auth.email);
+  const classes = useStyles();
 
   return (
-    <NavContainer>
-      <Text>MentorQ</Text>
-      <NavGroup>
-        <Text>{email}</Text>
-        <Button
-          onClick={() => {
-            dispatch(logout());
-          }}
-        >
-          Logout
-        </Button>
-      </NavGroup>
-    </NavContainer>
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            MentorQ
+          </Typography>
+
+          <Typography className={classes.email}>{email}</Typography>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              dispatch(logoutUser());
+            }}
+          >
+            Logout
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </div>
   );
 };
-
-export { Nav };

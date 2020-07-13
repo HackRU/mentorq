@@ -1,10 +1,9 @@
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import reducer from "./reducers";
-import "./index.css";
 
 const localStorageMiddleware = ({ getState }) => {
-  return next => action => {
+  return (next) => (action) => {
     const result = next(action);
     localStorage.setItem("redux-state", JSON.stringify(getState()));
     return result;

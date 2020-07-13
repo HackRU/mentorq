@@ -1,61 +1,115 @@
 import React, { useState } from "react";
-import { Input } from "../components/Input";
-import { loginAction } from "../actions";
-import {useDispatch, useSelector} from "react-redux";
-import styled from "styled-components";
+import { loginUser } from "../actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  TextField,
+  Box,
+  Button,
+  Container,
+  Typography,
+  makeStyles,
+  Avatar,
+  CircularProgress,
+} from "@material-ui/core";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
-const LoginContainer = styled.div`
-  max-width: 24rem;
-  margin: 0 auto;
-`;
+const Input = ({ label, value, type, onChange }) => (
+  <Box my={2}>
+    <TextField
+      fullWidth
+      variant="outlined"
+      label={label}
+      type={type}
+      value={value}
+      onChange={onChange}
+      margin="normal"
+    />
+  </Box>
+);
 
-const Button = styled.input.attrs(props => ({
-  type: "submit"
-}))`
-  margin-top: 8px;
-  appearance: none;
-  background-color: orange;
-  font-size: 18px;
-  color: white;
-  width: 100%;
-  height: 48px;
-  border: none;
-`;
+const useStyles = makeStyles((theme) => ({
+  loading: {
+    width: "100vw",
+    height: "100vh",
+    display: "grid",
+    placeContent: "center",
+  },
+  root: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(1),
+  },
+}));
 
 const Login = () => {
-  const [{ email, password }, setForm] = useState({ email: "", password: "" });
+  const classes = useStyles();
+
+  const failedLoginUser = useSelector((store) => store.auth.hasErrors);
+  const isLoading = useSelector((store) => store.auth.loadingLogin);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const dispatch = useDispatch();
-  let failedLogin = useSelector(({ auth: { hasErrors} }) => hasErrors);
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(loginAction({ email, password }));
+    dispatch(loginUser({ email, password }));
   };
 
-  return (
+  if (isLoading) {
+    return (
+      <Container component="main" maxWidth="xs" className={classes.loading}>
+        <CircularProgress color="secondary" />
+      </Container>
+    );
+  }
 
-    <LoginContainer>
-      <h1>Mentor</h1>
-      <form onSubmit={onSubmit}>
+  return (
+    <Container component="main" maxWidth="xs" className={classes.root}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign in
+      </Typography>
+
+      <form className={classes.form}>
         <Input
+          label={"Email"}
           type="email"
           value={email}
-          onChange={({ target }) =>
-            setForm(state => ({ ...state, email: target.value }))
-          }
+          onChange={({ target }) => setEmail(target.value)}
         />
+
         <Input
+          label="Password"
           type="password"
           value={password}
-          onChange={({ target }) =>
-            setForm(state => ({ ...state, password: target.value }))
-          }
+          onChange={({ target }) => setPassword(target.value)}
         />
-        <Button />
+
+        <Button
+          variant="contained"
+          fullWidth
+          color="primary"
+          onClick={onSubmit}
+        >
+          Log In
+        </Button>
       </form>
-        <div>
-            <b>{!failedLogin ? '' : 'Invalid credentials provided.'}</b>
-        </div>
-    </LoginContainer>
+      <div>
+        <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
+      </div>
+    </Container>
   );
 };
 

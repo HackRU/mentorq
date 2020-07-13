@@ -1,41 +1,35 @@
 import React, { useState } from "react";
-import { Input } from "../Input";
-import { Card } from "../Card";
-import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { createTicket } from "../../actions";
-import Label from "../Label/styled/Label";
+import {
+  TextField,
+  Box,
+  Button,
+  Card,
+  FormLabel,
+  CardContent,
+  makeStyles,
+} from "@material-ui/core";
 
-const options = {
-  OPEN: "Open",
-  CLOSED: "Closed",
-  CLAIMED: "Claimed",
-  CANCELLED: "Cancelled"
-};
+const Input = ({ value, type, onChange }) => (
+  <Box my={2}>
+    <TextField
+      fullWidth
+      variant="outlined"
+      type={type}
+      value={value}
+      onChange={onChange}
+    />
+  </Box>
+);
 
-const Select = styled.select`
-  width: 100%;
-  height: 48px;
-  display: block;
-`;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "fit-content",
+    position: "sticky",
+    top: 0,
+  },
+}));
 
-const Button = styled.input.attrs(props => ({
-  type: "submit"
-}))`
-  margin-top: 8px;
-  appearance: none;
-  background-color: orange;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 4px;
-  color: white;
-  width: 100%;
-  height: 48px;
-  border: none;
-`;
-
-const NewTicket = () => {
-  const dispatch = useDispatch();
+const NewTicket = ({ onAddTicket }) => {
   const [ticket, setTicket] = useState({
     title: "",
     titleError: "",
@@ -44,60 +38,58 @@ const NewTicket = () => {
     contact: "",
     contactError: "",
     location: "",
-    locationError: ""
+    locationError: "",
   });
-  //	“owner_email”: “...”,
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
 
-    if (
-      ticket.title &&
-      ticket.comment &&
-      ticket.contact &&
-      ticket.location
-    ) {
-      dispatch(
-        createTicket({
-          status: ticket.status,
-          title: ticket.title,
-          comment: ticket.comment,
-          contact: ticket.contact,
-          location: ticket.location
-        })
-      );
+    if (ticket.title && ticket.comment && ticket.contact && ticket.location) {
+      onAddTicket({
+        status: ticket.status,
+        title: ticket.title,
+        comment: ticket.comment,
+        contact: ticket.contact,
+        location: ticket.location,
+      });
     }
   };
 
+  const classes = useStyles();
+
   return (
-    <Card>
-      <form onSubmit={onSubmit}>
-        <Label>Contact</Label>
-        <Input
-          onChange={e => setTicket({ ...ticket, contact: e.target.value })}
-          value={ticket.contact}
-        />
+    <Card className={classes.root}>
+      <CardContent>
+        <form onSubmit={onSubmit}>
+          <FormLabel>Contact</FormLabel>
+          <Input
+            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
+            value={ticket.contact}
+          />
 
-        <Label>Title</Label>
-        <Input
-          onChange={e => setTicket({ ...ticket, title: e.target.value })}
-          value={ticket.title}
-        />
+          <FormLabel>Title</FormLabel>
+          <Input
+            onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
+            value={ticket.title}
+          />
 
-        <Label>Comment</Label>
-        <Input
-          onChange={e => setTicket({ ...ticket, comment: e.target.value })}
-          value={ticket.comment}
-        />
+          <FormLabel>Comment</FormLabel>
+          <Input
+            onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
+            value={ticket.comment}
+          />
 
-        <Label>Location</Label>
-        <Input
-          onChange={e => setTicket({ ...ticket, location: e.target.value })}
-          value={ticket.location}
-        />
+          <FormLabel>Location</FormLabel>
+          <Input
+            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
+            value={ticket.location}
+          />
 
-        <Button />
-      </form>
+          <Button type="submit" variant="contained">
+            Create Ticket
+          </Button>
+        </form>
+      </CardContent>
     </Card>
   );
 };

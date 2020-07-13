@@ -5,9 +5,9 @@ export const URL = "http://127.0.0.1:8000";
 export const LOGOUT = Symbol("logout");
 
 // Auth
-export const AUTH_REQUEST_LOGIN = Symbol("auth_request_login");
-export const AUTH_RECEIVED_LOGIN = Symbol("auth_received_login");
-export const AUTH_FAILED_LOGIN = Symbol("auth_failed_login");
+export const REQUEST_LOGIN = Symbol("request_login");
+export const RECEIVED_LOGIN = Symbol("received_login");
+export const FAILED_LOGIN = Symbol("failed_login");
 
 // Create Ticket
 export const CREATE_TICKET_REQUEST = Symbol("create_ticket_request");

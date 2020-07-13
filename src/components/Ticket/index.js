@@ -1,67 +1,96 @@
-/// fetch tickets and list tickets
-import styled from "styled-components";
-import React from "react";
-import { Card } from "../Card";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Label from "../Label";
 import { request } from "../.././util";
-
-const GridTable = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-`;
+import {
+  CardContent,
+  Card,
+  FormLabel as Label,
+  Grid,
+  Typography,
+  Button,
+  ButtonGroup,
+} from "@material-ui/core";
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status }
+  ticket: { id, title, comment, contact, location, status },
 }) => {
+  const [currStatus, setCurrStatus] = useState(status);
+
+  useEffect(() => {
+    setCurrStatus(status);
+  }, [status]);
+
   const claimTicket = async () => {
+    setCurrStatus("CLAIMED");
+
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
-        status: "CLAIMED"
-      }
+        status: "CLAIMED",
+      },
     });
   };
 
   const closeTicket = async () => {
+    setCurrStatus("CLOSED");
+
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
-        status: "CLOSED"
-      }
+        status: "CLOSED",
+      },
     });
   };
 
   return (
     <Card>
-      <Link to={`/ticket/${id}`}>
-        <h1>{title}</h1>
-      </Link>
-      <GridTable>
-        <div>
-          <Label>Comment</Label>
-          <p>{comment}</p>
-        </div>
-        <div>
-          <Label>Contact</Label>
-          <p>{contact}</p>
-        </div>
-        <div>
-          <Label>Location</Label>
-          <p>{location}</p>
-        </div>
-        <div>
-          <Label>Status</Label>
-          <p>{status}</p>
-        </div>
-      </GridTable>
+      <CardContent>
+        <Grid item>
+          <Link to={`/ticket/${id}`}>
+            <Typography variant="h5" gutterBottom>
+              {title}
+            </Typography>
+          </Link>
 
-      <div>
-        <button onClick={claimTicket}>claim</button>
-        <button onClick={closeTicket}>close</button>
-      </div>
+          <Grid container spacing={3}>
+            <Grid item xs={3}>
+              <Label>Comment</Label>
+              <Typography variant="body1" gutterBottom>
+                {comment}
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Label>Contact</Label>
+              <Typography variant="body1" gutterBottom>
+                {contact}
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Label>Location</Label>
+              <Typography variant="body1" gutterBottom>
+                {location}
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Label>Status</Label>
+              <Typography variant="body1" gutterBottom>
+                {currStatus}
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <ButtonGroup color="secondary">
+            <Button variant="contained" onClick={claimTicket}>
+              Claim
+            </Button>
+            <Button variant="contained" onClick={closeTicket}>
+              Close
+            </Button>
+          </ButtonGroup>
+        </Grid>
+      </CardContent>
     </Card>
   );
 };
