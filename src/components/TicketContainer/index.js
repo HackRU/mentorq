@@ -8,7 +8,7 @@ const Container = styled.div`
   grid-row-gap: 16px;
 `;
 
-const TicketContainer = ({ tickets = [] }) => (
+const TicketContainer = ({ tickets = [],onClaimTicket }) => (
   <Container>
     {tickets.map((ticket) => (
       <Ticket key={ticket.id} ticket={ticket} />
@@ -17,3 +17,4 @@ const TicketContainer = ({ tickets = [] }) => (
 );
 
 export { TicketContainer };
+ 

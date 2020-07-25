@@ -6,10 +6,12 @@ import { request } from "../util";
 import { useSelector } from "react-redux";
 import { Grid } from "@material-ui/core";
 
-const Dashboard = () => {
-  const [tickets, setTickets] = useState([]);
-  const email = useSelector((store) => store.auth.email);
 
+const Dashboard = () => {
+  // State for tickets and a way to change the tickets. The array will hold the tickets  
+  const [tickets, setTickets] = useState([]);
+  // State variable for emails 
+  const email = useSelector((store) => store.auth.email);
   useEffect(() => {
     const update = async () => {
       setTickets(await request({ path: "/tickets/" }));
@@ -23,8 +25,14 @@ const Dashboard = () => {
     };
   }, []);
 
+
+  
+
   const onAddTicket = async (ticket) => {
     setTickets([...tickets, ticket]);
+
+  
+    
 
     await request({
       path: "/tickets/",
