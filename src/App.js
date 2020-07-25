@@ -10,6 +10,7 @@ import "./App.css";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+// Had to change to TIcket said that was the name of the component
 import Ticket from "./pages/TIcket";
 
 export default () => {
