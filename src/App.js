@@ -10,8 +10,8 @@ import "./App.css";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-// Had to change to TIcket said that was the name of the component
-import Ticket from "./pages/TIcket";
+import Ticket from "./pages/Ticket";
+import { AllTickets } from "./pages/Admin/Tickets";
 
 export default () => {
   const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
@@ -28,6 +28,7 @@ export default () => {
         </Route>
 
         <Route path="/ticket/:id" component={Ticket} />
+        <Route path="/admin/alltickets" component={AllTickets} />
       </Switch>
     </Router>
   );

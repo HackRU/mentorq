@@ -5,6 +5,14 @@ import DashboardContainer from "../components/DashboardContainer";
 import { request } from "../util";
 import { useSelector } from "react-redux";
 import { Grid } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+import { AdminMain } from './Admin/AdminMain';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
 
 
 const Dashboard = () => {
@@ -12,6 +20,9 @@ const Dashboard = () => {
   const [tickets, setTickets] = useState([]);
   // State variable for emails 
   const email = useSelector((store) => store.auth.email);
+  const isDirector = useSelector((store) => store.auth.director);
+  const classes = useStyles();
+
   useEffect(() => {
     const update = async () => {
       setTickets(await request({ path: "/tickets/" }));
@@ -47,19 +58,25 @@ const Dashboard = () => {
       },
     });
   };
-
-  return (
-    <DashboardContainer>
-      <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <NewTicket onAddTicket={onAddTicket} />
+  if (isDirector) {
+    return (
+      <AdminMain />
+    );
+  }
+  else {
+    return (
+      <DashboardContainer>
+        <Grid container spacing={3}>
+          <Grid item xs={4}>
+            <NewTicket onAddTicket={onAddTicket} />
+          </Grid>
+          <Grid item xs={8}>
+            <TicketContainer tickets={tickets} />
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-          <TicketContainer tickets={tickets} />
-        </Grid>
-      </Grid>
-    </DashboardContainer>
-  );
+      </DashboardContainer>
+    );
+  }
 };
 
 export default Dashboard;
