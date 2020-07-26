@@ -14,8 +14,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const Dashboard = () => {
+  // State for tickets and a way to change the tickets. The array will hold the tickets  
   const [tickets, setTickets] = useState([]);
+  // State variable for emails 
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const classes = useStyles();
@@ -33,8 +36,14 @@ const Dashboard = () => {
     };
   }, []);
 
+
+  
+
   const onAddTicket = async (ticket) => {
     setTickets([...tickets, ticket]);
+
+  
+    
 
     await request({
       path: "/tickets/",
