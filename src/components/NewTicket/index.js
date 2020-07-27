@@ -62,18 +62,16 @@ const NewTicket = ({ onAddTicket }) => {
     <Card className={classes.root}>
       <CardContent>
         <form onSubmit={onSubmit}>
-          <FormLabel>Contact</FormLabel>
-          <Input
-            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
-            value={ticket.contact}
-          />
-
           <FormLabel>Title</FormLabel>
           <Input
             onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
             value={ticket.title}
           />
-
+          <FormLabel>Contact</FormLabel>
+          <Input
+            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
+            value={ticket.contact}
+          />
           <FormLabel>Comment</FormLabel>
           <Input
             onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
