@@ -5,6 +5,7 @@ import { request } from "../../util";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import MenuListComposition from '../../components/AdminView/Menu';
+import { useSelector } from "react-redux";
 import { AdminMain } from "./AdminMain";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,26 +14,30 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 const AllTickets = () => {
     const [tickets, setTickets] = useState([]);
     const classes = useStyles();
+    const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
 
     useEffect(() => {
-        const update = async () => {
-            setTickets(await request({ path: "/tickets/" }));
-        };
+        if (isLoggedIn) {
+            const update = async () => {
+                setTickets(await request({ path: "/tickets/" }));
+            };
 
-        const interval = setInterval(update, 3000);
-        update();
-        return () => {
-            clearInterval(interval);
-        };
+            const interval = setInterval(update, 3000);
+            update();
+            return () => {
+                clearInterval(interval);
+            };
+        }
     }, []);
 
-    console.log("Ticket Page")
+    console.log("tickets")
 
     return (
-        <DashboardContainer>
+        < DashboardContainer >
             <div className={classes.root}>
                 <Grid container spacing={2}>
                     <Grid item xs={3}>
@@ -43,7 +48,7 @@ const AllTickets = () => {
                     </Grid>
                 </Grid>
             </div>
-        </DashboardContainer>
+        </DashboardContainer >
     );
 };
 

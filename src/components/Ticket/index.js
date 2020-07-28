@@ -26,32 +26,29 @@ const Ticket = ({
 }) => {
   const [currStatus, setCurrStatus] = useState(status);
   const email = useSelector((store) => store.auth.email);
-
+  const isDirector = useSelector((store => store.auth.director));
+  const isMentor = useSelector((store => store.auth.mentor));
 
   useEffect(() => {
     setCurrStatus(status);
   }, [status]);
 
-
-
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
-
-
-
+    setMentorEmailOpen(true);
 
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
         status: "CLAIMED",
-
       },
     });
   };
 
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
+    setMentorEmailOpen(false);
 
     await request({
       path: `/tickets/${id}/`,
@@ -62,22 +59,25 @@ const Ticket = ({
     });
   };
 
+  const [openMentorEmail, setMentorEmailOpen] = React.useState(false);
+
   // Dialogue Box Feedback Form
-  const [open, setOpen] = React.useState(false);
+  const [openFeedback, setFeedbackOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setFeedbackOpen(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setFeedbackOpen(false);
   };
 
   // Rating
   const [value, setValue] = React.useState(0);
   const [hover, setHover] = React.useState(-1);
 
-  if (currStatus == "CLOSED") {
+  // closed ticket for a user with feedback option
+  if (currStatus == "CLOSED" && !isDirector && !isMentor) {
     return (
       // displaying the ticket with feedback option if closed
       <Card>
@@ -118,7 +118,7 @@ const Ticket = ({
             <Grid item xs={12}>
               <Label> Mentor </Label>
               <Typography variant="body1" gutterBottom>
-                {currStatus === "CLAIMED" && email}
+                {email != "" ? email : "No mentor contact given"}
               </Typography>
             </Grid>
 
@@ -127,7 +127,7 @@ const Ticket = ({
                 Feedback
             </Button>
             </ButtonGroup>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
               <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
               <DialogContent>
                 <DialogContentText>
@@ -210,13 +210,12 @@ const Ticket = ({
                 </Typography>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Label> Mentor </Label>
+            <Grid item xs={12} open={openMentorEmail}>
+              <Label> {currStatus === "CLAIMED" ? "Mentor" : ""} </Label>
               <Typography variant="body1" gutterBottom>
                 {currStatus === "CLAIMED" && email}
               </Typography>
             </Grid>
-
             <ButtonGroup color="secondary">
               <Button variant="contained" onClick={claimTicket}>
                 Claim
