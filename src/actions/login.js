@@ -35,8 +35,8 @@ const loginUser = ({ email, password }) => {
         body: JSON.stringify({ email, password }),
       });
       const lcsJson = await lcsRequest.json();
-      const lcsToken = lcsJson.body.auth.token;
-      const lcsValidUntil = lcsJson.body.auth.validUntil;
+      const lcsToken = lcsJson.body.token;
+      // const lcsValidUntil = lcsJson.body.auth.validUntil;
 
       const mentorQRequest = await fetch(`${URL}/api/auth/token/`, {
         method: "POST",
@@ -48,7 +48,7 @@ const loginUser = ({ email, password }) => {
       dispatch(
         recievedLoginUser({
           email,
-          validUntil: lcsValidUntil,
+          // validUntil: lcsValidUntil,
           lcsToken: lcsToken,
           refreshToken: mentorQJson.refresh,
           accessToken: mentorQJson.access,
