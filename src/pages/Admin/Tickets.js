@@ -44,7 +44,7 @@ const AllTickets = () => {
                         <MenuListComposition />
                     </Grid>
                     <Grid item xs={8}>
-                        <TicketContainer tickets={tickets} />
+                        {isLoggedIn ? <TicketContainer tickets={tickets} /> : ""}
                     </Grid>
                 </Grid>
             </div>

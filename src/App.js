@@ -28,7 +28,11 @@ export default () => {
         </Route>
 
         <Route path="/ticket/:id" component={Ticket} />
-        <Route path="/admin/alltickets" component={AllTickets} />
+
+        <Route exact path="/admin/alltickets">
+          {isLoggedIn ? <AllTickets /> : <Redirect to="/login" />}
+        </Route>
+
       </Switch>
     </Router>
   );
