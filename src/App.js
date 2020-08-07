@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Ticket from "./pages/Ticket";
 import { AllTickets } from "./pages/Admin/Tickets";
+import Feedback from "./pages/Admin/Feedback";
 
 export default () => {
   const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
@@ -29,8 +30,12 @@ export default () => {
 
         <Route path="/ticket/:id" component={Ticket} />
 
-        <Route exact path="/admin/alltickets">
+        <Route path="/admin/alltickets">
           {isLoggedIn ? <AllTickets /> : <Redirect to="/login" />}
+        </Route>
+
+        <Route path="/admin/feedback">
+          {isLoggedIn ? <Feedback /> : <Redirect to="/login" />}
         </Route>
 
       </Switch>

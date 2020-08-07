@@ -51,7 +51,9 @@ export default function MenuListComposition() {
                             <ConfirmationNumberIcon className={classes.icon} color="action" />Tickets
                         </MenuItem>
                     </Link>
-                    <MenuItem className={classes.item}><FeedbackIcon className={classes.icon} color="action" />Feedback</MenuItem>
+                    <Link to="/admin/feedback" style={{ textDecoration: 'none' }}>
+                        <MenuItem className={classes.item}><FeedbackIcon className={classes.icon} color="action" />Feedback</MenuItem>
+                    </Link>
                 </MenuList>
             </Paper>
         </div>

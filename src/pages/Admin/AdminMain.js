@@ -3,6 +3,7 @@ import { request } from "../../util";
 import { makeStyles } from '@material-ui/core/styles';
 import { AdminHome } from './Home';
 import { AllTickets } from './Tickets';
+import Feedback from './Feedback';
 
 import {
     Route,
@@ -19,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminMain = () => {
     const [tickets, setTickets] = useState([]);
-    const [page, setPage] = useState(0);
     const classes = useStyles();
 
     useEffect(() => {
@@ -40,6 +40,7 @@ const AdminMain = () => {
                 <Route path="/" component={AdminHome} />
                 <Route path="/admin/home" component={AdminHome} />
                 <Route path="/admin/alltickets" component={AllTickets} />
+                <Route path="/admin/feedback" component={Feedback} />
             </Switch>
         </div>
     );

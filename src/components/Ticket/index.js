@@ -37,6 +37,8 @@ const Ticket = ({
     setCurrStatus("CLAIMED");
     setMentorEmailOpen(true);
 
+    console.log(id);
+
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
@@ -63,6 +65,7 @@ const Ticket = ({
 
   // Dialogue Box Feedback Form
   const [openFeedback, setFeedbackOpen] = React.useState(false);
+  const [feedback, setFeedback] = useState("N/A");
 
   const handleClickOpen = () => {
     setFeedbackOpen(true);
@@ -72,8 +75,23 @@ const Ticket = ({
     setFeedbackOpen(false);
   };
 
+  const submitFeedback = async () => {
+    handleClose();
+    console.log(id, value, feedback);
+
+    await request({
+      path: `/feedback/`,
+      type: "POST",
+      body: {
+        id: id,
+        rating: value,
+        comments: feedback
+      },
+    });
+  };
+
   // Rating
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(0); // value of stars
   const [hover, setHover] = React.useState(-1);
 
   // closed ticket for a user with feedback option
@@ -156,15 +174,18 @@ const Ticket = ({
                   rows={4}
                   variant="outlined"
                   fullWidth
+                  onChange={(event) => {
+                    setFeedback(event.target.value);
+                  }}
                 />
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose} color="primary">
                   Cancel
-          </Button>
-                <Button onClick={handleClose} color="primary">
+                </Button>
+                <Button onClick={submitFeedback} color="primary">
                   Submit
-          </Button>
+                </Button>
               </DialogActions>
             </Dialog>
           </Grid>
