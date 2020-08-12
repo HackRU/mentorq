@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
-import { logoutUser } from "../../actions";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   CardContent,
   Card,
@@ -22,16 +21,41 @@ import Rating from '@material-ui/lab/Rating';
 
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status },
+  ticket: { id, title, comment, contact, location, status, feedback },
 }) => {
+  const [openMentorEmail, setMentorEmailOpen] = React.useState(false); // determines whether the mentor who claimed the ticket should be displayed
   const [currStatus, setCurrStatus] = useState(status);
+  const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
+  const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store => store.auth.director));
   const isMentor = useSelector((store => store.auth.mentor));
+  const [value, setValue] = useState(0); // value of star rating
+  const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
+  const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
+  const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
 
+  // update status of ticket
   useEffect(() => {
     setCurrStatus(status);
   }, [status]);
+
+  // check if ticket already has feedback allowing for edits to existing feedback
+  useEffect(() => {
+    const update = async () => {
+      setExistingFeedback(await request({ path: `/feedback/${id}` }));
+      setValue(existingFeedback.rating);
+      setWrittenFeedback(existingFeedback.comments);
+    };
+    if (feedbackURL != "" && openFeedback == false) {
+      const interval = setInterval(update, 3000);
+
+      update();
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [existingFeedback]);
 
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
@@ -61,38 +85,44 @@ const Ticket = ({
     });
   };
 
-  const [openMentorEmail, setMentorEmailOpen] = React.useState(false);
-
-  // Dialogue Box Feedback Form
-  const [openFeedback, setFeedbackOpen] = React.useState(false);
-  const [feedback, setFeedback] = useState("N/A");
-
+  // open dialogue box
   const handleClickOpen = () => {
     setFeedbackOpen(true);
   };
 
+  // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
   };
 
   const submitFeedback = async () => {
     handleClose();
-    console.log(id, value, feedback);
+    console.log(id, value, writtenFeedback);
 
-    await request({
-      path: `/feedback/`,
-      type: "POST",
-      body: {
-        id: id,
-        rating: value,
-        comments: feedback
-      },
-    });
+    if (feedbackURL == "") {
+      await request({
+        path: `/feedback/`,
+        type: "POST",
+        body: {
+          ticket: id,
+          rating: value,
+          comments: writtenFeedback
+        },
+      });
+    }
+    else {
+      await request({
+        path: `/feedback/${id}`,
+        type: "PATCH",
+        body: {
+          rating: value,
+          comments: writtenFeedback
+        },
+      });
+    }
+
+    setFeedbackURL("temp URL");
   };
-
-  // Rating
-  const [value, setValue] = React.useState(0); // value of stars
-  const [hover, setHover] = React.useState(-1);
 
   // closed ticket for a user with feedback option
   if (currStatus == "CLOSED" && !isDirector && !isMentor) {
@@ -139,12 +169,18 @@ const Ticket = ({
                 {email != "" ? email : "No mentor contact given"}
               </Typography>
             </Grid>
+            {feedbackURL == "" ?
+              <ButtonGroup color="secondary">
+                <Button variant="contained" onClick={handleClickOpen} >
+                  Feedback
+                </Button>
+              </ButtonGroup> :
+              <ButtonGroup color="secondary">
+                <Button variant="contained" onClick={handleClickOpen} >
+                  Edit Feedback
+                </Button>
+              </ButtonGroup>}
 
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen}>
-                Feedback
-            </Button>
-            </ButtonGroup>
             <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
               <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
               <DialogContent>
@@ -153,9 +189,10 @@ const Ticket = ({
                 </DialogContentText>
                 <Rating
                   name="hover-feedback"
-                  value={value}
+                  value={value || -1}
                   precision={0.5}
                   onChange={(event, newValue) => {
+                    console.log(openFeedback);
                     setValue(newValue);
                   }}
                   onChangeActive={(event, newHover) => {
@@ -174,8 +211,9 @@ const Ticket = ({
                   rows={4}
                   variant="outlined"
                   fullWidth
+                  defaultValue={writtenFeedback}
                   onChange={(event) => {
-                    setFeedback(event.target.value);
+                    setWrittenFeedback(event.target.value);
                   }}
                 />
               </DialogContent>
@@ -188,6 +226,7 @@ const Ticket = ({
                 </Button>
               </DialogActions>
             </Dialog>
+
           </Grid>
         </CardContent>
       </Card>

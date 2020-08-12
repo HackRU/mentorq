@@ -52,6 +52,7 @@ const NewTicket = ({ onAddTicket }) => {
         comment: ticket.comment,
         contact: ticket.contact,
         location: ticket.location,
+        feedback: ""
       });
     }
   };
