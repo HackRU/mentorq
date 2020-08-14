@@ -21,14 +21,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FeedbackCard = ({
-    feedback: { id, comments, rating },
+    feedback: { ticket, comments, rating },
 }) => {
-    const [ticket, setTicket] = useState([]);
+    const [origTicket, setOrigTicket] = useState([]);
     const classes = useStyles();
 
     useEffect(() => {
         const update = async () => {
-            setTicket(await request({ path: `/tickets/${id}` }));
+            setOrigTicket(await request({ path: `/tickets/${ticket}` }));
         };
         const interval = setInterval(update, 3000);
         update();
@@ -45,7 +45,7 @@ const FeedbackCard = ({
                 <Grid container spacing={1}>
                     <Grid item xs={9}>
                         <Typography variant="h5" gutterBottom >
-                            Feedback for {ticket.title}
+                            Feedback for {origTicket.title}
                         </Typography>
                     </Grid>
                     <Grid item xs={1} justify="space-between">
@@ -62,13 +62,13 @@ const FeedbackCard = ({
                     <Grid item xs={4}>
                         <Label>User</Label>
                         <Typography variant="body1" gutterBottom>
-                            {ticket.owner_email}
+                            {origTicket.owner_email}
                         </Typography>
                     </Grid>
                     <Grid item xs={4}>
                         <Label>Mentor</Label>
                         <Typography variant="body1" gutterBottom>
-                            {ticket.mentor}
+                            {origTicket.mentor}
                         </Typography>
                     </Grid>
                 </Grid>

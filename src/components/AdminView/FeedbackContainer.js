@@ -12,7 +12,7 @@ const FeedbackContainer = ({ feedbackList = [] }) => (
     <Container>
         {
             feedbackList.map((feedback) => (
-                <FeedbackCard key={feedback.id} feedback={feedback} />
+                <FeedbackCard key={feedback.ticket} feedback={feedback} />
             ))
         }
     </Container>
