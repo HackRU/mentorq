@@ -10,7 +10,7 @@ import "./App.css";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Ticket from "./pages/Ticket";
+import Ticket from "./pages/Tickets";
 import { AllTickets } from "./pages/Admin/Tickets";
 
 export default () => {
