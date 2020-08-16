@@ -8,6 +8,7 @@ import {
   Button,
   makeStyles,
 } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,15 +36,17 @@ export default () => {
           </Typography>
 
           <Typography className={classes.email}>{email}</Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              dispatch(logoutUser());
-            }}
-          >
-            Logout
+          <Link to="/login" style={{ textDecoration: 'none' }} >
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                dispatch(logoutUser());
+              }}
+            >
+              Logout
           </Button>
+          </Link>
         </Toolbar>
       </AppBar>
     </div>

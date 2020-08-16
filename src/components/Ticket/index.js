@@ -49,7 +49,6 @@ const Ticket = ({
     };
     if (feedbackURL != "" && openFeedback == false) {
       const interval = setInterval(update, 3000);
-
       update();
       return () => {
         clearInterval(interval);
@@ -60,9 +59,6 @@ const Ticket = ({
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
     setMentorEmailOpen(true);
-
-    console.log(id);
-
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
@@ -75,7 +71,6 @@ const Ticket = ({
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
     setMentorEmailOpen(false);
-
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
@@ -124,171 +119,109 @@ const Ticket = ({
     setFeedbackURL("temp URL");
   };
 
-  // closed ticket for a user with feedback option
-  if (currStatus == "CLOSED" && !isDirector && !isMentor) {
-    return (
-      // displaying the ticket with feedback option if closed
-      <Card>
-        <CardContent>
-          <Grid item>
-            <Link to={`/ticket/${id}`}>
-              <Typography variant="h5" gutterBottom>
-                {title}
-              </Typography>
-            </Link>
-
-            <Grid container spacing={1}>
-              <Grid item xs={3}>
-                <Label>Contact</Label>
-                <Typography variant="body1" gutterBottom>
-                  {contact}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Label>Location</Label>
-                <Typography variant="body1" gutterBottom>
-                  {location}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Label>Status</Label>
-                <Typography variant="body1" gutterBottom>
-                  {currStatus}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Label>Comment</Label>
-                <Typography variant="body1" gutterBottom>
-                  {comment}
-                </Typography>
-              </Grid>
+  return (
+    <Card>
+      <CardContent>
+        <Grid item>
+          <Link to={`/ticket/${id}`}>
+            <Typography variant="h5" gutterBottom>{title}</Typography>
+          </Link>
+          <Grid container spacing={1}>
+            <Grid item xs={3}>
+              <Label>Contact</Label>
+              <Typography variant="body1" gutterBottom>{contact}</Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Label>Location</Label>
+              <Typography variant="body1" gutterBottom>{location}</Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Label>Status</Label>
+              <Typography variant="body1" gutterBottom>{currStatus}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Label> Mentor </Label>
-              <Typography variant="body1" gutterBottom>
-                {email != "" ? email : "No mentor contact given"}
-              </Typography>
+              <Label>Comment</Label>
+              <Typography variant="body1" gutterBottom>{comment}</Typography>
             </Grid>
-            {feedbackURL == "" ?
-              <ButtonGroup color="secondary">
-                <Button variant="contained" onClick={handleClickOpen} >
-                  Feedback
-                </Button>
-              </ButtonGroup> :
-              <ButtonGroup color="secondary">
-                <Button variant="contained" onClick={handleClickOpen} >
-                  Edit Feedback
-                </Button>
-              </ButtonGroup>}
-
-            <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
-              <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Please rate the help you received from your mentor.
-                </DialogContentText>
-                <Rating
-                  name="hover-feedback"
-                  value={value || -1}
-                  precision={0.5}
-                  onChange={(event, newValue) => {
-                    console.log(openFeedback);
-                    setValue(newValue);
-                  }}
-                  onChangeActive={(event, newHover) => {
-                    setHover(newHover);
-                  }}
-                /><br /><br /><br />
-                <DialogContentText>
-                  How was your Mentorq experience?
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Feedback"
-                  multiline
-                  rows={4}
-                  variant="outlined"
-                  fullWidth
-                  defaultValue={writtenFeedback}
-                  onChange={(event) => {
-                    setWrittenFeedback(event.target.value);
-                  }}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={submitFeedback} color="primary">
-                  Submit
-                </Button>
-              </DialogActions>
-            </Dialog>
-
           </Grid>
-        </CardContent>
-      </Card>
-    );
-  }
-  else {
-    return (
-      // displaying the ticket to the mentor 
-      <Card>
-        <CardContent>
-          <Grid item>
-            <Link to={`/ticket/${id}`}>
-              <Typography variant="h5" gutterBottom>
-                {title}
-              </Typography>
-            </Link>
+          <Grid item xs={12} open={openMentorEmail}>
+            <Label> {currStatus === "CLAIMED" || currStatus === "CLOSED" ? "Mentor" : ""} </Label>
+            <Typography variant="body1" gutterBottom>{currStatus === "CLAIMED" || currStatus === "CLOSED" && email}</Typography>
+          </Grid>
 
-            <Grid container spacing={1}>
-              <Grid item xs={3}>
-                <Label>Contact</Label>
-                <Typography variant="body1" gutterBottom>
-                  {contact}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Label>Location</Label>
-                <Typography variant="body1" gutterBottom>
-                  {location}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Label>Status</Label>
-                <Typography variant="body1" gutterBottom>
-                  {currStatus}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Label>Comment</Label>
-                <Typography variant="body1" gutterBottom>
-                  {comment}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} open={openMentorEmail}>
-              <Label> {currStatus === "CLAIMED" ? "Mentor" : ""} </Label>
-              <Typography variant="body1" gutterBottom>
-                {currStatus === "CLAIMED" && email}
-              </Typography>
-            </Grid>
+          {currStatus == "CLOSED" && feedbackURL == "" && !isDirector && !isMentor ?
+            <ButtonGroup color="secondary">
+              <Button variant="contained" onClick={handleClickOpen} >
+                Feedback
+                </Button>
+            </ButtonGroup> :
+            ""}
+          {currStatus == "CLOSED" && feedbackURL != "" && !isDirector && !isMentor ?
+            <ButtonGroup color="secondary">
+              <Button variant="contained" onClick={handleClickOpen} >
+                Edit Feedback
+              </Button>
+            </ButtonGroup> :
+            ""}
+          {currStatus == "CLAIMED" || currStatus == "OPEN" ?
             <ButtonGroup color="secondary">
               <Button variant="contained" onClick={claimTicket}>
                 Claim
-            </Button>
+                </Button>
               <Button variant="contained" onClick={closeTicket}>
                 Close
-            </Button>
-            </ButtonGroup>
-          </Grid>
-        </CardContent>
-      </Card>
-    );
-  }
+                </Button>
+            </ButtonGroup> : ""}
+
+          <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Please rate the help you received from your mentor.
+                </DialogContentText>
+              <Rating
+                name="hover-feedback"
+                value={value || -1}
+                precision={0.5}
+                onChange={(event, newValue) => {
+                  console.log(openFeedback);
+                  setValue(newValue);
+                }}
+                onChangeActive={(event, newHover) => {
+                  setHover(newHover);
+                }}
+              /><br /><br /><br />
+              <DialogContentText>
+                How was your Mentorq experience?
+                </DialogContentText>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Feedback"
+                multiline
+                rows={4}
+                variant="outlined"
+                fullWidth
+                defaultValue={writtenFeedback}
+                onChange={(event) => {
+                  setWrittenFeedback(event.target.value);
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancel
+                </Button>
+              <Button onClick={submitFeedback} color="primary">
+                Submit
+                </Button>
+            </DialogActions>
+          </Dialog>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
 };
 
 export { Ticket };

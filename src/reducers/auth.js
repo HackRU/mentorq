@@ -53,7 +53,7 @@ const auth = (state = defaultState, action) => {
         mentor,
       };
     case FAILED_LOGIN:
-      return { ...state, hasErrors: true };
+      return { ...state, loadingLogin: false, hasErrors: true };
     default:
       return state;
   }
