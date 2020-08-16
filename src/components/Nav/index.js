@@ -19,7 +19,12 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    fontColor: "white",
   },
+  link: {
+    textDecoration: "none",
+    color: "white",
+  }
 }));
 
 export default () => {
@@ -32,7 +37,9 @@ export default () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            MentorQ
+            <Link to="/" className={classes.link}>
+              MentorQ
+            </Link>
           </Typography>
 
           <Typography className={classes.email}>{email}</Typography>
