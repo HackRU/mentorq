@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { request } from "../.././util";
 import { logoutUser } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
-
+import { recievedLoginUser } from "../../actions";
 
 
 import {
@@ -21,19 +21,33 @@ const Ticket = ({
   ticket: { id, title, comment, contact, location, status},
 }) => {
   const [currStatus, setCurrStatus] = useState(status);
+  // state to display email when ticket is claimed 
+  const [mentorEmail,setMentorEmail] = useState("");
+  // Email is just taking current users email 
   const email = useSelector((store) => store.auth.email);
-
+  
+  //Variables from redux to check whether user is a mentor/director
+  const director = useSelector((store) =>  store.auth.director );
+  // this takes current logged in users email 
+  const mentor = useSelector((store) => store.auth.mentor );
+  
+  //Checking if it gets set to mentor/director 
+  console.log("this is a mentor:" ,mentor);
+  // Set to empty if its not true 
+  console.log("This is a director:",director);
 
   useEffect(() => {
     setCurrStatus(status);
+    
   }, [status]);
 
   
 
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
+    setMentorEmail(email);
    
-
+  
 
 
     await request({
@@ -57,6 +71,13 @@ const Ticket = ({
       },
     });
   };
+  
+
+ 
+  //if(currStatus === null & director === "true" & mentor === "true"){
+    //display claim button 
+  //}
+ 
 
   return (
     // displaying the ticket to the mentor 
@@ -74,6 +95,7 @@ const Ticket = ({
               <Label>Comment</Label>
               <Typography variant="body1" gutterBottom>
                 {comment}
+                
                 
               </Typography>
             </Grid>
@@ -100,19 +122,30 @@ const Ticket = ({
                 
               </Typography>
             </Grid>
-            
-           
-
           </Grid>
 
-          <ButtonGroup color="secondary">
+                
+            
+            
+            {/* Ternary Conditional Here to Check if mentor or director is true if
+            if true then display buttons if not display null */}   
+            { mentor || director ? 
+            <div>
+            <ButtonGroup color="secondary">
             <Button variant="contained" onClick={claimTicket}>
-              Claim
+                Claim
             </Button>
+            { currStatus == "OPEN" ?
+            null  : 
             <Button variant="contained" onClick={closeTicket}>
-              Close
-            </Button>
-          </ButtonGroup>
+            Close
+           </Button>  } 
+              
+             </ButtonGroup>
+             </div> : null }
+            
+            
+          
         </Grid>
       </CardContent>
     </Card>

@@ -1,5 +1,5 @@
 // URL
-export const URL = "http://127.0.0.1:8000";
+export const URL = "https://mentorq-backend-dev.herokuapp.com";
 
 // Types
 export const LOGOUT = Symbol("logout");
