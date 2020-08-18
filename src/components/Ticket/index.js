@@ -18,48 +18,48 @@ import {
 
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status},
+  ticket: { id, title, comment, contact, location, status,mentor_email},
 }) => {
   const [currStatus, setCurrStatus] = useState(status);
-  // state to display email when ticket is claimed 
-  const [mentorEmail,setMentorEmail] = useState("");
-  // Email is just taking current users email 
+  
+  const [mentorEmail,setMentorEmail] = useState(mentor_email);
+
   const email = useSelector((store) => store.auth.email);
   
-  //Variables from redux to check whether user is a mentor/director
   const director = useSelector((store) =>  store.auth.director );
-  // this takes current logged in users email 
+  
   const mentor = useSelector((store) => store.auth.mentor );
   
-  //Checking if it gets set to mentor/director 
-  console.log("this is a mentor:" ,mentor);
-  // Set to empty if its not true 
-  console.log("This is a director:",director);
+  console.log(director);
+
 
   useEffect(() => {
     setCurrStatus(status);
+    setMentorEmail(mentor_email);
     
-  }, [status]);
+  }, [status,mentor_email]);
 
   
 
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
     setMentorEmail(email);
+    
    
   
 
-
+    
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
         status: "CLAIMED",
+        mentor_email: email 
 
       },
     });
   };
-
+  
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
 
@@ -72,12 +72,67 @@ const Ticket = ({
     });
   };
   
+  const reOpen = async () => {
+    setCurrStatus("OPEN");
+    
+    await request({
+      path: `/tickets/${id}/`,
+      type: "PATCH",
+      body: {
+        status: "OPEN",
+        mentor_email: "",
+        mentor: "",
 
+
+      },
+    });
+  };
  
-  //if(currStatus === null & director === "true" & mentor === "true"){
-    //display claim button 
-  //}
- 
+  
+  let button;
+  //IF Else for Buttons 
+    if (mentor || director === true){
+      console.log("SHOW BUTTONS");
+      if (currStatus === "OPEN" ){
+        button =  
+        <div>   
+          <ButtonGroup color="secondary">
+            <Button variant="contained" onClick={claimTicket}>
+              Claim
+            </Button>
+          </ButtonGroup>
+        </div>;
+      }
+      else if (currStatus === "CLAIMED") {
+        button = 
+        <div>   
+          <ButtonGroup color="secondary">
+            <Button variant="contained" onClick={reOpen}>
+              Reopen
+            </Button>
+                
+            <Button variant="contained" onClick={closeTicket}>
+            Close
+            </Button>
+          </ButtonGroup>
+        </div>;
+      } 
+      else if (currStatus === "CLOSED" && director == true){
+        button = 
+        <div>   
+        <ButtonGroup color="secondary">
+          <Button variant="contained" onClick={reOpen}>
+            Reopen
+          </Button>
+        </ButtonGroup>
+      </div>;
+      }
+    }
+    else {
+      button = null;
+      console.log("NULL");
+    }  
+
 
   return (
     // displaying the ticket to the mentor 
@@ -106,7 +161,7 @@ const Ticket = ({
               </Typography>
               <Label> Mentor </Label>
               <Typography variant="body1" gutterBottom>
-              {currStatus ==="CLAIMED" && email}
+              {currStatus ==="CLAIMED" && mentorEmail}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -129,8 +184,13 @@ const Ticket = ({
             
             {/* Ternary Conditional Here to Check if mentor or director is true if
             if true then display buttons if not display null */}   
-            { mentor || director ? 
+            
+           
+            { button }
+            { /* mentor || director ? 
+
             <div>
+              
             <ButtonGroup color="secondary">
             <Button variant="contained" onClick={claimTicket}>
                 Claim
@@ -139,11 +199,23 @@ const Ticket = ({
             null  : 
             <Button variant="contained" onClick={closeTicket}>
             Close
-           </Button>  } 
-              
+           </Button> 
+            } 
              </ButtonGroup>
-             </div> : null }
-            
+             </div> :
+              null
+          */ }
+
+          
+          
+          
+
+      
+
+
+          
+
+           
             
           
         </Grid>
