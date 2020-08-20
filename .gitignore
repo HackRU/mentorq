@@ -7,4 +7,5 @@ private/config.json
 *yarn.lock
 *__pycache__*
 node_modules/
+package-lock.json
 .DS_Store
