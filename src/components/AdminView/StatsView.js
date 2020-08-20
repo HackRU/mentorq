@@ -120,7 +120,7 @@ const Stats = () => {
                     </div>
                     <div>
                         <Label className={classes.stat}>
-                            <Text>Number of Unique Users </Text>
+                            <Text>Number of Hackers </Text>
                             <Typography variant="h4" className={classes.stat}>
                                 0
                             </Typography>
