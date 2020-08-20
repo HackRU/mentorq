@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
-import { logoutUser } from "../../actions";
-import { useDispatch, useSelector } from "react-redux";
-import { recievedLoginUser } from "../../actions";
+import { useSelector } from "react-redux";
+import { TicketButton } from './TicketButton';
 import {
   CardContent,
   Card,
@@ -51,7 +50,7 @@ const Ticket = ({
       setValue(existingFeedback.rating);
       setWrittenFeedback(existingFeedback.comments);
     };
-    if (feedbackURL != "" && openFeedback == false) {
+    if (feedbackURL !== "" && openFeedback === false) {
       const interval = setInterval(update, 3000);
       update();
       return () => {
@@ -84,7 +83,7 @@ const Ticket = ({
     });
   };
 
-  const reOpen = async () => {
+  const reopenTicket = async () => {
     setCurrStatus("OPEN");
 
     await request({
@@ -94,55 +93,43 @@ const Ticket = ({
         status: "OPEN",
         mentor_email: "",
         mentor: "",
-
-
       },
     });
   };
 
+  const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
+  const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
+  const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
 
   let button;
   //IF Else for Buttons
-    if (isMentor || isDirector === true){
-      //console.log("SHOW BUTTONS");
+    if (isMentor || isDirector){
       if (currStatus === "OPEN" ){
         button =
         <div>
-          <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={claimTicket}>
-              Claim
-            </Button>
-          </ButtonGroup>
+            { claimButton }
         </div>;
       }
       else if (currStatus === "CLAIMED") {
         button =
         <div>
-          <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={reOpen}>
-              Reopen
-            </Button>
-
-            <Button variant="contained" onClick={closeTicket}>
-            Close
-            </Button>
+          <ButtonGroup>
+            { reopenButton }
+            { closeButton }
           </ButtonGroup>
         </div>;
       }
-      else if (currStatus === "CLOSED" && isDirector === true){
+      else if (currStatus === "CLOSED" && isDirector){
         button =
         <div>
         <ButtonGroup color="secondary">
-          <Button variant="contained" onClick={reOpen}>
-            Reopen
-          </Button>
+          { reopenButton }
         </ButtonGroup>
       </div>;
       }
     }
     else {
       button = null;
-      //console.log("NULL");
     }
 
 
@@ -160,7 +147,7 @@ const Ticket = ({
     handleClose();
     console.log(id, value, writtenFeedback);
 
-    if (feedbackURL == "") {
+    if (feedbackURL === "") {
       await request({
         path: `/feedback/`,
         type: "POST",
@@ -264,14 +251,14 @@ const Ticket = ({
               <Typography variant="body1" gutterBottom>{comment}</Typography>
             </Grid>
           </Grid>
-          {currStatus == "CLOSED" && feedbackURL == "" && !isDirector && !isMentor ?
+          {currStatus === "CLOSED" && feedbackURL === "" && !isDirector && !isMentor ?
             <ButtonGroup color="secondary">
               <Button variant="contained" onClick={handleClickOpen} >
                 Feedback
                 </Button>
             </ButtonGroup> :
             ""}
-          {currStatus == "CLOSED" && feedbackURL != "" && !isDirector && !isMentor ?
+          {currStatus === "CLOSED" && feedbackURL !== "" && !isDirector && !isMentor ?
             <ButtonGroup color="secondary">
               <Button variant="contained" onClick={handleClickOpen} >
                 Edit Feedback
