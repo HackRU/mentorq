@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { request } from "../.././util";
 import { useSelector } from "react-redux";
 import { TicketButton } from './TicketButton';
+import { DialogBox } from './Dialog';
 import {
   CardContent,
   Card,
@@ -59,79 +60,36 @@ const Ticket = ({
     }
   }, [existingFeedback]);
 
-  const claimTicket = async () => {
-    setCurrStatus("CLAIMED");
-    setMentorEmail(email);
+  const getResponse = async (type, m_email) => {
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
-        status: "CLAIMED",
-        mentor_email: email
+        status: type,
+        mentor_email: m_email
       },
     });
+  }
+
+  const claimTicket = async () => {
+    setCurrStatus("CLAIMED");
+    setMentorEmail(email);
+    getResponse("CLAIMED", email)
   };
 
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "CLOSED",
-      },
-    });
+    getResponse("CLOSED", email)
   };
 
   const reopenTicket = async () => {
     setCurrStatus("OPEN");
-
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "OPEN",
-        mentor_email: "",
-        mentor: "",
-      },
-    });
+    getResponse("OPEN", "")
   };
 
-  const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
-  const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
-  const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
-
-  let button;
-  //IF Else for Buttons
-    if (isMentor || isDirector){
-      if (currStatus === "OPEN" ){
-        button =
-        <div>
-            { claimButton }
-        </div>;
-      }
-      else if (currStatus === "CLAIMED") {
-        button =
-        <div>
-          <ButtonGroup>
-            { reopenButton }
-            { closeButton }
-          </ButtonGroup>
-        </div>;
-      }
-      else if (currStatus === "CLOSED" && isDirector){
-        button =
-        <div>
-        <ButtonGroup color="secondary">
-          { reopenButton }
-        </ButtonGroup>
-      </div>;
-      }
-    }
-    else {
-      button = null;
-    }
-
+  const checkFeedback = () => {
+    return feedbackURL === "" ? "feedback" : "edit feedback"
+  }
 
   // open dialogue box
   const handleClickOpen = () => {
@@ -171,6 +129,42 @@ const Ticket = ({
 
     setFeedbackURL("temp URL");
   };
+
+  const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
+  const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
+  const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
+  const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
+
+  let button;
+  //IF Else for Buttons
+    if (isMentor || isDirector){
+      if (currStatus === "OPEN" ){
+        button =
+        <div>
+            { claimButton }
+        </div>;
+      }
+      else if (currStatus === "CLAIMED") {
+        button =
+        <div>
+          <ButtonGroup>
+            { reopenButton }
+            { closeButton }
+          </ButtonGroup>
+        </div>;
+      }
+      else if (currStatus === "CLOSED" && isDirector){
+        button =
+        <div>
+        <ButtonGroup color="secondary">
+          { reopenButton }
+        </ButtonGroup>
+      </div>;
+      }
+    }
+    else {
+      button = null;
+    }
 
   let dialog;
   dialog = <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -251,20 +245,7 @@ const Ticket = ({
               <Typography variant="body1" gutterBottom>{comment}</Typography>
             </Grid>
           </Grid>
-          {currStatus === "CLOSED" && feedbackURL === "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
-                Feedback
-                </Button>
-            </ButtonGroup> :
-            ""}
-          {currStatus === "CLOSED" && feedbackURL !== "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
-                Edit Feedback
-              </Button>
-            </ButtonGroup> :
-            ""}
+          { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
           { button }
           { dialog }
         </Grid>
