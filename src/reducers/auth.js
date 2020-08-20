@@ -13,7 +13,7 @@ const defaultState = {
   refreshToken: "",
   accessToken: "",
   lcsToken: "",
-  validUntil: "",
+  // validUntil: "",
   director: false,
   mentor: false,
   loadingLogin: false
@@ -26,7 +26,7 @@ const auth = (state = defaultState, action) => {
     lcsToken,
     accessToken,
     refreshToken,
-    validUntil,
+    // validUntil,
     director,
     mentor,
   } = action;
@@ -48,12 +48,12 @@ const auth = (state = defaultState, action) => {
         refreshToken,
         accessToken,
         email,
-        validUntil,
+        // validUntil,
         director,
         mentor,
       };
     case FAILED_LOGIN:
-      return { ...state, hasErrors: true };
+      return { ...state, loadingLogin: false, hasErrors: true };
     default:
       return state;
   }

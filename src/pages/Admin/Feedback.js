@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { TicketContainer } from "../../components/TicketContainer";
 import DashboardContainer from "../../components/DashboardContainer";
+import { FeedbackContainer } from "../../components/AdminView/FeedbackContainer";
 import { request } from "../../util";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import MenuListComposition from '../../components/AdminView/Menu';
 import { useSelector } from "react-redux";
-import { AdminMain } from "./AdminMain";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -14,28 +13,26 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const AllTickets = () => {
-    const [tickets, setTickets] = useState([]);
+export default function Feedback() {
+    const [feedbackList, setFeedbackList] = useState([]);
     const classes = useStyles();
     const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
 
     useEffect(() => {
-        if (isLoggedIn) {
-            const update = async () => {
-                setTickets(await request({ path: "/tickets/" }));
-            };
+        const update = async () => {
+            setFeedbackList(await request({ path: "/feedback/" }));
+        };
 
-            const interval = setInterval(update, 3000);
-            update();
-            return () => {
-                clearInterval(interval);
-            };
-        }
+        const interval = setInterval(update, 3000);
+        update();
+        return () => {
+            clearInterval(interval);
+        };
+
     }, []);
 
-    // console.log("tickets")
-
     return (
+
         < DashboardContainer >
             <div className={classes.root}>
                 <Grid container spacing={2}>
@@ -43,12 +40,11 @@ const AllTickets = () => {
                         <MenuListComposition />
                     </Grid>
                     <Grid item xs={8}>
-                        {isLoggedIn ? <TicketContainer tickets={tickets} /> : ""}
+                        {isLoggedIn ? <FeedbackContainer feedbackList={feedbackList} /> : ""}
                     </Grid>
                 </Grid>
             </div>
         </DashboardContainer >
     );
-};
+}
 
-export { AllTickets };
