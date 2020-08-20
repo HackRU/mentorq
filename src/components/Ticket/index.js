@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
-import { logoutUser } from "../../actions";
-import { useDispatch, useSelector } from "react-redux";
-import { recievedLoginUser } from "../../actions";
+import { useSelector } from "react-redux";
+import { TicketButton } from './TicketButton';
+import { DialogBox } from './Dialog';
 import {
   CardContent,
   Card,
@@ -51,7 +51,7 @@ const Ticket = ({
       setValue(existingFeedback.rating);
       setWrittenFeedback(existingFeedback.comments);
     };
-    if (feedbackURL != "" && openFeedback == false) {
+    if (feedbackURL !== "" && openFeedback === false) {
       const interval = setInterval(update, 3000);
       update();
       return () => {
@@ -60,91 +60,36 @@ const Ticket = ({
     }
   }, [existingFeedback]);
 
-  const claimTicket = async () => {
-    setCurrStatus("CLAIMED");
-    setMentorEmail(email);
+  const getResponse = async (type, m_email) => {
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
-        status: "CLAIMED",
-        mentor_email: email
+        status: type,
+        mentor_email: m_email
       },
     });
+  }
+
+  const claimTicket = async () => {
+    setCurrStatus("CLAIMED");
+    setMentorEmail(email);
+    getResponse("CLAIMED", email)
   };
 
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "CLOSED",
-      },
-    });
+    getResponse("CLOSED", email)
   };
 
-  const reOpen = async () => {
+  const reopenTicket = async () => {
     setCurrStatus("OPEN");
-
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "OPEN",
-        mentor_email: "",
-        mentor: "",
-
-
-      },
-    });
+    getResponse("OPEN", "")
   };
 
-
-  let button;
-  //IF Else for Buttons
-    if (isMentor || isDirector === true){
-      //console.log("SHOW BUTTONS");
-      if (currStatus === "OPEN" ){
-        button =
-        <div>
-          <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={claimTicket}>
-              Claim
-            </Button>
-          </ButtonGroup>
-        </div>;
-      }
-      else if (currStatus === "CLAIMED") {
-        button =
-        <div>
-          <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={reOpen}>
-              Reopen
-            </Button>
-
-            <Button variant="contained" onClick={closeTicket}>
-            Close
-            </Button>
-          </ButtonGroup>
-        </div>;
-      }
-      else if (currStatus === "CLOSED" && isDirector === true){
-        button =
-        <div>
-        <ButtonGroup color="secondary">
-          <Button variant="contained" onClick={reOpen}>
-            Reopen
-          </Button>
-        </ButtonGroup>
-      </div>;
-      }
-    }
-    else {
-      button = null;
-      //console.log("NULL");
-    }
-
+  const checkFeedback = () => {
+    return feedbackURL === "" ? "feedback" : "edit feedback"
+  }
 
   // open dialogue box
   const handleClickOpen = () => {
@@ -160,7 +105,7 @@ const Ticket = ({
     handleClose();
     console.log(id, value, writtenFeedback);
 
-    if (feedbackURL == "") {
+    if (feedbackURL === "") {
       await request({
         path: `/feedback/`,
         type: "POST",
@@ -184,6 +129,42 @@ const Ticket = ({
 
     setFeedbackURL("temp URL");
   };
+
+  const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
+  const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
+  const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
+  const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
+
+  let button;
+  //IF Else for Buttons
+    if (isMentor || isDirector){
+      if (currStatus === "OPEN" ){
+        button =
+        <div>
+            { claimButton }
+        </div>;
+      }
+      else if (currStatus === "CLAIMED") {
+        button =
+        <div>
+          <ButtonGroup>
+            { reopenButton }
+            { closeButton }
+          </ButtonGroup>
+        </div>;
+      }
+      else if (currStatus === "CLOSED" && isDirector){
+        button =
+        <div>
+        <ButtonGroup color="secondary">
+          { reopenButton }
+        </ButtonGroup>
+      </div>;
+      }
+    }
+    else {
+      button = null;
+    }
 
   let dialog;
   dialog = <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -264,20 +245,7 @@ const Ticket = ({
               <Typography variant="body1" gutterBottom>{comment}</Typography>
             </Grid>
           </Grid>
-          {currStatus == "CLOSED" && feedbackURL == "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
-                Feedback
-                </Button>
-            </ButtonGroup> :
-            ""}
-          {currStatus == "CLOSED" && feedbackURL != "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
-                Edit Feedback
-              </Button>
-            </ButtonGroup> :
-            ""}
+          { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
           { button }
           { dialog }
         </Grid>
