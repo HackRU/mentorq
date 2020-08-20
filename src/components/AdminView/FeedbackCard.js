@@ -68,7 +68,7 @@ const FeedbackCard = ({
                     <Grid item xs={4}>
                         <Label>Mentor</Label>
                         <Typography variant="body1" gutterBottom>
-                            {origTicket.mentor}
+                            {origTicket.mentor_email}
                         </Typography>
                     </Grid>
                 </Grid>
