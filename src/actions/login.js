@@ -35,10 +35,12 @@ const loginUser = ({ email, password }) => {
         body: JSON.stringify({ email, password }),
       });
       const lcsJson = await lcsRequest.json();
+      
       if (lcsJson.statusCode != 200) {
         dispatch(failedLoginUser());
         return;
       }
+      
       const lcsToken = lcsJson.body.token;
       // const lcsValidUntil = lcsJson.body.auth.validUntil;
 
