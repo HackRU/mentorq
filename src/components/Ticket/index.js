@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
-import { useSelector } from "react-redux";
+import { logoutUser } from "../../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { recievedLoginUser } from "../../actions";
 import {
   CardContent,
   Card,
@@ -21,9 +23,9 @@ import Rating from '@material-ui/lab/Rating';
 
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status, feedback },
+  ticket: { id, title, comment, contact, location, status, feedback, mentor_email},
 }) => {
-  const [openMentorEmail, setMentorEmailOpen] = React.useState(false); // determines whether the mentor who claimed the ticket should be displayed
+  const [mentorEmail,setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
   const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
@@ -38,7 +40,9 @@ const Ticket = ({
   // update status of ticket
   useEffect(() => {
     setCurrStatus(status);
-  }, [status]);
+    setMentorEmail(mentor_email);
+
+  }, [status,mentor_email]);
 
   // check if ticket already has feedback allowing for edits to existing feedback
   useEffect(() => {
@@ -58,19 +62,19 @@ const Ticket = ({
 
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
-    setMentorEmailOpen(true);
+    setMentorEmail(email);
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
         status: "CLAIMED",
+        mentor_email: email
       },
     });
   };
 
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
-    setMentorEmailOpen(false);
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
@@ -79,6 +83,68 @@ const Ticket = ({
       },
     });
   };
+
+  const reOpen = async () => {
+    setCurrStatus("OPEN");
+
+    await request({
+      path: `/tickets/${id}/`,
+      type: "PATCH",
+      body: {
+        status: "OPEN",
+        mentor_email: "",
+        mentor: "",
+
+
+      },
+    });
+  };
+
+
+  let button;
+  //IF Else for Buttons
+    if (isMentor || isDirector === true){
+      //console.log("SHOW BUTTONS");
+      if (currStatus === "OPEN" ){
+        button =
+        <div>
+          <ButtonGroup color="secondary">
+            <Button variant="contained" onClick={claimTicket}>
+              Claim
+            </Button>
+          </ButtonGroup>
+        </div>;
+      }
+      else if (currStatus === "CLAIMED") {
+        button =
+        <div>
+          <ButtonGroup color="secondary">
+            <Button variant="contained" onClick={reOpen}>
+              Reopen
+            </Button>
+
+            <Button variant="contained" onClick={closeTicket}>
+            Close
+            </Button>
+          </ButtonGroup>
+        </div>;
+      }
+      else if (currStatus === "CLOSED" && isDirector === true){
+        button =
+        <div>
+        <ButtonGroup color="secondary">
+          <Button variant="contained" onClick={reOpen}>
+            Reopen
+          </Button>
+        </ButtonGroup>
+      </div>;
+      }
+    }
+    else {
+      button = null;
+      //console.log("NULL");
+    }
+
 
   // open dialogue box
   const handleClickOpen = () => {
@@ -173,10 +239,17 @@ const Ticket = ({
           <Link to={`/ticket/${id}`}>
             <Typography variant="h5" gutterBottom>{title}</Typography>
           </Link>
+
           <Grid container spacing={1}>
             <Grid item xs={3}>
               <Label>Contact</Label>
-              <Typography variant="body1" gutterBottom>{contact}</Typography>
+              <Typography variant="body1" gutterBottom>
+              {contact}
+              </Typography>
+              <Label> Mentor </Label>
+              <Typography variant="body1" gutterBottom>
+              {currStatus ==="CLAIMED" && mentorEmail}
+              </Typography>
             </Grid>
             <Grid item xs={3}>
               <Label>Location</Label>
@@ -191,11 +264,6 @@ const Ticket = ({
               <Typography variant="body1" gutterBottom>{comment}</Typography>
             </Grid>
           </Grid>
-          <Grid item xs={12} open={openMentorEmail}>
-            <Label> {currStatus === "CLAIMED" || currStatus === "CLOSED" ? "Mentor" : ""} </Label>
-            <Typography variant="body1" gutterBottom>{currStatus === "CLAIMED" || currStatus === "CLOSED" && email}</Typography>
-          </Grid>
-
           {currStatus == "CLOSED" && feedbackURL == "" && !isDirector && !isMentor ?
             <ButtonGroup color="secondary">
               <Button variant="contained" onClick={handleClickOpen} >
@@ -210,16 +278,8 @@ const Ticket = ({
               </Button>
             </ButtonGroup> :
             ""}
-          {currStatus == "CLAIMED" || currStatus == "OPEN" ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={claimTicket}>
-                Claim
-                </Button>
-              <Button variant="contained" onClick={closeTicket}>
-                Close
-                </Button>
-            </ButtonGroup> : ""}
-          {dialog}
+          { button }
+          { dialog }
         </Grid>
       </CardContent>
     </Card>
