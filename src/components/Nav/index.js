@@ -8,6 +8,7 @@ import {
   Button,
   makeStyles,
 } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +19,12 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    fontColor: "white",
   },
+  link: {
+    textDecoration: "none",
+    color: "white",
+  }
 }));
 
 export default () => {
@@ -31,19 +37,23 @@ export default () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            MentorQ
+            <Link to="/" className={classes.link}>
+              MentorQ
+            </Link>
           </Typography>
 
           <Typography className={classes.email}>{email}</Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              dispatch(logoutUser());
-            }}
-          >
-            Logout
+          <Link to="/login" style={{ textDecoration: 'none' }} >
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                dispatch(logoutUser());
+              }}
+            >
+              Logout
           </Button>
+          </Link>
         </Toolbar>
       </AppBar>
     </div>

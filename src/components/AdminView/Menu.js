@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
-
 import HomeIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/People';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -51,7 +50,9 @@ export default function MenuListComposition() {
                             <ConfirmationNumberIcon className={classes.icon} color="action" />Tickets
                         </MenuItem>
                     </Link>
-                    <MenuItem className={classes.item}><FeedbackIcon className={classes.icon} color="action" />Feedback</MenuItem>
+                    <Link to="/admin/feedback" style={{ textDecoration: 'none' }}>
+                        <MenuItem className={classes.item}><FeedbackIcon className={classes.icon} color="action" />Feedback</MenuItem>
+                    </Link>
                 </MenuList>
             </Paper>
         </div>
