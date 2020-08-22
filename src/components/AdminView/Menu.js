@@ -35,7 +35,7 @@ export default function MenuListComposition() {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} style={{ position: 'relative', zIndex: '1' }}>
             <Paper className={classes.paper}>
                 <MenuList className={classes.list} >
                     <Link to="/" style={{ textDecoration: 'none' }}>

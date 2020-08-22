@@ -23,9 +23,9 @@ import Rating from '@material-ui/lab/Rating';
 
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status, feedback, mentor_email},
+  ticket: { id, title, comment, contact, location, status, feedback, mentor_email },
 }) => {
-  const [mentorEmail,setMentorEmail] = useState(mentor_email);
+  const [mentorEmail, setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
   const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
@@ -42,7 +42,7 @@ const Ticket = ({
     setCurrStatus(status);
     setMentorEmail(mentor_email);
 
-  }, [status,mentor_email]);
+  }, [status, mentor_email]);
 
   // check if ticket already has feedback allowing for edits to existing feedback
   useEffect(() => {
@@ -103,10 +103,10 @@ const Ticket = ({
 
   let button;
   //IF Else for Buttons
-    if (isMentor || isDirector === true){
-      //console.log("SHOW BUTTONS");
-      if (currStatus === "OPEN" ){
-        button =
+  if (isMentor || isDirector === true) {
+    //console.log("SHOW BUTTONS");
+    if (currStatus === "OPEN") {
+      button =
         <div>
           <ButtonGroup color="secondary">
             <Button variant="contained" onClick={claimTicket}>
@@ -114,9 +114,9 @@ const Ticket = ({
             </Button>
           </ButtonGroup>
         </div>;
-      }
-      else if (currStatus === "CLAIMED") {
-        button =
+    }
+    else if (currStatus === "CLAIMED") {
+      button =
         <div>
           <ButtonGroup color="secondary">
             <Button variant="contained" onClick={reOpen}>
@@ -124,26 +124,26 @@ const Ticket = ({
             </Button>
 
             <Button variant="contained" onClick={closeTicket}>
-            Close
+              Close
             </Button>
           </ButtonGroup>
         </div>;
-      }
-      else if (currStatus === "CLOSED" && isDirector === true){
-        button =
+    }
+    else if (currStatus === "CLOSED" && isDirector === true) {
+      button =
         <div>
-        <ButtonGroup color="secondary">
-          <Button variant="contained" onClick={reOpen}>
-            Reopen
+          <ButtonGroup color="secondary">
+            <Button variant="contained" onClick={reOpen}>
+              Reopen
           </Button>
-        </ButtonGroup>
-      </div>;
-      }
+          </ButtonGroup>
+        </div>;
     }
-    else {
-      button = null;
-      //console.log("NULL");
-    }
+  }
+  else {
+    button = null;
+    //console.log("NULL");
+  }
 
 
   // open dialogue box
@@ -233,7 +233,7 @@ const Ticket = ({
   </Dialog>;
 
   return (
-    <Card>
+    <Card style={{ position: 'relative', zIndex: '2' }}>
       <CardContent>
         <Grid item>
           <Link to={`/ticket/${id}`}>
@@ -244,11 +244,11 @@ const Ticket = ({
             <Grid item xs={3}>
               <Label>Contact</Label>
               <Typography variant="body1" gutterBottom>
-              {contact}
+                {contact}
               </Typography>
               <Label> Mentor </Label>
               <Typography variant="body1" gutterBottom>
-              {currStatus ==="CLAIMED" && mentorEmail}
+                {currStatus === "CLAIMED" && mentorEmail}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -278,8 +278,8 @@ const Ticket = ({
               </Button>
             </ButtonGroup> :
             ""}
-          { button }
-          { dialog }
+          {button}
+          {dialog}
         </Grid>
       </CardContent>
     </Card>

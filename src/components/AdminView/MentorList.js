@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         padding: '0 15px',
-        backgroundColor: '#e91e63',
+        backgroundColor: theme.palette.primary.main,
         color: 'white',
         borderRadius: '5px 5px 0px 0px',
     },
@@ -46,7 +46,7 @@ export default function VirtualizedList() {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} style={{ position: 'relative', zIndex: '1' }}>
             <Typography variant="h6" className={classes.title}>
                 Mentor Leaderboard
             </Typography>

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         padding: '0 15px',
-        backgroundColor: '#e91e63',
+        backgroundColor: theme.palette.primary.main,
         color: 'white',
         width: '100%',
     }
@@ -82,7 +82,7 @@ const Stats = () => {
     }
 
     return (
-        <div>
+        <div style={{ position: 'relative', zIndex: '1' }}>
             <div className={classes.root}>
                 <Card className={classes.card}>
                     <Typography variant="h6" className={classes.title}>Ticket Stats</Typography>

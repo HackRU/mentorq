@@ -40,7 +40,7 @@ const FeedbackCard = ({
 
 
     return (
-        <Card className={classes.root} >
+        <Card className={classes.root} style={{ position: 'relative', zIndex: '1' }} >
             <CardContent>
                 <Grid container spacing={1}>
                     <Grid item xs={9}>

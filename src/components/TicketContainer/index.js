@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 
 const TicketContainer = ({ tickets = [] }) => (
-  <Container>
+  <Container style={{ position: 'relative', zIndex: '2' }}>
     {tickets.map((ticket) => (
       <Ticket key={ticket.id} ticket={ticket} />
     ))}
