@@ -28,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
     top: 0,
   },
+  button: {
+    backgroundColor: theme.palette.tertiary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.tertiary.dark,
+    },
+  },
 }));
 
 const defaultState = {
@@ -89,7 +95,7 @@ const NewTicket = ({ onAddTicket }) => {
             value={ticket.location}
           />
 
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" className={classes.button}>
             Create Ticket
           </Button>
         </form>
