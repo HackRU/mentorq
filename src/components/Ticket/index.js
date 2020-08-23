@@ -23,8 +23,9 @@ import Rating from '@material-ui/lab/Rating';
 
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status, feedback, mentor_email},
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email},
 }) => {
+  const [date, setDate] = useState(new Date());
   const [mentorEmail,setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
@@ -37,6 +38,17 @@ const Ticket = ({
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
 
+  const getTimeDifference = (timeA, timeB) => {
+    const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
+    const timeInHours = Math.round((timeInMilliseconds / 1000) / 60 / 60);
+    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`
+  }
+
+  useEffect (() => {
+    const timeout = setTimeout(() => setDate(new Date()), 1000);
+    return () => clearTimeout(timeout);
+  }, [date])
+  
   // update status of ticket
   useEffect(() => {
     setCurrStatus(status);
@@ -243,6 +255,10 @@ const Ticket = ({
             <Grid item xs={12}>
               <Label>Comment</Label>
               <Typography variant="body1" gutterBottom>{comment}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Label>Time Open</Label>
+              <Typography variant="body1" gutterBottom>{getTimeDifference(date, new Date(created_datetime))}</Typography>
             </Grid>
           </Grid>
           { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
