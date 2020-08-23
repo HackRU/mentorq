@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
-import { logoutUser } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
-import { recievedLoginUser } from "../../actions";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   CardContent,
   Card,
@@ -19,29 +18,92 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@material-ui/core";
-import Rating from '@material-ui/lab/Rating';
+import Rating from "@material-ui/lab/Rating";
 
+const useStyles = makeStyles((theme) => ({
+  open: {
+    backgroundColor: theme.palette.secondary.main,
+    color: "white",
+    position: "relative",
+    zIndex: "2",
+    borderLeftWidth: 4,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.tertiary.main,
+  },
+  claimed: {
+    backgroundColor: theme.palette.secondary.light,
+    color: "black",
+    position: "relative",
+    zIndex: "2",
+    borderLeftWidth: 4,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.tertiary.main,
+  },
+  closed: {
+    backgroundColor: theme.palette.secondary.dark,
+    color: "white",
+    position: "relative",
+    zIndex: "2",
+    borderLeftWidth: 4,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.tertiary.main,
+  },
+  openClosedLabel: {
+    color: theme.palette.textSecondary.main,
+  },
+  claimedLabel: {
+    color: theme.palette.textPrimary.dark,
+  },
+  button: {
+    backgroundColor: theme.palette.tertiary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.tertiary.dark,
+    },
+  },
+  title: {
+    color: "white",
+    textDecoration: "none",
+  },
+}));
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status, feedback, mentor_email },
+  ticket: {
+    id,
+    title,
+    comment,
+    contact,
+    location,
+    status,
+    feedback,
+    mentor_email,
+  },
 }) => {
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
   const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
   const email = useSelector((store) => store.auth.email);
-  const isDirector = useSelector((store => store.auth.director));
-  const isMentor = useSelector((store => store.auth.mentor));
+  const isDirector = useSelector((store) => store.auth.director);
+  const isMentor = useSelector((store) => store.auth.mentor);
   const [value, setValue] = useState(0); // value of star rating
   const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
+  const classes = useStyles();
 
   // update status of ticket
   useEffect(() => {
     setCurrStatus(status);
     setMentorEmail(mentor_email);
-
   }, [status, mentor_email]);
 
   // check if ticket already has feedback allowing for edits to existing feedback
@@ -68,7 +130,7 @@ const Ticket = ({
       type: "PATCH",
       body: {
         status: "CLAIMED",
-        mentor_email: email
+        mentor_email: email,
       },
     });
   };
@@ -94,57 +156,69 @@ const Ticket = ({
         status: "OPEN",
         mentor_email: "",
         mentor: "",
-
-
       },
     });
   };
-
 
   let button;
   //IF Else for Buttons
   if (isMentor || isDirector === true) {
     //console.log("SHOW BUTTONS");
     if (currStatus === "OPEN") {
-      button =
+      button = (
         <div>
           <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={claimTicket}>
+            <Button
+              variant="contained"
+              onClick={claimTicket}
+              className={classes.button}
+            >
               Claim
             </Button>
           </ButtonGroup>
-        </div>;
-    }
-    else if (currStatus === "CLAIMED") {
-      button =
+        </div>
+      );
+    } else if (currStatus === "CLAIMED") {
+      button = (
         <div>
           <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={reOpen}>
+            <Button
+              variant="contained"
+              onClick={reOpen}
+              className={classes.button}
+            >
               Reopen
             </Button>
 
-            <Button variant="contained" onClick={closeTicket}>
+            <Button
+              variant="contained"
+              onClick={closeTicket}
+              className={classes.button}
+            >
               Close
             </Button>
           </ButtonGroup>
-        </div>;
-    }
-    else if (currStatus === "CLOSED" && isDirector === true) {
-      button =
+        </div>
+      );
+    } else if (currStatus === "CLOSED" && isDirector === true) {
+      button = (
         <div>
           <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={reOpen}>
+            <Button
+              variant="contained"
+              onClick={reOpen}
+              className={classes.button}
+            >
               Reopen
-          </Button>
+            </Button>
           </ButtonGroup>
-        </div>;
+        </div>
+      );
     }
-  }
-  else {
+  } else {
     button = null;
     //console.log("NULL");
   }
-
 
   // open dialogue box
   const handleClickOpen = () => {
@@ -167,17 +241,16 @@ const Ticket = ({
         body: {
           ticket: id,
           rating: value,
-          comments: writtenFeedback
+          comments: writtenFeedback,
         },
       });
-    }
-    else {
+    } else {
       await request({
         path: `/feedback/${id}`,
         type: "PATCH",
         body: {
           rating: value,
-          comments: writtenFeedback
+          comments: writtenFeedback,
         },
       });
     }
@@ -185,99 +258,186 @@ const Ticket = ({
     setFeedbackURL("temp URL");
   };
 
+  // Feedback dialog box
   let dialog;
-  dialog = <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Please rate the help you received from your mentor.
-      </DialogContentText>
-      <Rating
-        name="hover-feedback"
-        value={value || -1}
-        precision={0.5}
-        onChange={(event, newValue) => {
-          console.log(openFeedback);
-          setValue(newValue);
-        }}
-        onChangeActive={(event, newHover) => {
-          setHover(newHover);
-        }}
-      /><br /><br /><br />
-      <DialogContentText>
-        How was your Mentorq experience?
-      </DialogContentText>
-      <TextField
-        autoFocus
-        margin="dense"
-        id="name"
-        label="Feedback"
-        multiline
-        rows={4}
-        variant="outlined"
-        fullWidth
-        defaultValue={writtenFeedback}
-        onChange={(event) => {
-          setWrittenFeedback(event.target.value);
-        }}
-      />
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleClose} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={submitFeedback} color="primary">
-        Submit
-      </Button>
-    </DialogActions>
-  </Dialog>;
+  dialog = (
+    <Dialog
+      open={openFeedback}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Please rate the help you received from your mentor.
+        </DialogContentText>
+        <Rating
+          name="hover-feedback"
+          value={value || -1}
+          precision={0.5}
+          onChange={(event, newValue) => {
+            console.log(openFeedback);
+            setValue(newValue);
+          }}
+          onChangeActive={(event, newHover) => {
+            setHover(newHover);
+          }}
+        />
+        <br />
+        <br />
+        <br />
+        <DialogContentText>How was your Mentorq experience?</DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Feedback"
+          multiline
+          rows={4}
+          variant="outlined"
+          fullWidth
+          defaultValue={writtenFeedback}
+          onChange={(event) => {
+            setWrittenFeedback(event.target.value);
+          }}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={submitFeedback} color="primary">
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
-    <Card style={{ position: 'relative', zIndex: '2' }}>
+    <Card
+      className={
+        currStatus === "OPEN"
+          ? classes.open
+          : currStatus === "CLAIMED"
+          ? classes.claimed
+          : currStatus === "CLOSED"
+          ? classes.closed
+          : null
+      }
+    >
       <CardContent>
         <Grid item>
-          <Link to={`/ticket/${id}`}>
-            <Typography variant="h5" gutterBottom>{title}</Typography>
+          <Link to={`/ticket/${id}`} className={classes.title}>
+            <Typography variant="h5" gutterBottom className={classes.title}>
+              <u>
+                <b>{title}</b>
+              </u>
+            </Typography>
           </Link>
 
           <Grid container spacing={1}>
             <Grid item xs={3}>
-              <Label>Contact</Label>
+              <Label
+                className={
+                  currStatus === "CLAIMED"
+                    ? classes.claimedLabel
+                    : classes.openClosedLabel
+                }
+              >
+                Contact
+              </Label>
               <Typography variant="body1" gutterBottom>
                 {contact}
               </Typography>
-              <Label> Mentor </Label>
+              <Label
+                className={
+                  currStatus === "CLAIMED"
+                    ? classes.claimedLabel
+                    : classes.openClosedLabel
+                }
+              >
+                {" "}
+                Mentor{" "}
+              </Label>
               <Typography variant="body1" gutterBottom>
                 {currStatus === "CLAIMED" && mentorEmail}
               </Typography>
             </Grid>
             <Grid item xs={3}>
-              <Label>Location</Label>
-              <Typography variant="body1" gutterBottom>{location}</Typography>
+              <Label
+                className={
+                  currStatus === "CLAIMED"
+                    ? classes.claimedLabel
+                    : classes.openClosedLabel
+                }
+              >
+                Location
+              </Label>
+              <Typography variant="body1" gutterBottom>
+                {location}
+              </Typography>
             </Grid>
             <Grid item xs={3}>
-              <Label>Status</Label>
-              <Typography variant="body1" gutterBottom>{currStatus}</Typography>
+              <Label
+                className={
+                  currStatus === "CLAIMED"
+                    ? classes.claimedLabel
+                    : classes.openClosedLabel
+                }
+              >
+                Status
+              </Label>
+              <Typography variant="body1" gutterBottom>
+                {currStatus}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Label>Comment</Label>
-              <Typography variant="body1" gutterBottom>{comment}</Typography>
+              <Label
+                className={
+                  currStatus === "CLAIMED"
+                    ? classes.claimedLabel
+                    : classes.openClosedLabel
+                }
+              >
+                Comment
+              </Label>
+              <Typography variant="body1" gutterBottom>
+                {comment}
+              </Typography>
             </Grid>
           </Grid>
-          {currStatus == "CLOSED" && feedbackURL == "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
+          {currStatus == "CLOSED" &&
+          feedbackURL == "" &&
+          !isDirector &&
+          !isMentor ? (
+            <ButtonGroup>
+              <Button
+                variant="contained"
+                onClick={handleClickOpen}
+                className={classes.button}
+              >
                 Feedback
-                </Button>
-            </ButtonGroup> :
-            ""}
-          {currStatus == "CLOSED" && feedbackURL != "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
+              </Button>
+            </ButtonGroup>
+          ) : (
+            ""
+          )}
+          {currStatus == "CLOSED" &&
+          feedbackURL != "" &&
+          !isDirector &&
+          !isMentor ? (
+            <ButtonGroup>
+              <Button
+                variant="contained"
+                onClick={handleClickOpen}
+                className={classes.button}
+              >
                 Edit Feedback
               </Button>
-            </ButtonGroup> :
-            ""}
+            </ButtonGroup>
+          ) : (
+            ""
+          )}
           {button}
           {dialog}
         </Grid>
