@@ -36,17 +36,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const defaultState = {
+  title: "",
+  titleError: "",
+  comment: "",
+  commentError: "",
+  contact: "",
+  contactError: "",
+  location: "",
+  locationError: "",
+};
+
 const NewTicket = ({ onAddTicket }) => {
-  const [ticket, setTicket] = useState({
-    title: "",
-    titleError: "",
-    comment: "",
-    commentError: "",
-    contact: "",
-    contactError: "",
-    location: "",
-    locationError: "",
-  });
+  const [ticket, setTicket] = useState(defaultState);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -60,6 +62,8 @@ const NewTicket = ({ onAddTicket }) => {
         location: ticket.location,
         feedback: "",
       });
+
+      setTicket(defaultState);
     }
   };
 

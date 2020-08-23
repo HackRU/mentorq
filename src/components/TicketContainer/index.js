@@ -7,6 +7,7 @@ const Container = styled.div`
   grid-auto-flow: row;
   grid-row-gap: 16px;
   text: 100vw;
+  word-wrap: break-word;
 `;
 
 const TicketContainer = ({ tickets = [] }) => (

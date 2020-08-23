@@ -7,9 +7,7 @@ import Feedback from './Feedback';
 
 import {
     Route,
-    BrowserRouter as Router,
     Switch,
-    Redirect,
 } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({

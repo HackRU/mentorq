@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
+
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
+import { TicketButton } from './TicketButton';
+import { DialogBox } from './Dialog';
+
 import {
   CardContent,
   Card,
@@ -76,18 +80,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: {
-    id,
-    title,
-    comment,
-    contact,
-    location,
-    status,
-    feedback,
-    mentor_email,
-  },
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email},
 }) => {
-  const [mentorEmail, setMentorEmail] = useState(mentor_email);
+  const [date, setDate] = useState(new Date());
+  const [mentorEmail,setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
   const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
@@ -99,6 +95,17 @@ const Ticket = ({
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
   const classes = useStyles();
+
+  const getTimeDifference = (timeA, timeB) => {
+    const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
+    const timeInHours = Math.round((timeInMilliseconds / 1000) / 60 / 60);
+    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`
+  }
+
+  useEffect (() => {
+    const timeout = setTimeout(() => setDate(new Date()), 1000);
+    return () => clearTimeout(timeout);
+  }, [date])
 
   // update status of ticket
   useEffect(() => {
@@ -113,7 +120,7 @@ const Ticket = ({
       setValue(existingFeedback.rating);
       setWrittenFeedback(existingFeedback.comments);
     };
-    if (feedbackURL != "" && openFeedback == false) {
+    if (feedbackURL !== "" && openFeedback === false) {
       const interval = setInterval(update, 3000);
       update();
       return () => {
@@ -122,102 +129,35 @@ const Ticket = ({
     }
   }, [existingFeedback]);
 
-  const claimTicket = async () => {
-    setCurrStatus("CLAIMED");
-    setMentorEmail(email);
+  const getResponse = async (type, m_email) => {
     await request({
       path: `/tickets/${id}/`,
       type: "PATCH",
       body: {
-        status: "CLAIMED",
-        mentor_email: email,
+        status: type,
+        mentor_email: m_email
       },
     });
+  }
+
+  const claimTicket = async () => {
+    setCurrStatus("CLAIMED");
+    setMentorEmail(email);
+    getResponse("CLAIMED", email)
   };
 
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "CLOSED",
-      },
-    });
+    getResponse("CLOSED", email)
   };
 
-  const reOpen = async () => {
+  const reopenTicket = async () => {
     setCurrStatus("OPEN");
-
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "OPEN",
-        mentor_email: "",
-        mentor: "",
-      },
-    });
+    getResponse("OPEN", "")
   };
 
-  let button;
-  //IF Else for Buttons
-  if (isMentor || isDirector === true) {
-    //console.log("SHOW BUTTONS");
-    if (currStatus === "OPEN") {
-      button = (
-        <div>
-          <ButtonGroup color="secondary">
-            <Button
-              variant="contained"
-              onClick={claimTicket}
-              className={classes.button}
-            >
-              Claim
-            </Button>
-          </ButtonGroup>
-        </div>
-      );
-    } else if (currStatus === "CLAIMED") {
-      button = (
-        <div>
-          <ButtonGroup color="secondary">
-            <Button
-              variant="contained"
-              onClick={reOpen}
-              className={classes.button}
-            >
-              Reopen
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={closeTicket}
-              className={classes.button}
-            >
-              Close
-            </Button>
-          </ButtonGroup>
-        </div>
-      );
-    } else if (currStatus === "CLOSED" && isDirector === true) {
-      button = (
-        <div>
-          <ButtonGroup color="secondary">
-            <Button
-              variant="contained"
-              onClick={reOpen}
-              className={classes.button}
-            >
-              Reopen
-            </Button>
-          </ButtonGroup>
-        </div>
-      );
-    }
-  } else {
-    button = null;
-    //console.log("NULL");
+  const checkFeedback = () => {
+    return feedbackURL === "" ? "feedback" : "edit feedback"
   }
 
   // open dialogue box
@@ -234,7 +174,7 @@ const Ticket = ({
     handleClose();
     console.log(id, value, writtenFeedback);
 
-    if (feedbackURL == "") {
+    if (feedbackURL === "") {
       await request({
         path: `/feedback/`,
         type: "POST",
@@ -258,7 +198,42 @@ const Ticket = ({
     setFeedbackURL("temp URL");
   };
 
-  // Feedback dialog box
+  const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
+  const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
+  const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
+  const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
+
+  let button;
+  //IF Else for Buttons
+    if (isMentor || isDirector){
+      if (currStatus === "OPEN" ){
+        button =
+        <div>
+            { claimButton }
+        </div>;
+      }
+      else if (currStatus === "CLAIMED") {
+        button =
+        <div>
+          <ButtonGroup>
+            { reopenButton }
+            { closeButton }
+          </ButtonGroup>
+        </div>;
+      }
+      else if (currStatus === "CLOSED" && isDirector){
+        button =
+        <div>
+        <ButtonGroup color="secondary">
+          { reopenButton }
+        </ButtonGroup>
+      </div>;
+      }
+    }
+    else {
+      button = null;
+    }
+
   let dialog;
   dialog = (
     <Dialog
@@ -405,41 +380,14 @@ const Ticket = ({
                 {comment}
               </Typography>
             </Grid>
+            <Grid item xs={12}>
+              <Label>Time Open</Label>
+              <Typography variant="body1" gutterBottom>{getTimeDifference(date, new Date(created_datetime))}</Typography>
+            </Grid>
           </Grid>
-          {currStatus == "CLOSED" &&
-          feedbackURL == "" &&
-          !isDirector &&
-          !isMentor ? (
-            <ButtonGroup>
-              <Button
-                variant="contained"
-                onClick={handleClickOpen}
-                className={classes.button}
-              >
-                Feedback
-              </Button>
-            </ButtonGroup>
-          ) : (
-            ""
-          )}
-          {currStatus == "CLOSED" &&
-          feedbackURL != "" &&
-          !isDirector &&
-          !isMentor ? (
-            <ButtonGroup>
-              <Button
-                variant="contained"
-                onClick={handleClickOpen}
-                className={classes.button}
-              >
-                Edit Feedback
-              </Button>
-            </ButtonGroup>
-          ) : (
-            ""
-          )}
-          {button}
-          {dialog}
+          { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
+          { button }
+          { dialog }
         </Grid>
       </CardContent>
     </Card>
