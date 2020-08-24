@@ -5,6 +5,7 @@ import { request } from "../.././util";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { TicketButton } from './TicketButton';
+import { Notification } from '.././Notification';
 import { DialogBox } from './Dialog';
 
 import {
@@ -86,15 +87,14 @@ const Ticket = ({
   const [mentorEmail,setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
-  const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
-  const [value, setValue] = useState(0); // value of star rating
-  const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
-  const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
+  const [openNotification, setNotificationOpen] = useState(false);
   const classes = useStyles();
+
+  let button, dialog, notification;
 
   const getTimeDifference = (timeA, timeB) => {
     const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
@@ -113,21 +113,6 @@ const Ticket = ({
     setMentorEmail(mentor_email);
   }, [status, mentor_email]);
 
-  // check if ticket already has feedback allowing for edits to existing feedback
-  useEffect(() => {
-    const update = async () => {
-      setExistingFeedback(await request({ path: `/feedback/${id}` }));
-      setValue(existingFeedback.rating);
-      setWrittenFeedback(existingFeedback.comments);
-    };
-    if (feedbackURL !== "" && openFeedback === false) {
-      const interval = setInterval(update, 3000);
-      update();
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [existingFeedback]);
 
   const getResponse = async (type, m_email) => {
     await request({
@@ -144,6 +129,7 @@ const Ticket = ({
     setCurrStatus("CLAIMED");
     setMentorEmail(email);
     getResponse("CLAIMED", email)
+    handleNotificationOpen()
   };
 
   const closeTicket = async () => {
@@ -160,8 +146,19 @@ const Ticket = ({
     return feedbackURL === "" ? "feedback" : "edit feedback"
   }
 
+  // open notification
+  const handleNotificationOpen = () => {
+    setNotificationOpen(true);
+  };
+
+  // close notification
+  const handleNotificationClose = (event) => {
+    setNotificationOpen(false);
+  };
+
   // open dialogue box
   const handleClickOpen = () => {
+    console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
 
@@ -170,40 +167,11 @@ const Ticket = ({
     setFeedbackOpen(false);
   };
 
-  const submitFeedback = async () => {
-    handleClose();
-    console.log(id, value, writtenFeedback);
-
-    if (feedbackURL === "") {
-      await request({
-        path: `/feedback/`,
-        type: "POST",
-        body: {
-          ticket: id,
-          rating: value,
-          comments: writtenFeedback,
-        },
-      });
-    } else {
-      await request({
-        path: `/feedback/${id}`,
-        type: "PATCH",
-        body: {
-          rating: value,
-          comments: writtenFeedback,
-        },
-      });
-    }
-
-    setFeedbackURL("temp URL");
-  };
-
   const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
   const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
   const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
   const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
 
-  let button;
   //IF Else for Buttons
     if (isMentor || isDirector){
       if (currStatus === "OPEN" ){
@@ -234,59 +202,16 @@ const Ticket = ({
       button = null;
     }
 
-  let dialog;
-  dialog = (
-    <Dialog
-      open={openFeedback}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Please rate the help you received from your mentor.
-        </DialogContentText>
-        <Rating
-          name="hover-feedback"
-          value={value || -1}
-          precision={0.5}
-          onChange={(event, newValue) => {
-            console.log(openFeedback);
-            setValue(newValue);
-          }}
-          onChangeActive={(event, newHover) => {
-            setHover(newHover);
-          }}
-        />
-        <br />
-        <br />
-        <br />
-        <DialogContentText>How was your Mentorq experience?</DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Feedback"
-          multiline
-          rows={4}
-          variant="outlined"
-          fullWidth
-          defaultValue={writtenFeedback}
-          onChange={(event) => {
-            setWrittenFeedback(event.target.value);
-          }}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={submitFeedback} color="primary">
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  if (openNotification){
+    notification = <Notification message="Ticket Claimed!"
+                    open={ true }
+                    handleClose={ handleNotificationClose }
+                    />
+  }
+
+  dialog = <DialogBox id={id} feedback={feedback}
+            feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
+            openFeedback={openFeedback} handleClose={handleClose}/>
 
   return (
     <Card
@@ -381,13 +306,22 @@ const Ticket = ({
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Label>Time Open</Label>
+            <Label
+              className={
+                currStatus === "CLAIMED"
+                  ? classes.claimedLabel
+                  : classes.openClosedLabel
+              }
+            >
+              Time Open
+            </Label>
               <Typography variant="body1" gutterBottom>{getTimeDifference(date, new Date(created_datetime))}</Typography>
             </Grid>
           </Grid>
           { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
           { button }
           { dialog }
+          { notification }
         </Grid>
       </CardContent>
     </Card>
