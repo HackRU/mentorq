@@ -94,9 +94,9 @@ const Ticket = ({
   const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
-<<<<<<< HEAD
-  const [modal,setChangeModal] = useState(false)
-=======
+
+ 
+
   const classes = useStyles();
 
   const getTimeDifference = (timeA, timeB) => {
@@ -109,7 +109,7 @@ const Ticket = ({
     const timeout = setTimeout(() => setDate(new Date()), 1000);
     return () => clearTimeout(timeout);
   }, [date])
->>>>>>> origin/develop
+
 
 
   console.log(isDirector);
@@ -163,7 +163,7 @@ const Ticket = ({
     getResponse("OPEN", "")
   };
 
-<<<<<<< HEAD
+
   //new "CANCLED" state 
   const cancel = async () => {
     setCurrStatus("CANCEL");
@@ -255,11 +255,11 @@ const Ticket = ({
       </div>;
       }
     }
-=======
+
   const checkFeedback = () => {
     return feedbackURL === "" ? "feedback" : "edit feedback"
   }
->>>>>>> origin/develop
+
 
     if (isDirector === true && isMentor === false){
       
@@ -415,10 +415,7 @@ const Ticket = ({
           </Link>
 
           <Grid container spacing={1}>
-<<<<<<< HEAD
-            <Grid item xs={3}>  
-              <Label>Contact</Label>
-=======
+
             <Grid item xs={3}>
               <Label
                 className={
@@ -429,7 +426,7 @@ const Ticket = ({
               >
                 Contact
               </Label>
->>>>>>> origin/develop
+
               <Typography variant="body1" gutterBottom>
                 {contact}
               </Typography>
