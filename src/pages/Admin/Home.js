@@ -28,20 +28,7 @@ const theme = createMuiTheme({
 })
 
 const AdminHome = () => {
-    const [tickets, setTickets] = useState([]);
     const classes = useStyles();
-
-    useEffect(() => {
-        const update = async () => {
-            setTickets(await request({ path: "/tickets/" }));
-        };
-
-        const interval = setInterval(update, 3000);
-        update();
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
 
     return (
         <DashboardContainer>
@@ -50,10 +37,10 @@ const AdminHome = () => {
                     <Grid item xs={5} sm={4} md={3} lg={3} xl={3}>
                         <MenuListComposition />
                     </Grid>
-                    <Grid item xs={7} sm={8} md={6} lg={6} xl={6}>
+                    <Grid item xs={7} sm={8} md={9} lg={9} xl={9}>
                         <Stats />
                     </Grid>
-                    <Grid item xs={7} sm={8} md={3} lg={3} xl={3}>
+                    <Grid item xs={7} sm={8} md={9} lg={9} xl={9}>
                         <VirtualizedList />
                     </Grid>
                 </Grid>
