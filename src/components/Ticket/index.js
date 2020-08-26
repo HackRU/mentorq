@@ -36,7 +36,11 @@ const Ticket = ({
   const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
+  const [modal,setChangeModal] = useState(false)
 
+
+  console.log(isDirector);
+  console.log(isMentor);
   // update status of ticket
   useEffect(() => {
     setCurrStatus(status);
@@ -100,12 +104,44 @@ const Ticket = ({
     });
   };
 
+  //new "CANCLED" state 
+  const cancel = async () => {
+    setCurrStatus("CANCEL");
 
+    await request({
+      path: `/tickets/${id}/`,
+      type: "PATCH",
+      body: {
+        status: "CANCEL",
+        mentor_email: "",
+        mentor: "",
+
+      },
+    });
+  };
+
+  //DELETED STATE 
+  //new "CANCLED" state 
+  const deleted = async () => {
+    setCurrStatus("DELETED");
+
+    await request({
+      path: `/tickets/${id}/`,
+      type: "PATCH",
+      body: {
+        status: "CANCEL",
+        mentor_email: "",
+        mentor: "",
+
+      },
+    });
+  };
+  
   let button;
   //IF Else for Buttons
     if (isMentor || isDirector === true){
       //console.log("SHOW BUTTONS");
-      if (currStatus === "OPEN" ){
+      if (currStatus === "OPEN"){
         button =
         <div>
           <ButtonGroup color="secondary">
@@ -139,13 +175,30 @@ const Ticket = ({
         </ButtonGroup>
       </div>;
       }
+     
+      
     }
     else {
       button = null;
       //console.log("NULL");
     }
 
+    if (isDirector === false && isMentor === false ){
+      if (currStatus === "OPEN"){
+        button =
+        <div>
+        <ButtonGroup color="secondary">
+          <Button variant="contained" onClick={cancel}>
+            CANCEL
+          </Button>
+        </ButtonGroup>
+      </div>;
+      }
+    }
 
+    if (isDirector === true && isMentor === false){
+      
+    }
   // open dialogue box
   const handleClickOpen = () => {
     setFeedbackOpen(true);
@@ -241,7 +294,7 @@ const Ticket = ({
           </Link>
 
           <Grid container spacing={1}>
-            <Grid item xs={3}>
+            <Grid item xs={3}>  
               <Label>Contact</Label>
               <Typography variant="body1" gutterBottom>
               {contact}
@@ -259,6 +312,19 @@ const Ticket = ({
               <Label>Status</Label>
               <Typography variant="body1" gutterBottom>{currStatus}</Typography>
             </Grid>
+            
+            
+            
+            <Grid item xs={2}>
+            <ButtonGroup color="secondary">
+              <Button variant="contained" onClick={cancel} >
+                X
+                </Button>
+            </ButtonGroup>
+     
+            </Grid>
+
+
             <Grid item xs={12}>
               <Label>Comment</Label>
               <Typography variant="body1" gutterBottom>{comment}</Typography>
