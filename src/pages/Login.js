@@ -10,6 +10,7 @@ import {
   makeStyles,
   Avatar,
   CircularProgress,
+  Paper,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
@@ -28,6 +29,15 @@ const Input = ({ label, value, type, onChange }) => (
 );
 
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    zIndex: 1,
+    width: "40vw",
+    height: "80vh",
+    padding: theme.spacing(4),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   loading: {
     width: "100vw",
     height: "100vh",
@@ -76,43 +86,45 @@ const Login = () => {
   }
 
   return (
-    <Container component="main" maxWidth="xs" className={classes.root}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h5">
-        Sign in
+
+    <Container component="main" maxWidth="xs" className={classes.root} >
+      <Paper className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
       </Typography>
 
-      
-      <form className={classes.form}>
-        <Input
-          label={"Email"}
-          type="email"
-          value={email}
-          onChange={({ target }) => setEmail(target.value)}
-        />
+        <form className={classes.form}>
+          <Input
+            label={"Email"}
+            type="email"
+            value={email}
+            onChange={({ target }) => setEmail(target.value)}
+          />
+          <Input
+            label="Password"
+            type="password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
 
-        <Input
-          label="Password"
-          type="password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
-
-        <Button
-          variant="contained"
-          fullWidth
-          color="primary"
-          onClick={onSubmit}
-        >
-          Log In
+          <Button
+            variant="contained"
+            fullWidth
+            color="primary"
+            onClick={onSubmit}
+          >
+            Log In
         </Button>
-      </form>
-      <div>
-        <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
-      </div>
+        </form>
+        <div>
+          <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
+        </div>
+      </Paper>
     </Container>
+
   );
 };
 

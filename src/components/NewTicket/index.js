@@ -28,19 +28,27 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
     top: 0,
   },
+  button: {
+    backgroundColor: theme.palette.tertiary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.tertiary.dark,
+    },
+  },
 }));
 
+const defaultState = {
+  title: "",
+  titleError: "",
+  comment: "",
+  commentError: "",
+  contact: "",
+  contactError: "",
+  location: "",
+  locationError: "",
+};
+
 const NewTicket = ({ onAddTicket }) => {
-  const [ticket, setTicket] = useState({
-    title: "",
-    titleError: "",
-    comment: "",
-    commentError: "",
-    contact: "",
-    contactError: "",
-    location: "",
-    locationError: "",
-  });
+  const [ticket, setTicket] = useState(defaultState);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -52,8 +60,10 @@ const NewTicket = ({ onAddTicket }) => {
         comment: ticket.comment,
         contact: ticket.contact,
         location: ticket.location,
-        feedback: ""
+        feedback: "",
       });
+
+      setTicket(defaultState);
     }
   };
 
@@ -85,7 +95,7 @@ const NewTicket = ({ onAddTicket }) => {
             value={ticket.location}
           />
 
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" className={classes.button}>
             Create Ticket
           </Button>
         </form>

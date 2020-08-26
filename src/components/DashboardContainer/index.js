@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { makeStyles, Container } from "@material-ui/core";
+import { makeStyles, Container, Paper } from "@material-ui/core";
 
 import Nav from "../Nav";
 
@@ -13,6 +13,15 @@ const useStyles = makeStyles((theme) => ({
   root: {
     padding: "32px 0",
   },
+  paper: {
+    position: "relative",
+    zIndex: 1,
+    height: "100%",
+    minHeight: "100vh",
+    padding: theme.spacing(4),
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: "0px 2px 5px 0px",
+  },
 }));
 
 export default ({ children }) => {
@@ -22,7 +31,7 @@ export default ({ children }) => {
     <Main>
       <Nav />
       <Container maxWidth={"md"} className={classes.root}>
-        {children}
+        <Paper className={classes.paper}>{children}</Paper>
       </Container>
       {/* <Stats /> */}
     </Main>
