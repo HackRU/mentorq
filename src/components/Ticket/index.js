@@ -94,7 +94,9 @@ const Ticket = ({
   const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
-
+  
+  // Going to change into a component 
+  const [modal,isModalOpen] = useState(false);
  
 
   const classes = useStyles();
@@ -180,8 +182,8 @@ const Ticket = ({
     });
   };
 
-  //DELETED STATE 
-  //new "CANCLED" state 
+  
+  //new "DELETED" state 
   const deleted = async () => {
     setCurrStatus("DELETED");
 
@@ -215,7 +217,7 @@ const Ticket = ({
         button =
         <div>
           <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={reOpen}>
+            <Button variant="contained" onClick={reopenTicket}>
               Reopen
             </Button>
 
@@ -229,14 +231,12 @@ const Ticket = ({
         button =
         <div>
         <ButtonGroup color="secondary">
-          <Button variant="contained" onClick={reOpen}>
+          <Button variant="contained" onClick={reopenTicket}>
             Reopen
           </Button>
         </ButtonGroup>
       </div>;
       }
-     
-      
     }
     else {
       button = null;
@@ -255,6 +255,7 @@ const Ticket = ({
       </div>;
       }
     }
+    
 
   const checkFeedback = () => {
     return feedbackURL === "" ? "feedback" : "edit feedback"
@@ -307,7 +308,7 @@ const Ticket = ({
   const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
   const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
 
-  let button;
+  //let button;
   //IF Else for Buttons
     if (isMentor || isDirector){
       if (currStatus === "OPEN" ){
@@ -336,6 +337,35 @@ const Ticket = ({
     }
     else {
       button = null;
+    }
+
+
+    let xButton;
+    if (isDirector === true || isMentor === false){
+      if (isDirector === true){
+        xButton = 
+          <div>
+          <Grid item xs={2}>
+            <ButtonGroup color="secondary">
+              <Button variant="contained" onClick={deleted} >
+                X
+                </Button>
+            </ButtonGroup>
+            </Grid>
+            </div>;
+      }
+      else if (isMentor === false && isDirector === false){
+        xButton = 
+          <div>
+          <Grid item xs={2}>
+            <ButtonGroup color="secondary">
+              <Button variant="contained" onClick={cancel} >
+                X
+                </Button>
+            </ButtonGroup>
+            </Grid>
+            </div>;
+      }
     }
 
   let dialog;
@@ -415,7 +445,6 @@ const Ticket = ({
           </Link>
 
           <Grid container spacing={1}>
-
             <Grid item xs={3}>
               <Label
                 className={
@@ -426,6 +455,9 @@ const Ticket = ({
               >
                 Contact
               </Label>
+                
+              
+
 
               <Typography variant="body1" gutterBottom>
                 {contact}
@@ -472,6 +504,7 @@ const Ticket = ({
                 {currStatus}
               </Typography>
             </Grid>
+            {xButton}
             <Grid item xs={12}>
               <Label
                 className={
@@ -489,14 +522,7 @@ const Ticket = ({
             
             
             
-            <Grid item xs={2}>
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={cancel} >
-                X
-                </Button>
-            </ButtonGroup>
-     
-            </Grid>
+            
 
 
             <Grid item xs={12}>
