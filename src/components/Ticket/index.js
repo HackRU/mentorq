@@ -354,13 +354,13 @@ const Ticket = ({
             </Grid>
             </div>;
       }
-      else if (isMentor === false && isDirector === false){
+      else if (isMentor === false && isDirector === false && currStatus == "OPEN"){
         xButton = 
           <div>
           <Grid item xs={2}>
             <ButtonGroup color="secondary">
               <Button variant="contained" onClick={cancel} >
-                X
+                Cancel
                 </Button>
             </ButtonGroup>
             </Grid>
