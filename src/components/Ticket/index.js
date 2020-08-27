@@ -5,6 +5,8 @@ import { request } from "../.././util";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { TicketButton } from './TicketButton';
+import { Notification } from '.././Notification';
+import { ClaimNote } from './ClaimNote';
 import { DialogBox } from './Dialog';
 
 import {
@@ -86,15 +88,14 @@ const Ticket = ({
   const [mentorEmail,setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
-  const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
-  const [value, setValue] = useState(0); // value of star rating
-  const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
-  const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
+  const [openClaimNote, setClaimNoteOpen] = useState(false);
   const classes = useStyles();
+
+  let button, dialog, claimnote;
 
   const getTimeDifference = (timeA, timeB) => {
     const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
@@ -113,21 +114,6 @@ const Ticket = ({
     setMentorEmail(mentor_email);
   }, [status, mentor_email]);
 
-  // check if ticket already has feedback allowing for edits to existing feedback
-  useEffect(() => {
-    const update = async () => {
-      setExistingFeedback(await request({ path: `/feedback/${id}` }));
-      setValue(existingFeedback.rating);
-      setWrittenFeedback(existingFeedback.comments);
-    };
-    if (feedbackURL !== "" && openFeedback === false) {
-      const interval = setInterval(update, 3000);
-      update();
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [existingFeedback]);
 
   const getResponse = async (type, m_email) => {
     await request({
@@ -144,6 +130,7 @@ const Ticket = ({
     setCurrStatus("CLAIMED");
     setMentorEmail(email);
     getResponse("CLAIMED", email)
+    handleClaimNoteOpen()
   };
 
   const closeTicket = async () => {
@@ -160,8 +147,19 @@ const Ticket = ({
     return feedbackURL === "" ? "feedback" : "edit feedback"
   }
 
+  // open ClaimNote
+  const handleClaimNoteOpen = () => {
+    setClaimNoteOpen(true);
+  };
+
+  // close ClaimNote
+  const handleClaimNoteClose = (event) => {
+    setClaimNoteOpen(false);
+  };
+
   // open dialogue box
   const handleClickOpen = () => {
+    console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
 
@@ -170,40 +168,11 @@ const Ticket = ({
     setFeedbackOpen(false);
   };
 
-  const submitFeedback = async () => {
-    handleClose();
-    console.log(id, value, writtenFeedback);
-
-    if (feedbackURL === "") {
-      await request({
-        path: `/feedback/`,
-        type: "POST",
-        body: {
-          ticket: id,
-          rating: value,
-          comments: writtenFeedback,
-        },
-      });
-    } else {
-      await request({
-        path: `/feedback/${id}`,
-        type: "PATCH",
-        body: {
-          rating: value,
-          comments: writtenFeedback,
-        },
-      });
-    }
-
-    setFeedbackURL("temp URL");
-  };
-
   const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
   const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
   const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
   const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
 
-  let button;
   //IF Else for Buttons
     if (isMentor || isDirector){
       if (currStatus === "OPEN" ){
@@ -234,59 +203,41 @@ const Ticket = ({
       button = null;
     }
 
-  let dialog;
-  dialog = (
-    <Dialog
-      open={openFeedback}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Please rate the help you received from your mentor.
-        </DialogContentText>
-        <Rating
-          name="hover-feedback"
-          value={value || -1}
-          precision={0.5}
-          onChange={(event, newValue) => {
-            console.log(openFeedback);
-            setValue(newValue);
-          }}
-          onChangeActive={(event, newHover) => {
-            setHover(newHover);
-          }}
-        />
-        <br />
-        <br />
-        <br />
-        <DialogContentText>How was your Mentorq experience?</DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Feedback"
-          multiline
-          rows={4}
-          variant="outlined"
-          fullWidth
-          defaultValue={writtenFeedback}
-          onChange={(event) => {
-            setWrittenFeedback(event.target.value);
-          }}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={submitFeedback} color="primary">
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  //Alert to User that their ticket has been claimed
+  //TODO: Check if User associated with ticket matches current email, Change in useState
+  //If above conditions met -> return Alert of ticket claimed
+
+  //Notification to mentor that they have successfully claimed a ticket
+  if (openClaimNote){
+    claimnote = <ClaimNote message="Ticket Claimed!"
+                    open={ true }
+                    handleClose={ handleClaimNoteClose }
+                    />
+  }
+  //FEEDBACK DIALOG BOX
+  dialog = <DialogBox id={id} feedback={feedback}
+            feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
+            openFeedback={openFeedback} handleClose={handleClose}/>
+
+  //FIELD OF A TICKET
+  function TicketField(props){
+    return (
+    <Grid item xs={props.size}>
+      <Label
+        className={
+          currStatus === "CLAIMED"
+            ? classes.claimedLabel
+            : classes.openClosedLabel
+        }
+      >
+        {props.name}
+      </Label>
+      <Typography variant="body1" gutterBottom>
+        {props.value}
+      </Typography>
+    </Grid>
+  )
+  }
 
   return (
     <Card
@@ -311,83 +262,20 @@ const Ticket = ({
           </Link>
 
           <Grid container spacing={1}>
-            <Grid item xs={3}>
-              <Label
-                className={
-                  currStatus === "CLAIMED"
-                    ? classes.claimedLabel
-                    : classes.openClosedLabel
-                }
-              >
-                Contact
-              </Label>
-              <Typography variant="body1" gutterBottom>
-                {contact}
-              </Typography>
-              <Label
-                className={
-                  currStatus === "CLAIMED"
-                    ? classes.claimedLabel
-                    : classes.openClosedLabel
-                }
-              >
-                {" "}
-                Mentor{" "}
-              </Label>
-              <Typography variant="body1" gutterBottom>
-                {currStatus === "CLAIMED" && mentorEmail}
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Label
-                className={
-                  currStatus === "CLAIMED"
-                    ? classes.claimedLabel
-                    : classes.openClosedLabel
-                }
-              >
-                Location
-              </Label>
-              <Typography variant="body1" gutterBottom>
-                {location}
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Label
-                className={
-                  currStatus === "CLAIMED"
-                    ? classes.claimedLabel
-                    : classes.openClosedLabel
-                }
-              >
-                Status
-              </Label>
-              <Typography variant="body1" gutterBottom>
-                {currStatus}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Label
-                className={
-                  currStatus === "CLAIMED"
-                    ? classes.claimedLabel
-                    : classes.openClosedLabel
-                }
-              >
-                Comment
-              </Label>
-              <Typography variant="body1" gutterBottom>
-                {comment}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Label>Time Open</Label>
-              <Typography variant="body1" gutterBottom>{getTimeDifference(date, new Date(created_datetime))}</Typography>
-            </Grid>
+            <TicketField size={3} name="Contact" value={ contact } />
+            <TicketField size={3} name="Location" value={ location }/>
+            <TicketField size={3} name="Status" value={ currStatus }/>
+            <TicketField size={12} name="Mentor" value={ mentorEmail }/>
+            <TicketField size={12} name="Comment" value={ comment }/>
+            <TicketField size={12}
+                          name="Time Open"
+                          value={getTimeDifference(date, new Date(created_datetime))}
+                            />
           </Grid>
           { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
           { button }
           { dialog }
+          { claimnote }
         </Grid>
       </CardContent>
     </Card>
