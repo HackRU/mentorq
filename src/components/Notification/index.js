@@ -3,34 +3,38 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
   Snackbar,
-  IconButton
+  IconButton,
+  Collapse
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-
+import { Alert } from '@material-ui/lab';
 
 const Notification = ({
   message, open, handleClose
 }) =>  {
   {console.log(open)}
   return (
-    <div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={open}
-        autoHideDuration={5000}
-        onClose={handleClose}
-        message={message}
-        action={
-          <React.Fragment>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
-              <CloseIcon fontSize="small" />
+    <div className="name">
+      <Collapse in={open}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                {
+                  //setOpen(false);
+                }
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
             </IconButton>
-          </React.Fragment>
-        }
-      />
+          }
+        >
+          A Ticket has Been Claimed!
+        </Alert>
+      </Collapse>
     </div>
   );
 }
