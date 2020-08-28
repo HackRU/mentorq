@@ -5,7 +5,7 @@ import {
   TextField,
   Box,
   Button,
-  Palette, 
+  Palette,
   Container,
   Typography,
   makeStyles,
@@ -16,26 +16,13 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Link } from "react-router-dom";
-
-const Input = ({ label, value, type, onChange }) => (
-  <Box my={2}>
-    <TextField
-      fullWidth
-      variant="outlined"
-      label={label}
-      type={type}
-      value={value}
-      onChange={onChange}
-      margin="normal"
-    />
-  </Box>
-);
+import { Input } from '../components/Input';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     zIndex: 1,
     width: "40vw",
-    height: "80vh",
+    height: "50vh",
     padding: theme.spacing(4),
     backgroundColor: "#c85151",
     display: "flex",
@@ -90,15 +77,15 @@ const Login = () => {
   return (
 
     <Container component="main" maxWidth="xs" className={classes.root} >
-      <Paper className={classes.paper}>
-        <Typography 
-        variant="h1" 
+      <Paper className={classes.paper} elevation={10}>
+        <Typography
+        variant="h1"
         className={classes.title}>
               <b style = {{color: "white"}} >MENTOR</b>
               <b style= {{color: '#f3bb44'}}>Q</b>
         </Typography>
-        <Typography 
-        variant="h6" 
+        <Typography
+        variant="h6"
         className={classes.subheading}
         style = {{color: 'white'}}
         >
@@ -106,7 +93,7 @@ const Login = () => {
         </Typography>
         <form className={classes.form}>
           <Input
-            label={"email"}
+            label="email"
             type="email"
             value={email}
             onChange={({ target }) => setEmail(target.value)}
@@ -127,13 +114,8 @@ const Login = () => {
           <div style= {{color: 'white'}}> {">"} </div>
         </Button>
         </Link>
-        </form> 
-          <div style = {{color: "#ededed"}}> Not a member? Create an Account! </div>
-          <div style = {{color: "#ededed"}}> Forgot your password? </div>
-          <Link to="/Home" style={{ textDecoration: "none" }}>
-            <div style = {{color: "#ededed"}}> Return Home </div>
-          </Link>
-          
+        </form>
+
           <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
       </Paper>
     </Container>
