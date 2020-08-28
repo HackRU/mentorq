@@ -82,10 +82,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email},
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
 }) => {
   const [date, setDate] = useState(new Date());
-  const [mentorEmail,setMentorEmail] = useState(mentor_email);
+  const [mentorEmail, setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
   const email = useSelector((store) => store.auth.email);
@@ -103,7 +103,7 @@ const Ticket = ({
     return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`
   }
 
-  useEffect (() => {
+  useEffect(() => {
     const timeout = setTimeout(() => setDate(new Date()), 1000);
     return () => clearTimeout(timeout);
   }, [date])
@@ -168,75 +168,75 @@ const Ticket = ({
     setFeedbackOpen(false);
   };
 
-  const claimButton = <TicketButton type="claim" handleClick= {claimTicket}/>
-  const reopenButton = <TicketButton type="reopen" handleClick= {reopenTicket}/>
-  const closeButton = <TicketButton type="close" handleClick= {closeTicket}/>
-  const feedbackButton = <TicketButton type= {checkFeedback()} handleClick= {handleClickOpen}/>
+  const claimButton = <TicketButton type="claim" handleClick={claimTicket} />
+  const reopenButton = <TicketButton type="reopen" handleClick={reopenTicket} />
+  const closeButton = <TicketButton type="close" handleClick={closeTicket} />
+  const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
 
   //IF Else for Buttons
-    if (isMentor || isDirector){
-      if (currStatus === "OPEN" ){
-        button =
+  if (isMentor || isDirector) {
+    if (currStatus === "OPEN") {
+      button =
         <div>
-            { claimButton }
+          {claimButton}
         </div>;
-      }
-      else if (currStatus === "CLAIMED") {
-        button =
+    }
+    else if (currStatus === "CLAIMED" && (isDirector || (isMentor && email === mentorEmail))) {
+      button =
         <div>
           <ButtonGroup>
-            { reopenButton }
-            { closeButton }
+            {reopenButton}
+            {closeButton}
           </ButtonGroup>
         </div>;
-      }
-      else if (currStatus === "CLOSED" && isDirector){
-        button =
+    }
+    else if (currStatus === "CLOSED" && isDirector) {
+      button =
         <div>
-        <ButtonGroup color="secondary">
-          { reopenButton }
-        </ButtonGroup>
-      </div>;
-      }
+          <ButtonGroup color="secondary">
+            {reopenButton}
+          </ButtonGroup>
+        </div>;
     }
-    else {
-      button = null;
-    }
+  }
+  else {
+    button = null;
+  }
 
   //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
   //If above conditions met -> return Alert of ticket claimed
 
   //Notification to mentor that they have successfully claimed a ticket
-  if (openClaimNote){
+  if (openClaimNote) {
     claimnote = <ClaimNote message="Ticket Claimed!"
-                    open={ true }
-                    handleClose={ handleClaimNoteClose }
-                    />
+      open={true}
+      handleClose={handleClaimNoteClose}
+    />
   }
   //FEEDBACK DIALOG BOX
   dialog = <DialogBox id={id} feedback={feedback}
-            feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
-            openFeedback={openFeedback} handleClose={handleClose}/>
+    feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
+    openFeedback={openFeedback} handleClose={handleClose} />
 
   //FIELD OF A TICKET
-  function TicketField(props){
+  function TicketField(props) {
     return (
-    <Grid item xs={props.size}>
-      <Label
-        className={
-          currStatus === "CLAIMED"
-            ? classes.claimedLabel
-            : classes.openClosedLabel
-        }
-      >
-        {props.name}
-      </Label>
-      <Typography variant="body1" gutterBottom>
-        {props.value}
-      </Typography>
-    </Grid>
-  )
+      <Grid item xs={props.size}>
+        <Label
+          className={
+            currStatus === "CLAIMED"
+              ? classes.claimedLabel
+              : classes.openClosedLabel
+          }
+        >
+          {props.name}
+        </Label>
+        <Typography variant="body1" gutterBottom>
+          {props.value}
+        </Typography>
+      </Grid>
+    )
   }
 
   return (
@@ -245,10 +245,10 @@ const Ticket = ({
         currStatus === "OPEN"
           ? classes.open
           : currStatus === "CLAIMED"
-          ? classes.claimed
-          : currStatus === "CLOSED"
-          ? classes.closed
-          : null
+            ? classes.claimed
+            : currStatus === "CLOSED"
+              ? classes.closed
+              : null
       }
     >
       <CardContent>
@@ -262,20 +262,20 @@ const Ticket = ({
           </Link>
 
           <Grid container spacing={1}>
-            <TicketField size={3} name="Contact" value={ contact } />
-            <TicketField size={3} name="Location" value={ location }/>
-            <TicketField size={3} name="Status" value={ currStatus }/>
-            <TicketField size={12} name="Mentor" value={ mentorEmail }/>
-            <TicketField size={12} name="Comment" value={ comment }/>
+            <TicketField size={3} name="Contact" value={contact} />
+            <TicketField size={3} name="Location" value={location} />
+            <TicketField size={3} name="Status" value={currStatus} />
+            <TicketField size={12} name="Mentor" value={mentorEmail} />
+            <TicketField size={12} name="Comment" value={comment} />
             <TicketField size={12}
-                          name="Time Open"
-                          value={getTimeDifference(date, new Date(created_datetime))}
-                            />
+              name="Time Open"
+              value={getTimeDifference(date, new Date(created_datetime))}
+            />
           </Grid>
-          { currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton: "" }
-          { button }
-          { dialog }
-          { claimnote }
+          {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
+          {button}
+          {dialog}
+          {claimnote}
         </Grid>
       </CardContent>
     </Card>
