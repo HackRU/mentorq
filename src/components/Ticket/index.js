@@ -184,18 +184,13 @@ const Ticket = ({
     else if (currStatus === "CLAIMED" && (isDirector || (isMentor && email === mentorEmail))) {
       button =
         <div>
-          <ButtonGroup>
-            {reopenButton}
-            {closeButton}
-          </ButtonGroup>
+          {reopenButton} {closeButton}
         </div>;
     }
     else if (currStatus === "CLOSED" && isDirector) {
       button =
         <div>
-          <ButtonGroup color="secondary">
-            {reopenButton}
-          </ButtonGroup>
+          {reopenButton}
         </div>;
     }
   }
