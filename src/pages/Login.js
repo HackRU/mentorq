@@ -5,14 +5,17 @@ import {
   TextField,
   Box,
   Button,
+  Palette, 
   Container,
   Typography,
   makeStyles,
   Avatar,
   CircularProgress,
   Paper,
+  createMuiTheme,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { Link } from "react-router-dom";
 
 const Input = ({ label, value, type, onChange }) => (
   <Box my={2}>
@@ -34,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     width: "40vw",
     height: "80vh",
     padding: theme.spacing(4),
+    backgroundColor: "#c85151",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -87,40 +91,50 @@ const Login = () => {
 
     <Container component="main" maxWidth="xs" className={classes.root} >
       <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-      </Typography>
-
+        <Typography 
+        variant="h1" 
+        className={classes.title}>
+              <b style = {{color: "white"}} >MENTOR</b>
+              <b style= {{color: '#f3bb44'}}>Q</b>
+        </Typography>
+        <Typography 
+        variant="h6" 
+        className={classes.subheading}
+        style = {{color: 'white'}}
+        >
+            <div>Have a question? Get matched with a mentor for help!</div>
+        </Typography>
         <form className={classes.form}>
           <Input
-            label={"Email"}
+            label={"email"}
             type="email"
             value={email}
             onChange={({ target }) => setEmail(target.value)}
           />
 
           <Input
-            label="Password"
+            label="password"
             type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-
-          <Button
-            variant="contained"
-            fullWidth
-            color="primary"
-            onClick={onSubmit}
-          >
-            Log In
+          <Link to="/Dashboard" style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onSubmit}
+            >
+          <div style= {{color: 'white'}}> {">"} </div>
         </Button>
-        </form>
-        <div>
+        </Link>
+        </form> 
+          <div style = {{color: "#ededed"}}> Not a member? Create an Account! </div>
+          <div style = {{color: "#ededed"}}> Forgot your password? </div>
+          <Link to="/Home" style={{ textDecoration: "none" }}>
+            <div style = {{color: "#ededed"}}> Return Home </div>
+          </Link>
+          
           <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
-        </div>
       </Paper>
     </Container>
 
