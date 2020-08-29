@@ -101,6 +101,9 @@ const useStyles = makeStyles((theme) => ({
   cardcontent: {
     paddingTop: 0
   },
+  gridmargin: {
+    paddingLeft: 0
+  }
 }));
 
 const Ticket = ({
@@ -275,11 +278,6 @@ const Ticket = ({
       }
     >
       <CardHeader
-        action={
-          <IconButton aria-label="settings">
-            <CloseIcon/>
-          </IconButton>
-        }
         className = {classes.cardheader}
         title={title}
         subheader="First LastName"
@@ -287,18 +285,10 @@ const Ticket = ({
 
       <CardContent className = {classes.cardcontent}>
         <Grid item>
-          <CardActions>
+          <CardActions className = {classes.gridmargin}>
             <Grid container spacing={1}>
-              <Grid item xs={3}>
-                <Typography variant="body1" gutterBottom>
-                  {currStatus}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Typography variant="body1" gutterBottom>
-                  {getTimeDifference(date, new Date(created_datetime))}
-                </Typography>
-              </Grid>
+              <TicketField size={3} name="Status" value={currStatus} />
+              <TicketField size={3} name="Time Open" value={getTimeDifference(date, new Date(created_datetime))} />
             </Grid>
             <IconButton
               className={clsx(classes.expand, {
@@ -313,16 +303,16 @@ const Ticket = ({
           </CardActions>
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent>
+            <CardContent className = {classes.gridmargin}>
               <Grid container spacing={1}>
                 <TicketField size={6} name="Contact" value={contact} />
                 <TicketField size={6} name="Mentor" value={mentorEmail} />
                 <TicketField size={12} name="Comment" value={comment} />
+                {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
+                {button}
               </Grid>
             </CardContent>
           </Collapse>
-          {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
-          {button}
           {dialog}
           {claimnote}
         </Grid>
