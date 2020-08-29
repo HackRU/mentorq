@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { request } from "../.././util";
-
+import clsx from 'clsx';
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { TicketButton } from './TicketButton';
@@ -10,8 +10,11 @@ import { ClaimNote } from './ClaimNote';
 import { DialogBox } from './Dialog';
 
 import {
-  CardContent,
   Card,
+  CardContent,
+  CardActions,
+  CardHeader,
+  Collapse,
   FormLabel as Label,
   Grid,
   Typography,
@@ -25,6 +28,9 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 import Rating from "@material-ui/lab/Rating";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
   open: {
@@ -79,6 +85,25 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     textDecoration: "none",
   },
+  expand: {
+    transform: "rotate(0deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest
+    })
+  },
+  expandOpen: {
+    transform: "rotate(180deg)"
+  },
+  cardheader: {
+    paddingBottom:0
+  },
+  cardcontent: {
+    paddingTop: 0
+  },
+  gridmargin: {
+    paddingLeft: 0
+  }
 }));
 
 const Ticket = ({
@@ -91,8 +116,9 @@ const Ticket = ({
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
-  const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
+  const [openFeedback, setFeedbackOpen] = useState(false); // determines whether dialogue box for feedback should be opened
   const [openClaimNote, setClaimNoteOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const classes = useStyles();
 
   let button, dialog, claimnote;
@@ -166,6 +192,11 @@ const Ticket = ({
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
+  };
+
+ // Open or Close Collapse for more info
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
   const claimButton = <TicketButton type="claim" handleClick={claimTicket} />
@@ -246,29 +277,42 @@ const Ticket = ({
               : null
       }
     >
-      <CardContent>
-        <Grid item>
-          <Link to={`/ticket/${id}`} className={classes.title}>
-            <Typography variant="h5" gutterBottom className={classes.title}>
-              <u>
-                <b>{title}</b>
-              </u>
-            </Typography>
-          </Link>
+      <CardHeader
+        className = {classes.cardheader}
+        title={title}
+        subheader="First LastName"
+      />
 
-          <Grid container spacing={1}>
-            <TicketField size={3} name="Contact" value={contact} />
-            <TicketField size={3} name="Location" value={location} />
-            <TicketField size={3} name="Status" value={currStatus} />
-            <TicketField size={12} name="Mentor" value={mentorEmail} />
-            <TicketField size={12} name="Comment" value={comment} />
-            <TicketField size={12}
-              name="Time Open"
-              value={getTimeDifference(date, new Date(created_datetime))}
-            />
-          </Grid>
-          {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
-          {button}
+      <CardContent className = {classes.cardcontent}>
+        <Grid item>
+          <CardActions className = {classes.gridmargin}>
+            <Grid container spacing={1}>
+              <TicketField size={3} name="Status" value={currStatus} />
+              <TicketField size={3} name="Time Open" value={getTimeDifference(date, new Date(created_datetime))} />
+            </Grid>
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          </CardActions>
+
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent className = {classes.gridmargin}>
+              <Grid container spacing={1}>
+                <TicketField size={6} name="Contact" value={contact} />
+                <TicketField size={6} name="Mentor" value={mentorEmail} />
+                <TicketField size={12} name="Comment" value={comment} />
+                {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
+                {button}
+              </Grid>
+            </CardContent>
+          </Collapse>
           {dialog}
           {claimnote}
         </Grid>

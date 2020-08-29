@@ -61,7 +61,6 @@ const loginUser = ({ email, password }) => {
       });
       const requestJSON = await mentorQRequest.json();
       const mentorQJson = parseJwt(requestJSON.access)
-      //console.log(mentorQJson)
 
       dispatch(
         recievedLoginUser({
