@@ -16,6 +16,7 @@ const defaultState = {
   // validUntil: "",
   director: false,
   mentor: false,
+  name: "",
   loadingLogin: false
 };
 
@@ -29,6 +30,7 @@ const auth = (state = defaultState, action) => {
     // validUntil,
     director,
     mentor,
+    name,
   } = action;
 
   switch (type) {
@@ -51,6 +53,7 @@ const auth = (state = defaultState, action) => {
         // validUntil,
         director,
         mentor,
+        name,
       };
     case FAILED_LOGIN:
       return { ...state, loadingLogin: false, hasErrors: true };

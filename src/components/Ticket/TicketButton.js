@@ -17,7 +17,7 @@ const TicketButton = ({
   type, handleClick
 }) =>  {
   const classes = useStyles();
-  return <Button className={classes.button} onClick={handleClick}>
+  return <Button variant="contained" className={classes.button} onClick={handleClick}>
             {type}
           </Button>
 }

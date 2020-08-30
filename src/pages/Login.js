@@ -5,35 +5,26 @@ import {
   TextField,
   Box,
   Button,
+  Palette,
   Container,
   Typography,
   makeStyles,
   Avatar,
   CircularProgress,
   Paper,
+  createMuiTheme,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-
-const Input = ({ label, value, type, onChange }) => (
-  <Box my={2}>
-    <TextField
-      fullWidth
-      variant="outlined"
-      label={label}
-      type={type}
-      value={value}
-      onChange={onChange}
-      margin="normal"
-    />
-  </Box>
-);
+import { Link } from "react-router-dom";
+import { Input } from '../components/Input';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     zIndex: 1,
     width: "40vw",
-    height: "80vh",
+    height: "50vh",
     padding: theme.spacing(4),
+    backgroundColor: "#c85151",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -86,41 +77,46 @@ const Login = () => {
   return (
 
     <Container component="main" maxWidth="xs" className={classes.root} >
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-      </Typography>
-
+      <Paper className={classes.paper} elevation={10}>
+        <Typography
+        variant="h1"
+        className={classes.title}>
+              <b style = {{color: "white"}} >MENTOR</b>
+              <b style= {{color: '#f3bb44'}}>Q</b>
+        </Typography>
+        <Typography
+        variant="h6"
+        className={classes.subheading}
+        style = {{color: 'white'}}
+        >
+            <div>Have a question? Get matched with a mentor for help!</div>
+        </Typography>
         <form className={classes.form}>
           <Input
-            label={"Email"}
+            label="email"
             type="email"
             value={email}
             onChange={({ target }) => setEmail(target.value)}
           />
 
           <Input
-            label="Password"
+            label="password"
             type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-
-          <Button
-            variant="contained"
-            fullWidth
-            color="primary"
-            onClick={onSubmit}
-          >
-            Log In
+          <Link to="/Dashboard" style={{ textDecoration: "none" }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onSubmit}
+            >
+          <div style= {{color: 'white'}}> {">"} </div>
         </Button>
+        </Link>
         </form>
-        <div>
+
           <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
-        </div>
       </Paper>
     </Container>
 
