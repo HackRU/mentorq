@@ -28,7 +28,7 @@ const Dashboard = () => {
       setTickets(await request({ path: "/tickets/" }));
     };
 
-    const interval = setInterval(update, 3000);
+    const interval = setInterval(update, 30000);
     update();
 
     return () => {
@@ -36,15 +36,8 @@ const Dashboard = () => {
     };
   }, []);
 
-
-  
-
   const onAddTicket = async (ticket) => {
     setTickets([...tickets, ticket]);
-
-  
-    
-
     await request({
       path: "/tickets/",
       type: "POST",
