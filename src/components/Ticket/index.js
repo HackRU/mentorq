@@ -8,6 +8,7 @@ import { TicketButton } from './TicketButton';
 import { Notification } from '.././Notification';
 import { ClaimNote } from './ClaimNote';
 import { DialogBox } from './Dialog';
+import { CancelDialog } from './CancelDialog'
 
 import {
   Card,
@@ -31,6 +32,7 @@ import Rating from "@material-ui/lab/Rating";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 const useStyles = makeStyles((theme) => ({
   open: {
@@ -119,9 +121,11 @@ const Ticket = ({
   const [openFeedback, setFeedbackOpen] = useState(false); // determines whether dialogue box for feedback should be opened
   const [openClaimNote, setClaimNoteOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [openDialog, setDialogOpen] = useState(false);
+  const [openCancelNote, setCancelNoteOpen] = useState(false);
   const classes = useStyles();
 
-  let button, dialog, claimnote;
+  let button, dialog, claimnote, canceldialog;
 
   const getTimeDifference = (timeA, timeB) => {
     const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
@@ -168,7 +172,10 @@ const Ticket = ({
     setCurrStatus("OPEN");
     getResponse("OPEN", "")
   };
-
+  const cancelTicket = async () => {
+    handleCancelNoteOpen();
+    
+  };
   const checkFeedback = () => {
     return feedbackURL === "" ? "feedback" : "edit feedback"
   }
@@ -182,13 +189,30 @@ const Ticket = ({
   const handleClaimNoteClose = (event) => {
     setClaimNoteOpen(false);
   };
+  
+  const handleCancelNoteOpen = () => {
+    setCancelNoteOpen(true);
+  }
 
-  // open dialogue box
+  const handleCancelNoteClose = (event) => {
+    setCancelNoteOpen(false);
+  }
+
+  const handleCancelTicket = (event) =>{
+    setCurrStatus("CANCELLED");
+    getResponse("CANCELLED", "");
+    setCancelNoteOpen(false);
+
+  }
+  const handleDeleteTicket = (event) => {
+    setCurrStatus("DELETED");
+    getResponse("DELETED", "");
+    setCancelNoteOpen(false);
+  }
   const handleClickOpen = () => {
     console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
-
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
@@ -199,11 +223,14 @@ const Ticket = ({
     setExpanded(!expanded);
   };
 
+
   const claimButton = <TicketButton type="claim" handleClick={claimTicket} />
   const reopenButton = <TicketButton type="reopen" handleClick={reopenTicket} />
   const closeButton = <TicketButton type="close" handleClick={closeTicket} />
   const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
-
+  const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
+  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket } />
+   
   //IF Else for Buttons
   if (isMentor || isDirector) {
     if (currStatus === "OPEN") {
@@ -229,10 +256,17 @@ const Ticket = ({
     button = null;
   }
 
-  //Alert to User that their ticket has been claimed
+  if (!isDirector && !isMentor ){
+  if (!isDirector && !isMentor && currStatus === "OPEN"){
+    button =
+      <div>
+        {cancelButton}
+      </div>;
+  }
+}
+   //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
   //If above conditions met -> return Alert of ticket claimed
-
   //Notification to mentor that they have successfully claimed a ticket
   if (openClaimNote) {
     claimnote = <ClaimNote message="Ticket Claimed!"
@@ -240,7 +274,24 @@ const Ticket = ({
       handleClose={handleClaimNoteClose}
     />
   }
+
+  if (openCancelNote){
+    canceldialog = <CancelDialog
+      open={true}
+      handleClose={handleCancelNoteClose} 
+      handleCancel={handleCancelTicket}
+    />
+  }
+
+  if (openCancelNote && isDirector){
+    canceldialog = <CancelDialog
+      open={true}
+      handleClose={handleCancelNoteClose} 
+      handleCancel={handleCancelTicket}
+    />
+  }
   //FEEDBACK DIALOG BOX
+  //Creating a variable named "dialog that will store the component Dialog.js"
   dialog = <DialogBox id={id} feedback={feedback}
     feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
     openFeedback={openFeedback} handleClose={handleClose} />
@@ -310,11 +361,13 @@ const Ticket = ({
                 <TicketField size={12} name="Comment" value={comment} />
                 {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
                 {button}
+                {isDirector && deleteButton}
               </Grid>
             </CardContent>
           </Collapse>
           {dialog}
           {claimnote}
+          {canceldialog}
         </Grid>
       </CardContent>
     </Card>
