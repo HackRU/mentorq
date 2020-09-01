@@ -10,8 +10,15 @@ const Container = styled.div`
   word-wrap: break-word;
 `;
 
+const sortByTimeOpen = (tickets = []) => {
+  //tickets.map(a => console.log(new Date (a.created_datetime).valueOf()))
+  // owner_email
+  tickets.sort((a, b) => new Date(b.created_datetime).valueOf() - new Date(a.created_datetime).valueOf())
+}
+
 const TicketContainer = ({ tickets = [] }) => (
   <Container style={{ position: 'relative', zIndex: '2' }}>
+    {sortByTimeOpen(tickets)}
     {tickets.map((ticket) => (
       <Ticket key={ticket.id} ticket={ticket} />
     ))}

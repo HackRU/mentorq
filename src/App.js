@@ -12,7 +12,6 @@ import Background from "./design/Background.jsx"
 import theme from "./design/theme.js"
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Ticket from "./pages/Tickets";
 import { AllTickets } from "./pages/Admin/Tickets";
 import Feedback from "./pages/Admin/Feedback";
 
@@ -32,8 +31,6 @@ export default () => {
             <Route path="/login">
               {isLoggedIn ? <Redirect to="/" /> : <Login />}
             </Route>
-
-            <Route path="/ticket/:id" component={Ticket} />
 
             <Route path="/admin/alltickets">
               {isLoggedIn ? <AllTickets /> : <Redirect to="/login" />}
