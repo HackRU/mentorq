@@ -8,12 +8,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@material-ui/core";
+} from "@material-ui/core"; 
 import Rating from '@material-ui/lab/Rating';
 
 const DialogBox = ({
   id, feedback, feedbackURL, setFeedbackURL, openFeedback, handleClose
-}) =>  {
+}) =>  {  
   const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
   const [value, setValue] = useState(0); // value of star rating
   const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
