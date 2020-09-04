@@ -1,5 +1,6 @@
 import React from "react";
 import { Ticket } from "../Ticket";
+import { TicketDropdown } from "../TicketDropdown";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -10,19 +11,25 @@ const Container = styled.div`
   word-wrap: break-word;
 `;
 
-const sortByTimeOpen = (tickets = []) => {
-  //tickets.map(a => console.log(new Date (a.created_datetime).valueOf()))
-  // owner_email
-  tickets.sort((a, b) => new Date(b.created_datetime).valueOf() - new Date(a.created_datetime).valueOf())
+const getActive = (tickets = []) => {
+  return tickets.filter(ticket => (ticket.status === "OPEN" || ticket.status === "CLAIMED"))
+}
+
+const getClosed = (tickets = []) => {
+  return tickets.filter(ticket => (ticket.status === "CANCELED" || ticket.status === "CLOSED"))
 }
 
 const TicketContainer = ({ tickets = [] }) => (
-  <Container style={{ position: 'relative', zIndex: '2' }}>
+  <div>
+    <TicketDropdown group="active" tickets={getActive(tickets)} />
+    <TicketDropdown group="closed" tickets={getClosed(tickets)} />
+  </div>
+  /*<Container style={{ position: 'relative', zIndex: '2' }}>
     {sortByTimeOpen(tickets)}
     {tickets.map((ticket) => (
       <Ticket key={ticket.id} ticket={ticket} />
     ))}
-  </Container>
+  </Container>*/
 );
 
 export { TicketContainer };

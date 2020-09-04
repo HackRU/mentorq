@@ -12,7 +12,6 @@ import CloseIcon from '@material-ui/icons/Close';
 const CancelDialog = ({
     open, handleClose, handleCancel
 }) =>  {
-  {console.log(open)}
   return (
     <div>
       <Dialog
@@ -21,7 +20,7 @@ const CancelDialog = ({
     aria-labelledby="form-dialog-title"
   >
     <DialogTitle id="form-dialog-title"> Cancel Ticket? </DialogTitle>
-    
+
     <DialogActions>
       <Button onClick={handleCancel} color="primary">
         Yes
