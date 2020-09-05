@@ -90,7 +90,6 @@ const DialogBox = ({
         defaultValue={writtenFeedback}
         onChange={(event) => {
           setWrittenFeedback(event.target.value);
-          console.log("written feedback: ", writtenFeedback)
         }}
       />
     </DialogContent>

@@ -108,6 +108,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Ticket = ({
   ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
+  initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
@@ -241,13 +242,14 @@ const Ticket = ({
       handleClose={handleClaimNoteClose}
     />
   }
+
   //FEEDBACK DIALOG BOX
-  const updateFeedback = async () => {
-    console.log("update feedback");
-    setExistingFeedback(await request({ path: `/feedback/${id}` }));
-  };
-  if (feedbackURL !== "" && openFeedback === false) {
-    updateFeedback();
+  if (feedbackURL != "" && existingFeedback.length == 0) {
+    for (var i = 0; i < initFeedback.length; i++) {
+      if (initFeedback[i].ticket == id) {
+        setExistingFeedback(initFeedback[i]);
+      }
+    }
   }
 
   const setFeedback = () => {
