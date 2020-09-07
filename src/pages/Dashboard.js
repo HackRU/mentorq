@@ -16,9 +16,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Dashboard = () => {
-  // State for tickets and a way to change the tickets. The array will hold the tickets  
+  // State for tickets and a way to change the tickets. The array will hold the tickets
   const [tickets, setTickets] = useState([]);
-  // State variable for emails 
+  const [userFeedback, setUserFeedback] = useState([]);
+  // State variable for emails
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const classes = useStyles();
@@ -26,9 +27,10 @@ const Dashboard = () => {
   useEffect(() => {
     const update = async () => {
       setTickets(await request({ path: "/tickets/" }));
+      // setUserFeedback(await request({ path: "/feedback/" }));
     };
 
-    const interval = setInterval(update, 3000);
+    const interval = setInterval(update, 30000);
     update();
 
     return () => {
@@ -36,14 +38,8 @@ const Dashboard = () => {
     };
   }, []);
 
-
-  
-
   const onAddTicket = async (ticket) => {
     setTickets([...tickets, ticket]);
-
-  
-    
 
     await request({
       path: "/tickets/",

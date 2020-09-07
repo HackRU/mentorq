@@ -23,7 +23,7 @@ export default function Feedback() {
             setFeedbackList(await request({ path: "/feedback/" }));
         };
 
-        const interval = setInterval(update, 3000);
+        const interval = setInterval(update, 30000);
         update();
         return () => {
             clearInterval(interval);
@@ -47,4 +47,3 @@ export default function Feedback() {
         </DashboardContainer >
     );
 }
-

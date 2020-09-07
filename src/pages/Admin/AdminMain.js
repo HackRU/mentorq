@@ -7,9 +7,7 @@ import Feedback from './Feedback';
 
 import {
     Route,
-    BrowserRouter as Router,
     Switch,
-    Redirect,
 } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +25,7 @@ const AdminMain = () => {
             setTickets(await request({ path: "/tickets/" }));
         };
 
-        const interval = setInterval(update, 3000);
+        const interval = setInterval(update, 30000);
         update();
         return () => {
             clearInterval(interval);

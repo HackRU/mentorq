@@ -24,7 +24,13 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: "none",
     color: "white",
-  }
+  },
+  button: {
+    color: theme.palette.textPrimary.main,
+  },
+  yellowFont: {
+    color: theme.palette.tertiary.main,
+  },
 }));
 
 export default () => {
@@ -38,21 +44,23 @@ export default () => {
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             <Link to="/" className={classes.link}>
-              MentorQ
+              <b>MENTOR</b>
+              <b className={classes.yellowFont}>Q</b>
             </Link>
           </Typography>
 
           <Typography className={classes.email}>{email}</Typography>
-          <Link to="/login" style={{ textDecoration: 'none' }} >
+          <Link to="/login" style={{ textDecoration: "none" }}>
             <Button
               variant="contained"
               color="secondary"
+              className={classes.button}
               onClick={() => {
                 dispatch(logoutUser());
               }}
             >
               Logout
-          </Button>
+            </Button>
           </Link>
         </Toolbar>
       </AppBar>

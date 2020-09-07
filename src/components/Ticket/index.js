@@ -1,285 +1,376 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { request } from "../.././util";
-import { logoutUser } from "../../actions";
+import clsx from 'clsx';
 import { useDispatch, useSelector } from "react-redux";
-import { recievedLoginUser } from "../../actions";
+import { makeStyles } from "@material-ui/core/styles";
+import { TicketButton } from './TicketButton';
+import { Notification } from '.././Notification';
+import { ClaimNote } from './ClaimNote';
+import { DialogBox } from './Dialog';
+import { CancelDialog } from './CancelDialog'
+
 import {
-  CardContent,
   Card,
+  CardContent,
+  CardActions,
+  CardHeader,
+  Collapse,
   FormLabel as Label,
   Grid,
   Typography,
-  Button,
-  ButtonGroup,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from "@material-ui/core";
-import Rating from '@material-ui/lab/Rating';
+import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+
+const useStyles = makeStyles((theme) => ({
+  open: {
+    backgroundColor: theme.palette.secondary.main,
+    color: "white",
+    position: "relative",
+    zIndex: "2",
+    borderLeftWidth: 4,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.tertiary.main,
+  },
+  claimed: {
+    backgroundColor: theme.palette.secondary.light,
+    color: "black",
+    position: "relative",
+    zIndex: "2",
+    borderLeftWidth: 4,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.tertiary.main,
+  },
+  closed: {
+    backgroundColor: theme.palette.secondary.dark,
+    color: "white",
+    position: "relative",
+    zIndex: "2",
+    borderLeftWidth: 4,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.tertiary.main,
+  },
+  openClosedLabel: {
+    color: theme.palette.textSecondary.main,
+  },
+  claimedLabel: {
+    color: theme.palette.textPrimary.dark,
+  },
+  button: {
+    backgroundColor: theme.palette.tertiary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.tertiary.dark,
+    },
+  },
+  title: {
+    color: "white",
+    textDecoration: "none",
+  },
+  expand: {
+    transform: "rotate(0deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest
+    })
+  },
+  expandOpen: {
+    transform: "rotate(180deg)"
+  },
+  cardheader: {
+    paddingBottom: 0
+  },
+  cardcontent: {
+    paddingTop: 0
+  },
+  gridmargin: {
+    paddingLeft: 0
+  }
+}));
 
 const Ticket = ({
-  ticket: { id, title, comment, contact, location, status, feedback, mentor_email},
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
+  initFeedback
 }) => {
-  const [mentorEmail,setMentorEmail] = useState(mentor_email);
+  const [date, setDate] = useState(new Date());
+  const [mentorEmail, setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
-  const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
   const email = useSelector((store) => store.auth.email);
-  const isDirector = useSelector((store => store.auth.director));
-  const isMentor = useSelector((store => store.auth.mentor));
-  const [value, setValue] = useState(0); // value of star rating
-  const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
-  const [openFeedback, setFeedbackOpen] = React.useState(false); // determines whether dialogue box for feedback should be opened
-  const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
+  const isDirector = useSelector((store) => store.auth.director);
+  const isMentor = useSelector((store) => store.auth.mentor);
+  const [openFeedback, setFeedbackOpen] = useState(false); // determines whether dialogue box for feedback should be opened
+  const [openClaimNote, setClaimNoteOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [existingFeedback, setExistingFeedback] = useState([]);
+  const [openCancelNote, setCancelNoteOpen] = useState(false);
+  
+  const classes = useStyles();
+
+  let button, dialog, claimnote, canceldialog;
+
+  const getTimeDifference = (timeA, timeB) => {
+    const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
+    const timeInHours = Math.round((timeInMilliseconds / 1000) / 60 / 60);
+    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`
+  }
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setDate(new Date()), 10000);
+    return () => clearTimeout(timeout);
+  }, [date])
 
   // update status of ticket
   useEffect(() => {
     setCurrStatus(status);
     setMentorEmail(mentor_email);
+  }, [status, mentor_email]);
 
-  }, [status,mentor_email]);
 
-  // check if ticket already has feedback allowing for edits to existing feedback
-  useEffect(() => {
-    const update = async () => {
-      setExistingFeedback(await request({ path: `/feedback/${id}` }));
-      setValue(existingFeedback.rating);
-      setWrittenFeedback(existingFeedback.comments);
-    };
-    if (feedbackURL != "" && openFeedback == false) {
-      const interval = setInterval(update, 3000);
-      update();
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [existingFeedback]);
+  const getResponse = async (type, m_email) => {
+    await request({
+      path: `/tickets/${id}/`,
+      type: "PATCH",
+      body: {
+        status: type,
+        mentor_email: m_email
+      },
+    });
+  }
 
   const claimTicket = async () => {
     setCurrStatus("CLAIMED");
     setMentorEmail(email);
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "CLAIMED",
-        mentor_email: email
-      },
-    });
+    getResponse("CLAIMED", email)
+    handleClaimNoteOpen()
   };
 
   const closeTicket = async () => {
     setCurrStatus("CLOSED");
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "CLOSED",
-      },
-    });
+    getResponse("CLOSED", email)
   };
 
-  const reOpen = async () => {
+  const reopenTicket = async () => {
     setCurrStatus("OPEN");
+    getResponse("OPEN", "")
+  };
+  const cancelTicket = async () => {
+    handleCancelNoteOpen();
 
-    await request({
-      path: `/tickets/${id}/`,
-      type: "PATCH",
-      body: {
-        status: "OPEN",
-        mentor_email: "",
-        mentor: "",
+  };
+  const checkFeedback = () => {
+    return feedbackURL === "" ? "feedback" : "edit feedback"
+  }
 
-
-      },
-    });
+  // open ClaimNote
+  const handleClaimNoteOpen = () => {
+    setClaimNoteOpen(true);
   };
 
+  // close ClaimNote
+  const handleClaimNoteClose = (event) => {
+    setClaimNoteOpen(false);
+  };
 
-  let button;
-  //IF Else for Buttons
-    if (isMentor || isDirector === true){
-      //console.log("SHOW BUTTONS");
-      if (currStatus === "OPEN" ){
-        button =
-        <div>
-          <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={claimTicket}>
-              Claim
-            </Button>
-          </ButtonGroup>
-        </div>;
-      }
-      else if (currStatus === "CLAIMED") {
-        button =
-        <div>
-          <ButtonGroup color="secondary">
-            <Button variant="contained" onClick={reOpen}>
-              Reopen
-            </Button>
+  const handleCancelNoteOpen = () => {
+    setCancelNoteOpen(true);
+  }
 
-            <Button variant="contained" onClick={closeTicket}>
-            Close
-            </Button>
-          </ButtonGroup>
-        </div>;
-      }
-      else if (currStatus === "CLOSED" && isDirector === true){
-        button =
-        <div>
-        <ButtonGroup color="secondary">
-          <Button variant="contained" onClick={reOpen}>
-            Reopen
-          </Button>
-        </ButtonGroup>
-      </div>;
-      }
-    }
-    else {
-      button = null;
-      //console.log("NULL");
-    }
+  const handleCancelNoteClose = (event) => {
+    setCancelNoteOpen(false);
+  }
 
+  const handleCancelTicket = (event) =>{
+    setCurrStatus("CANCELLED");
+    getResponse("CANCELLED", "");
+    setCancelNoteOpen(false);
 
-  // open dialogue box
+  }
+  const handleDeleteTicket = (event) => {
+    setCurrStatus("DELETED");
+    getResponse("DELETED", "");
+    setCancelNoteOpen(false);
+  }
   const handleClickOpen = () => {
+    console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
-
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
   };
 
-  const submitFeedback = async () => {
-    handleClose();
-    console.log(id, value, writtenFeedback);
-
-    if (feedbackURL == "") {
-      await request({
-        path: `/feedback/`,
-        type: "POST",
-        body: {
-          ticket: id,
-          rating: value,
-          comments: writtenFeedback
-        },
-      });
-    }
-    else {
-      await request({
-        path: `/feedback/${id}`,
-        type: "PATCH",
-        body: {
-          rating: value,
-          comments: writtenFeedback
-        },
-      });
-    }
-
-    setFeedbackURL("temp URL");
+  // Open or Close Collapse for more info
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
   };
 
-  let dialog;
-  dialog = <Dialog open={openFeedback} onClose={handleClose} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Please rate the help you received from your mentor.
-      </DialogContentText>
-      <Rating
-        name="hover-feedback"
-        value={value || -1}
-        precision={0.5}
-        onChange={(event, newValue) => {
-          console.log(openFeedback);
-          setValue(newValue);
-        }}
-        onChangeActive={(event, newHover) => {
-          setHover(newHover);
-        }}
-      /><br /><br /><br />
-      <DialogContentText>
-        How was your Mentorq experience?
-      </DialogContentText>
-      <TextField
-        autoFocus
-        margin="dense"
-        id="name"
-        label="Feedback"
-        multiline
-        rows={4}
-        variant="outlined"
-        fullWidth
-        defaultValue={writtenFeedback}
-        onChange={(event) => {
-          setWrittenFeedback(event.target.value);
-        }}
-      />
-    </DialogContent>
-    <DialogActions>
-      <Button onClick={handleClose} color="primary">
-        Cancel
-      </Button>
-      <Button onClick={submitFeedback} color="primary">
-        Submit
-      </Button>
-    </DialogActions>
-  </Dialog>;
+
+  const claimButton = <TicketButton type="claim" handleClick={claimTicket} />
+  const reopenButton = <TicketButton type="reopen" handleClick={reopenTicket} />
+  const closeButton = <TicketButton type="close" handleClick={closeTicket} />
+  const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
+  const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
+  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket } />
+
+  //IF Else for Buttons
+  if (isMentor || isDirector) {
+    if (currStatus === "OPEN") {
+      button =
+        <div>
+          {claimButton}
+        </div>;
+    }
+    else if (currStatus === "CLAIMED" && (isDirector || (isMentor && email === mentorEmail))) {
+      button =
+        <div>
+          {reopenButton} {closeButton}
+        </div>;
+    }
+    else if (currStatus === "CLOSED" && isDirector) {
+      button =
+        <div>
+          {reopenButton}
+        </div>;
+    }
+  }
+  else {
+    button = null;
+  }
+
+  if (!isDirector && !isMentor ){
+  if (!isDirector && !isMentor && currStatus === "OPEN"){
+    button =
+      <div>
+        {cancelButton}
+      </div>;
+  }
+}
+   //Alert to User that their ticket has been claimed
+  //TODO: Check if User associated with ticket matches current email, Change in useState
+  //If above conditions met -> return Alert of ticket claimed
+  //Notification to mentor that they have successfully claimed a ticket
+  if (openClaimNote) {
+    claimnote = <ClaimNote message="Ticket Claimed!"
+      open={true}
+      handleClose={handleClaimNoteClose}
+    />
+  }
+
+  //FEEDBACK DIALOG BOX
+  if (feedbackURL != "" && existingFeedback.length == 0) {
+    for (var i = 0; i < initFeedback.length; i++) {
+      if (initFeedback[i].ticket == id) {
+        setExistingFeedback(initFeedback[i]);
+      }
+    }
+  }
+
+  const setFeedback = () => {
+    dialog = <DialogBox id={id}
+      feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
+      openFeedback={openFeedback} handleClose={handleClose}
+      initFeedback={existingFeedback} />
+    return dialog;
+  }
+
+  if (openCancelNote){
+    canceldialog = <CancelDialog
+      open={true}
+      handleClose={handleCancelNoteClose}
+      handleCancel={handleCancelTicket}
+    />
+  }
+
+  if (openCancelNote && isDirector){
+    canceldialog = <CancelDialog
+      open={true}
+      handleClose={handleCancelNoteClose}
+      handleCancel={handleCancelTicket}
+    />
+  }
+
+  //FIELD OF A TICKET
+  function TicketField(props) {
+    return (
+      <Grid item xs={props.size}>
+        <Label
+          className={
+            currStatus === "CLAIMED"
+              ? classes.claimedLabel
+              : classes.openClosedLabel
+          }
+        >
+          {props.name}
+        </Label>
+        <Typography variant="body1" gutterBottom>
+          {props.value}
+        </Typography>
+      </Grid>
+    )
+  }
 
   return (
-    <Card>
-      <CardContent>
-        <Grid item>
-          <Link to={`/ticket/${id}`}>
-            <Typography variant="h5" gutterBottom>{title}</Typography>
-          </Link>
+    <Card
+      className={
+        currStatus === "OPEN"
+          ? classes.open
+          : currStatus === "CLAIMED"
+            ? classes.claimed
+            : currStatus === "CLOSED"
+              ? classes.closed
+              : null
+      }
+    >
+      <CardHeader
+        className={classes.cardheader}
+        title={title}
+        subheader="First LastName"
+      />
 
-          <Grid container spacing={1}>
-            <Grid item xs={3}>
-              <Label>Contact</Label>
-              <Typography variant="body1" gutterBottom>
-              {contact}
-              </Typography>
-              <Label> Mentor </Label>
-              <Typography variant="body1" gutterBottom>
-              {currStatus ==="CLAIMED" && mentorEmail}
-              </Typography>
+      <CardContent className={classes.cardcontent}>
+        <Grid item>
+          <CardActions className={classes.gridmargin}>
+            <Grid container spacing={1}>
+              <TicketField size={3} name="Status" value={currStatus} />
+              <TicketField size={3} name="Time Open" value={getTimeDifference(date, new Date(created_datetime))} />
             </Grid>
-            <Grid item xs={3}>
-              <Label>Location</Label>
-              <Typography variant="body1" gutterBottom>{location}</Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Label>Status</Label>
-              <Typography variant="body1" gutterBottom>{currStatus}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Label>Comment</Label>
-              <Typography variant="body1" gutterBottom>{comment}</Typography>
-            </Grid>
-          </Grid>
-          {currStatus == "CLOSED" && feedbackURL == "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
-                Feedback
-                </Button>
-            </ButtonGroup> :
-            ""}
-          {currStatus == "CLOSED" && feedbackURL != "" && !isDirector && !isMentor ?
-            <ButtonGroup color="secondary">
-              <Button variant="contained" onClick={handleClickOpen} >
-                Edit Feedback
-              </Button>
-            </ButtonGroup> :
-            ""}
-          { button }
-          { dialog }
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+          </CardActions>
+
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent className={classes.gridmargin}>
+              <Grid container spacing={1}>
+                <TicketField size={6} name="Contact" value={contact} />
+                <TicketField size={6} name="Mentor" value={mentorEmail} />
+                <TicketField size={12} name="Comment" value={comment} />
+                {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
+                {button}
+                {isDirector && deleteButton}
+              </Grid>
+            </CardContent>
+          </Collapse>
+          {setFeedback()}
+          {claimnote}
+          {canceldialog}
         </Grid>
       </CardContent>
     </Card>
