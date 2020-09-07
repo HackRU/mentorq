@@ -31,11 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
   body: {
     backgroundColor: 'rgba(0, 0, 0, .0)',
+    paddingBottom:8
   },
 }));
 
 const TicketDropdown = ({
-  group, tickets
+  group, tickets, defaultOpen
 }) =>  {
   const [expanded, setExpanded] = React.useState('panel1');
   const classes = useStyles();
@@ -51,7 +52,7 @@ const TicketDropdown = ({
 
   return (
     <div>
-      <Accordion className={classes.body} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <Accordion className={classes.body} expanded={expanded === 'panel1'} onChange={handleChange('panel1')} defaultExpanded={defaultOpen}>
         <AccordionSummary
           className={classes.header}
           expandIcon={<ExpandMoreIcon />}

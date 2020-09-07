@@ -1,6 +1,7 @@
 import React from "react";
 import { Ticket } from "../Ticket";
 import { TicketDropdown } from "../TicketDropdown";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -19,17 +20,39 @@ const getClosed = (tickets = []) => {
   return tickets.filter(ticket => (ticket.status === "CANCELED" || ticket.status === "CLOSED"))
 }
 
-const TicketContainer = ({ tickets = [] }) => (
-  <div>
-    <TicketDropdown group="active" tickets={getActive(tickets)} />
-    <TicketDropdown group="closed" tickets={getClosed(tickets)} />
-  </div>
-  /*<Container style={{ position: 'relative', zIndex: '2' }}>
-    {sortByTimeOpen(tickets)}
-    {tickets.map((ticket) => (
-      <Ticket key={ticket.id} ticket={ticket} />
-    ))}
-  </Container>*/
-);
+const getOwnClaimed = (tickets = [], email) => {
+  return tickets.filter(ticket => (ticket.status === "CLAIMED" && ticket.mentor_email === email))
+}
+
+const getOtherActive = (tickets = [], email) => {
+  return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED"))
+}
+
+const TicketContainer = ({ tickets = [] }) => {
+  const isDirector = useSelector((store) => store.auth.director);
+  const isMentor = useSelector((store) => store.auth.mentor);
+  const email = useSelector((store) => store.auth.email);
+
+  let dropdowns
+
+  if (isMentor && !isDirector) {
+    dropdowns = <div>
+      <TicketDropdown group="my tickets" defaultOpen={true} tickets={getOwnClaimed(tickets, email)} />
+      <TicketDropdown group="ticket queue" defaultOpen={false} tickets={getOtherActive(tickets, email)} />
+    </div>
+  }
+  else {
+    dropdowns = <div>
+      <TicketDropdown group="active" defaultOpen={true} tickets={getActive(tickets)} />
+      <TicketDropdown group="closed" defaultOpen={false} tickets={getClosed(tickets)} />
+    </div>
+  }
+
+  return(
+    <div>
+      {dropdowns}
+    </div>
+  )
+};
 
 export { TicketContainer };

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { request } from "../.././util";
 import clsx from 'clsx';
 import { useDispatch, useSelector } from "react-redux";
@@ -19,18 +18,8 @@ import {
   FormLabel as Label,
   Grid,
   Typography,
-  Button,
-  ButtonGroup,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from "@material-ui/core";
-import Rating from "@material-ui/lab/Rating";
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
@@ -174,7 +163,7 @@ const Ticket = ({
   };
   const cancelTicket = async () => {
     handleCancelNoteOpen();
-    
+
   };
   const checkFeedback = () => {
     return feedbackURL === "" ? "feedback" : "edit feedback"
@@ -189,7 +178,7 @@ const Ticket = ({
   const handleClaimNoteClose = (event) => {
     setClaimNoteOpen(false);
   };
-  
+
   const handleCancelNoteOpen = () => {
     setCancelNoteOpen(true);
   }
@@ -230,7 +219,7 @@ const Ticket = ({
   const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
   const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
   const deleteButton = <TicketButton type="delete" handleClick={cancelTicket } />
-   
+
   //IF Else for Buttons
   if (isMentor || isDirector) {
     if (currStatus === "OPEN") {
@@ -278,7 +267,7 @@ const Ticket = ({
   if (openCancelNote){
     canceldialog = <CancelDialog
       open={true}
-      handleClose={handleCancelNoteClose} 
+      handleClose={handleCancelNoteClose}
       handleCancel={handleCancelTicket}
     />
   }
@@ -286,7 +275,7 @@ const Ticket = ({
   if (openCancelNote && isDirector){
     canceldialog = <CancelDialog
       open={true}
-      handleClose={handleCancelNoteClose} 
+      handleClose={handleCancelNoteClose}
       handleCancel={handleCancelTicket}
     />
   }
