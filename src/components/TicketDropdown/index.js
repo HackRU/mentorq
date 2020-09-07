@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TicketDropdown = ({
-  group, tickets, defaultOpen
+  group, tickets, defaultOpen, initFeedback
 }) =>  {
   const [expanded, setExpanded] = React.useState('panel1');
   const classes = useStyles();
@@ -64,7 +64,7 @@ const TicketDropdown = ({
           <Container style={{ position: 'relative', zIndex: '2' }}>
             {sortByTimeOpen(tickets)}
             {tickets.map((ticket) => (
-              <Ticket key={ticket.id} ticket={ticket} />
+              <Ticket key={ticket.id} ticket={ticket} initFeedback={initFeedback}/>
             ))}
           </Container>
         </Accordion>

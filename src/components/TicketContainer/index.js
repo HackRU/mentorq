@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Ticket } from "../Ticket";
 import { TicketDropdown } from "../TicketDropdown";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { request } from "../.././util";
 
@@ -43,29 +42,21 @@ const TicketContainer = ({ tickets = [] }) => {
   if (initFeedback.length == 0 && !isDirector && !isMentor) {
     updateFeedback();
   }
-  
+
   let dropdowns
 
   if (isMentor && !isDirector) {
     dropdowns = <div>
-      <TicketDropdown group="my tickets" defaultOpen={true} tickets={getOwnClaimed(tickets, email)} />
-      <TicketDropdown group="ticket queue" defaultOpen={false} tickets={getOtherActive(tickets, email)} />
+      <TicketDropdown group="my tickets" defaultOpen={true} initFeedback={initFeedback} tickets={getOwnClaimed(tickets, email)} />
+      <TicketDropdown group="ticket queue" defaultOpen={false} initFeedback={initFeedback} tickets={getOtherActive(tickets, email)} />
     </div>
   }
   else {
     dropdowns = <div>
-      <TicketDropdown group="active" defaultOpen={true} tickets={getActive(tickets)} />
-      <TicketDropdown group="closed" defaultOpen={false} tickets={getClosed(tickets)} />
+      <TicketDropdown group="active" defaultOpen={true} initFeedback={initFeedback} tickets={getActive(tickets)} />
+      <TicketDropdown group="closed" defaultOpen={false} initFeedback={initFeedback} tickets={getClosed(tickets)} />
     </div>
   }
-    
-   /*
-   <Container style={{ position: 'relative', zIndex: '2' }}>
-      {tickets.map((ticket) => (
-        <Ticket key={ticket.id} ticket={ticket} initFeedback={initFeedback} />
-      ))}
-    </Container>
-   */
 
   return(
     <div>
@@ -73,3 +64,5 @@ const TicketContainer = ({ tickets = [] }) => {
     </div>
   )
 };
+
+export { TicketContainer };
