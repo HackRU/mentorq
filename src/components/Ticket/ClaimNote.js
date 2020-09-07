@@ -11,7 +11,6 @@ import CloseIcon from '@material-ui/icons/Close';
 const ClaimNote = ({
   message, open, handleClose
 }) =>  {
-  {console.log(open)}
   return (
     <div>
       <Snackbar

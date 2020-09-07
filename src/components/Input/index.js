@@ -10,7 +10,6 @@ function Input ({label, value, type, onChange}){
     <Box my={2}>
       <TextField
         fullWidth
-        multiline
         label={label}
         type={type}
         value={value}

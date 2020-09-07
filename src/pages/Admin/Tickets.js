@@ -33,8 +33,6 @@ const AllTickets = () => {
         }
     }, []);
 
-    // console.log("tickets")
-
     return (
         < DashboardContainer >
             <div className={classes.root}>
