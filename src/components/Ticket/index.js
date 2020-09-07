@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "rotate(180deg)"
   },
   cardheader: {
-    paddingBottom:0
+    paddingBottom: 0
   },
   cardcontent: {
     paddingTop: 0
@@ -110,6 +110,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Ticket = ({
   ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
+  initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
@@ -121,8 +122,9 @@ const Ticket = ({
   const [openFeedback, setFeedbackOpen] = useState(false); // determines whether dialogue box for feedback should be opened
   const [openClaimNote, setClaimNoteOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [openDialog, setDialogOpen] = useState(false);
+  const [existingFeedback, setExistingFeedback] = useState([]);
   const [openCancelNote, setCancelNoteOpen] = useState(false);
+  
   const classes = useStyles();
 
   let button, dialog, claimnote, canceldialog;
@@ -134,7 +136,7 @@ const Ticket = ({
   }
 
   useEffect(() => {
-    const timeout = setTimeout(() => setDate(new Date()), 1000);
+    const timeout = setTimeout(() => setDate(new Date()), 10000);
     return () => clearTimeout(timeout);
   }, [date])
 
@@ -218,7 +220,7 @@ const Ticket = ({
     setFeedbackOpen(false);
   };
 
- // Open or Close Collapse for more info
+  // Open or Close Collapse for more info
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -275,6 +277,23 @@ const Ticket = ({
     />
   }
 
+  //FEEDBACK DIALOG BOX
+  if (feedbackURL != "" && existingFeedback.length == 0) {
+    for (var i = 0; i < initFeedback.length; i++) {
+      if (initFeedback[i].ticket == id) {
+        setExistingFeedback(initFeedback[i]);
+      }
+    }
+  }
+
+  const setFeedback = () => {
+    dialog = <DialogBox id={id}
+      feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
+      openFeedback={openFeedback} handleClose={handleClose}
+      initFeedback={existingFeedback} />
+    return dialog;
+  }
+
   if (openCancelNote){
     canceldialog = <CancelDialog
       open={true}
@@ -290,11 +309,6 @@ const Ticket = ({
       handleCancel={handleCancelTicket}
     />
   }
-  //FEEDBACK DIALOG BOX
-  //Creating a variable named "dialog that will store the component Dialog.js"
-  dialog = <DialogBox id={id} feedback={feedback}
-    feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
-    openFeedback={openFeedback} handleClose={handleClose} />
 
   //FIELD OF A TICKET
   function TicketField(props) {
@@ -329,14 +343,14 @@ const Ticket = ({
       }
     >
       <CardHeader
-        className = {classes.cardheader}
+        className={classes.cardheader}
         title={title}
         subheader="First LastName"
       />
 
-      <CardContent className = {classes.cardcontent}>
+      <CardContent className={classes.cardcontent}>
         <Grid item>
-          <CardActions className = {classes.gridmargin}>
+          <CardActions className={classes.gridmargin}>
             <Grid container spacing={1}>
               <TicketField size={3} name="Status" value={currStatus} />
               <TicketField size={3} name="Time Open" value={getTimeDifference(date, new Date(created_datetime))} />
@@ -354,7 +368,7 @@ const Ticket = ({
           </CardActions>
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent className = {classes.gridmargin}>
+            <CardContent className={classes.gridmargin}>
               <Grid container spacing={1}>
                 <TicketField size={6} name="Contact" value={contact} />
                 <TicketField size={6} name="Mentor" value={mentorEmail} />
@@ -365,7 +379,7 @@ const Ticket = ({
               </Grid>
             </CardContent>
           </Collapse>
-          {dialog}
+          {setFeedback()}
           {claimnote}
           {canceldialog}
         </Grid>

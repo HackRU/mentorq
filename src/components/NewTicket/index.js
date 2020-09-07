@@ -71,11 +71,11 @@ const NewTicket = ({ onAddTicket }) => {
       <CardContent>
         <Typography variant="h6" className={classes.greeting}>
           <Box fontWeight="fontWeightBold">
-             Hey { name.toUpperCase() }! 
+            Hey {name != undefined ? name.toUpperCase() : ""}!
           </Box>
         </Typography>
         <Typography variant="subtitle1" className={classes.greeting} >
-            <div>How can we help you?</div>
+          <div>How can we help you?</div>
         </Typography>
         <form onSubmit={onSubmit}>
           <Input
