@@ -105,15 +105,15 @@ const Login = () => {
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-          <Link to="/Dashboard" style={{ textDecoration: "none" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onSubmit}
-            >
+
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={onSubmit}
+          >
           <div style= {{color: 'white'}}> {">"} </div>
         </Button>
-        </Link>
+
         </form>
 
           <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
