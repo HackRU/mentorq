@@ -5,4 +5,7 @@ cache:
   directories:
   - node_modules
 script:
+  - echo 'Testing!'
   - npm test
+  - echo 'Build starts!'
+  - npm run build
