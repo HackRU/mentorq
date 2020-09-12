@@ -58,6 +58,7 @@ const NewTicket = ({ onAddTicket }) => {
         contact: ticket.contact,
         location: ticket.location,
         feedback: "",
+        name: name,
       });
 
       setTicket(defaultState);

@@ -51,6 +51,7 @@ const Dashboard = () => {
         comment: ticket.comment,
         contact: ticket.contact,
         location: ticket.location,
+        name: ticket.name,
       },
     });
   };
