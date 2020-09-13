@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email, name },
   initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
@@ -108,7 +108,6 @@ const Ticket = ({
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
-  const name = useSelector((store) => store.auth.name)
   const [openFeedback, setFeedbackOpen] = useState(false); // determines whether dialogue box for feedback should be opened
   const [openClaimNote, setClaimNoteOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);

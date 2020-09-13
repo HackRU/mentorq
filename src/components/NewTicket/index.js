@@ -11,6 +11,8 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Input } from '.././Input';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,17 +48,30 @@ const NewTicket = ({ onAddTicket }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
   const isDirector = useSelector((store) => store.auth.director);
+  const [nameToSubmit, setNameToSubmit] = useState(name || "No name provided");
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
-  // Check if name is empty 
-  var nameToSubmit = name;
-  if (nameToSubmit == "") {
-    nameToSubmit = "No name provided";
-  }
+  // Detect change in checkbox
+  const handleChange = (event) => {
+    setIsAnonymous(event.target.checked);
+
+    if (event.target.checked == true) {
+      setNameToSubmit("Anonymous");
+    }
+    else if (name == "") {
+      setNameToSubmit("No name provided");
+    }
+    else {
+      setNameToSubmit(name);
+    }
+  };
+
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     if (ticket.title && ticket.comment && ticket.contact && ticket.location) {
+      console.log(nameToSubmit);
       onAddTicket({
         status: ticket.status,
         title: ticket.title,
@@ -68,6 +83,13 @@ const NewTicket = ({ onAddTicket }) => {
       });
 
       setTicket(defaultState);
+      setIsAnonymous(false);
+      if (name == "") {
+        setNameToSubmit("No name provided");
+      }
+      else {
+        setNameToSubmit(name);
+      }
     }
   };
 
@@ -105,10 +127,17 @@ const NewTicket = ({ onAddTicket }) => {
             value={ticket.location}
             label="Location"
           />
-
-          <Button type="submit" variant="contained" className={classes.button}>
-            Help Me!
+          <FormControlLabel control={<Checkbox
+            checked={isAnonymous}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />} label="Anonymous" />
+          <br /><br />
+          <div align="center">
+            <Button type="submit" variant="contained" className={classes.button} >
+              Help Me!
           </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
