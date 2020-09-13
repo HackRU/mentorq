@@ -47,6 +47,12 @@ const NewTicket = ({ onAddTicket }) => {
   const name = useSelector((store) => store.auth.name);
   const isDirector = useSelector((store) => store.auth.director);
 
+  // Check if name is empty 
+  var nameToSubmit = name;
+  if (nameToSubmit == "") {
+    nameToSubmit = "No name provided";
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -58,7 +64,7 @@ const NewTicket = ({ onAddTicket }) => {
         contact: ticket.contact,
         location: ticket.location,
         feedback: "",
-        name: name,
+        name: nameToSubmit,
       });
 
       setTicket(defaultState);

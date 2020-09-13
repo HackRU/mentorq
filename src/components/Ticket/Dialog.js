@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@material-ui/core"; 
+} from "@material-ui/core";
 import Rating from '@material-ui/lab/Rating';
 
 const DialogBox = ({
@@ -37,7 +37,7 @@ const DialogBox = ({
     } else {
       console.log("edit feedback", value, writtenFeedback);
       await request({
-        path: `/feedback/${id}`,
+        path: `/feedback/${id}/`,
         type: "PATCH",
         body: {
           rating: value,
