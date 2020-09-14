@@ -48,7 +48,7 @@ const NewTicket = ({ onAddTicket }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
   const isDirector = useSelector((store) => store.auth.director);
-  const [nameToSubmit, setNameToSubmit] = useState(name || "No name provided");
+  const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
   // Detect change in checkbox
@@ -57,9 +57,6 @@ const NewTicket = ({ onAddTicket }) => {
 
     if (event.target.checked == true) {
       setNameToSubmit("Anonymous");
-    }
-    else if (name == "") {
-      setNameToSubmit("No name provided");
     }
     else {
       setNameToSubmit(name);
@@ -84,12 +81,7 @@ const NewTicket = ({ onAddTicket }) => {
 
       setTicket(defaultState);
       setIsAnonymous(false);
-      if (name == "") {
-        setNameToSubmit("No name provided");
-      }
-      else {
-        setNameToSubmit(name);
-      }
+      setNameToSubmit(name);
     }
   };
 
