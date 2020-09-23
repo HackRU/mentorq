@@ -9,10 +9,14 @@ import {
   CardContent,
   makeStyles,
   Typography,
+  IconButton,
+  Collapse
 } from "@material-ui/core";
 import { Input } from '.././Input';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,12 +48,15 @@ const defaultState = {
   locationError: "",
 };
 
-const NewTicket = ({ onAddTicket }) => {
+const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
   const isDirector = useSelector((store) => store.auth.director);
   const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [open, setOpen] = useState(false); // max number of tickest reached alert
+
+  console.log(numTickets);
 
   // Detect change in checkbox
   const handleChange = (event) => {
@@ -66,9 +73,16 @@ const NewTicket = ({ onAddTicket }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (numTickets >= 5) {
+      setOpen(true);
+      setTicket(defaultState);
+      setIsAnonymous(false);
+      setNameToSubmit(name);
+    }
 
-    if (ticket.title && ticket.comment && ticket.contact && ticket.location) {
+    if (ticket.title && ticket.comment && ticket.contact && ticket.location && numTickets < 5) {
       console.log(nameToSubmit);
+      setOpen(false);
       onAddTicket({
         status: ticket.status,
         title: ticket.title,
@@ -132,7 +146,28 @@ const NewTicket = ({ onAddTicket }) => {
           </div>
         </form>
       </CardContent>
-    </Card>
+      <Collapse in={open}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                {
+                  setOpen(false);
+                }
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          Maximum number of open tickets reached. Please wait or cancel an open ticket and reload page.
+        </Alert>
+      </Collapse>
+    </Card >
   );
 };
 

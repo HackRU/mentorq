@@ -14,10 +14,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const Dashboard = () => {
   // State for tickets and a way to change the tickets. The array will hold the tickets
   const [tickets, setTickets] = useState([]);
+  const [numTickets, setNumTickets] = useState(tickets.length || null);
   const [userFeedback, setUserFeedback] = useState([]);
   // State variable for emails
   const email = useSelector((store) => store.auth.email);
@@ -55,6 +55,7 @@ const Dashboard = () => {
       },
     });
   };
+
   if (isDirector) {
     return (
       <AdminMain />
@@ -65,7 +66,7 @@ const Dashboard = () => {
       <DashboardContainer>
         <Grid container spacing={3}>
           <Grid item xs={4}>
-            <NewTicket onAddTicket={onAddTicket} />
+            <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN")).length} />
           </Grid>
           <Grid item xs={8}>
             <TicketContainer tickets={tickets} />
