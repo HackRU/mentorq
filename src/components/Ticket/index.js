@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email, name },
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email, owner },
   initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
@@ -334,7 +334,7 @@ const Ticket = ({
       <CardHeader
         className={classes.cardheader}
         title={title}
-        subheader={name}
+        subheader={owner}
       />
 
       <CardContent className={classes.cardcontent}>

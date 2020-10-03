@@ -90,7 +90,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
         contact: ticket.contact,
         location: ticket.location,
         feedback: "",
-        name: nameToSubmit,
+        owner: nameToSubmit,
       });
 
       setTicket(defaultState);
