@@ -5,7 +5,9 @@ import {
   Box
 } from "@material-ui/core";
 
-function Input ({label, value, type, onChange}){
+
+
+function Input ({label, value, type, onChange,inputProps,error}){
   return (
     <Box my={2}>
       <TextField
@@ -14,7 +16,8 @@ function Input ({label, value, type, onChange}){
         type={type}
         value={value}
         onChange={onChange}
-        inputProps={{ maxLength: 200 }}
+        inputProps={inputProps}
+        error={error}
       />
     </Box>
   );

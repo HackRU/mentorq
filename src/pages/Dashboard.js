@@ -65,10 +65,10 @@ const Dashboard = () => {
     return (
       <DashboardContainer>
         <Grid container spacing={3}>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4}>
             <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN")).length} />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} sm={8}>
             <TicketContainer tickets={tickets} />
           </Grid>
         </Grid>
