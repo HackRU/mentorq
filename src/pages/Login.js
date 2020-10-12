@@ -97,7 +97,7 @@ const Login = () => {
         <Typography
         variant="h1"
         className={classes.title}>
-              <b maxWidth="xs" style = {{color: "white"}} >MENTOR</b>
+              <b style = {{color: "white"}} >MENTOR</b>
               <b style= {{color: '#f3bb44'}}>Q</b>
         </Typography>
         <Typography
