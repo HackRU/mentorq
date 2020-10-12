@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
+  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email, owner },
   initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
@@ -113,7 +113,7 @@ const Ticket = ({
   const [expanded, setExpanded] = useState(false);
   const [existingFeedback, setExistingFeedback] = useState([]);
   const [openCancelNote, setCancelNoteOpen] = useState(false);
-  
+
   const classes = useStyles();
 
   let button, dialog, claimnote, canceldialog;
@@ -189,7 +189,7 @@ const Ticket = ({
     setCancelNoteOpen(false);
   }
 
-  const handleCancelTicket = (event) =>{
+  const handleCancelTicket = (event) => {
     setCurrStatus("CANCELLED");
     getResponse("CANCELLED", "");
     setCancelNoteOpen(false);
@@ -220,7 +220,7 @@ const Ticket = ({
   const closeButton = <TicketButton type="close" handleClick={closeTicket} />
   const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
   const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
-  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket } />
+  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket} />
 
   //IF Else for Buttons
   if (isMentor || isDirector) {
@@ -247,15 +247,15 @@ const Ticket = ({
     button = null;
   }
 
-  if (!isDirector && !isMentor ){
-  if (!isDirector && !isMentor && currStatus === "OPEN"){
-    button =
-      <div>
-        {cancelButton}
-      </div>;
+  if (!isDirector && !isMentor) {
+    if (!isDirector && !isMentor && currStatus === "OPEN") {
+      button =
+        <div>
+          {cancelButton}
+        </div>;
+    }
   }
-}
-   //Alert to User that their ticket has been claimed
+  //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
   //If above conditions met -> return Alert of ticket claimed
   //Notification to mentor that they have successfully claimed a ticket
@@ -283,7 +283,7 @@ const Ticket = ({
     return dialog;
   }
 
-  if (openCancelNote){
+  if (openCancelNote) {
     canceldialog = <CancelDialog
       open={true}
       handleClose={handleCancelNoteClose}
@@ -291,7 +291,7 @@ const Ticket = ({
     />
   }
 
-  if (openCancelNote && isDirector){
+  if (openCancelNote && isDirector) {
     canceldialog = <CancelDialog
       open={true}
       handleClose={handleCancelNoteClose}
@@ -334,7 +334,7 @@ const Ticket = ({
       <CardHeader
         className={classes.cardheader}
         title={title}
-        subheader="First LastName"
+        subheader={owner}
       />
 
       <CardContent className={classes.cardcontent}>

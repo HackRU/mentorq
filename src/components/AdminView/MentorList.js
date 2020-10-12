@@ -51,7 +51,7 @@ export default function VirtualizedList() {
         const update = async () => {
             setLeaderList(await request({ path: "/feedback/leaderboard?limit=5" }));
         };
-        const interval = setInterval(update, 3000);
+        const interval = setInterval(update, 30000);
         update();
         return () => {
             clearInterval(interval);

@@ -36,7 +36,9 @@ const TicketContainer = ({ tickets = [] }) => {
   const email = useSelector((store) => store.auth.email);
 
   const updateFeedback = async () => {
-    setInitFeedback(await request({ path: `/feedback/` }));
+    if (tickets.filter(ticket => (ticket.feedback != "")).length > 0) {
+      setInitFeedback(await request({ path: `/feedback/` }));
+    }
   };
 
   if (initFeedback.length == 0 && !isDirector && !isMentor) {
@@ -58,7 +60,7 @@ const TicketContainer = ({ tickets = [] }) => {
     </div>
   }
 
-  return(
+  return (
     <div>
       {dropdowns}
     </div>
