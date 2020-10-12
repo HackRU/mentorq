@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
     textEmphasisColor:'white',
     marginTop: theme.spacing(1),
     backgroundColor:'secondary',
+    
   },
   
 }));
@@ -96,7 +97,7 @@ const Login = () => {
         <Typography
         variant="h1"
         className={classes.title}>
-              <b style = {{color: "white"}} >MENTOR</b>
+              <b maxWidth="xs" style = {{color: "white"}} >MENTOR</b>
               <b style= {{color: '#f3bb44'}}>Q</b>
         </Typography>
         <Typography
@@ -133,7 +134,8 @@ const Login = () => {
             error={failedLoginUser && errorMessage}
           />
 
-          <Button
+          <Button 
+            
             type="submit"
             variant="contained"
             color="secondary"

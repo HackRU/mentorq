@@ -18,14 +18,19 @@ const CancelDialog = ({
     open={open}
     onClose={handleClose}
     aria-labelledby="form-dialog-title"
+    PaperProps={{
+      style: {
+        backgroundColor: "#c85151",
+      },
+    }}
   >
-    <DialogTitle id="form-dialog-title"> Cancel Ticket? </DialogTitle>
+    <DialogTitle  id="form-dialog-title"> Cancel Ticket? </DialogTitle>
 
     <DialogActions>
-      <Button onClick={handleCancel} color="primary">
+      <Button onClick={handleCancel}>
         Yes
       </Button>
-      <Button onClick={handleClose} color="primary">
+      <Button onClick={handleClose}>
         No
       </Button>
     </DialogActions>
