@@ -35,6 +35,45 @@ const TicketContainer = ({ tickets = [] }) => {
   const isMentor = useSelector((store) => store.auth.mentor);
   const email = useSelector((store) => store.auth.email);
 
+  useEffect(() => {
+    const update = async () => {
+        for( const ticket of tickets ){
+            getSlackLink(ticket);
+        }
+    };
+
+    const interval = setInterval(update, 30000);
+    update();
+
+    return () => {
+      clearInterval(interval);
+    };
+}, [tickets]);
+
+    //UPDATE ONCE CLEAR WHAT SLACK RESPONSE LOOKS LIKE
+  const getSlackLink = async (ticket) => {
+      var response;
+      console.log("ID: " + ticket.id);
+      response = await request({
+          path: `/tickets/${ticket.id}/slack-dm`,
+          type: "GET",
+      });
+      //console.log(response);
+      updateSlack(ticket, response);
+      console.log(ticket);
+    }
+
+    const updateSlack = (ticket, response) => {
+        if (response === undefined) {
+            console.log("User Missing Slack-ID");
+            ticket.slack = "";
+        }
+        else {
+            console.log("Response");
+            ticket.slack = response;
+        }
+    }
+
   const updateFeedback = async () => {
     if (tickets.filter(ticket => (ticket.feedback != "")).length > 0) {
       setInitFeedback(await request({ path: `/feedback/` }));

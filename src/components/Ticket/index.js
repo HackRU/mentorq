@@ -17,6 +17,7 @@ import {
   Collapse,
   FormLabel as Label,
   Grid,
+  Link,
   Typography,
 } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email, owner },
+  ticket: { id, created_datetime, title, comment, contact, location, slack, status, feedback, mentor_email, owner },
   initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
@@ -116,7 +117,7 @@ const Ticket = ({
 
   const classes = useStyles();
 
-  let button, dialog, claimnote, canceldialog;
+  let button, dialog, claimnote, canceldialog, slacklink;
 
   const getTimeDifference = (timeA, timeB) => {
     const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
@@ -134,7 +135,6 @@ const Ticket = ({
     setCurrStatus(status);
     setMentorEmail(mentor_email);
   }, [status, mentor_email]);
-
 
   const getResponse = async (type, m_email) => {
     await request({
@@ -255,6 +255,32 @@ const Ticket = ({
         </div>;
     }
   }
+
+  //SLACK
+
+  if (currStatus !== "OPEN") {
+      //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
+      slacklink = <Grid item xs={12}>
+        <Label
+          className={
+            currStatus === "CLAIMED"
+              ? classes.claimedLabel
+              : classes.openClosedLabel
+          }
+        >
+          {"Slack-Link"}
+        </Label>
+        <Typography variant="body1" gutterBottom>
+        <Link href="https://www.geeksforgeeks.org" style={{display: "table-cell"}} target="_blank" color='tertiary'>
+            props.slack
+        </Link>
+        </Typography>
+      </Grid>
+  }
+  else {
+      slacklink = null;
+  }
+
   //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
   //If above conditions met -> return Alert of ticket claimed
@@ -362,6 +388,7 @@ const Ticket = ({
                 <TicketField size={6} name="Contact" value={contact} />
                 <TicketField size={6} name="Mentor" value={mentorEmail} />
                 <TicketField size={12} name="Comment" value={comment} />
+                {slacklink}
                 {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
                 {button}
                 {isDirector && deleteButton}

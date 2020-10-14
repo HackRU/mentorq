@@ -56,17 +56,18 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
 
-  console.log(numTickets);
+  //console.log(numTickets);
 
   // Detect change in checkbox
   const handleChange = (event) => {
     setIsAnonymous(event.target.checked);
 
     if (event.target.checked == true) {
-      setNameToSubmit("Anonymous");
+        setNameToSubmit("Anonymous");
     }
     else {
-      setNameToSubmit(name);
+        //console.log(name);
+        setNameToSubmit(name);
     }
   };
 

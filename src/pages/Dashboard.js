@@ -27,7 +27,6 @@ const Dashboard = () => {
   useEffect(() => {
     const update = async () => {
       setTickets(await request({ path: "/tickets/" }));
-      // setUserFeedback(await request({ path: "/feedback/" }));
     };
 
     const interval = setInterval(update, 30000);
