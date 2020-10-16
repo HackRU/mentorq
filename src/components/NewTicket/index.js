@@ -15,7 +15,7 @@ import { Input } from '.././Input';
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "fit-content",
-    position: "sticky",
+    position: "static",
     top: 0,
   },
   button: {

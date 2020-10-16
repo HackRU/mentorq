@@ -46,12 +46,30 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  title:{
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5vw",
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "7vw",
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: "7vw",
+    },
+  },
+  subheading:{
+    [theme.breakpoints.down('sm')]: {
+      fontSize:"100%",
+
+    },
+    
+    
+  },
   form: {
     width: "100%",
     textEmphasisColor:'white',
     marginTop: theme.spacing(1),
     backgroundColor:'secondary',
-    
   },
   
 }));
@@ -99,6 +117,7 @@ const Login = () => {
         className={classes.title}>
               <b style = {{color: "white"}} >MENTOR</b>
               <b style= {{color: '#f3bb44'}}>Q</b>
+
         </Typography>
         <Typography
         variant="h6"
