@@ -98,7 +98,6 @@ const Login = () => {
         className={classes.title}>
               <b style = {{color: "white"}} >MENTOR</b>
               <b style= {{color: '#f3bb44'}}>Q</b>
-
         </Typography>
         <Typography
         variant="h6"
