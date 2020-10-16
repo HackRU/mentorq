@@ -45,26 +45,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
-  },
-  title:{
-    [theme.breakpoints.down('xs')]: {
-      fontSize: "5vw",
-    },
-    [theme.breakpoints.down('sm')]: {
-      fontSize: "7vw",
-    },
-    [theme.breakpoints.down('md')]: {
-      fontSize: "7vw",
-    },
-  },
-  subheading:{
-    [theme.breakpoints.down('sm')]: {
-      fontSize:"100%",
-
-    },
-    
-    
-  },
+  },  
   form: {
     width: "100%",
     textEmphasisColor:'white',
