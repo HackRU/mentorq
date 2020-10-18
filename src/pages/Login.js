@@ -5,7 +5,7 @@ import {
   TextField,
   Box,
   Button,
-  Palette, 
+  Palette,
   Container,
   flexbox,
   Typography,
@@ -17,26 +17,13 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Link } from "react-router-dom";
-
-const Input = ({ label, value, type, onChange }) => (
-  <Box my={2}>
-    <TextField
-      fullWidth
-      variant="outlined"
-      label={label}
-      type={type}
-      value={value}
-      onChange={onChange}
-      margin="normal"
-    />
-  </Box>
-);
+import { Input } from '../components/Input';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     zIndex: 1,
     width: "40vw",
-    height: "80vh",
+    height: "50vh",
     padding: theme.spacing(4),
     backgroundColor: "#c85151",
     display: "flex",
@@ -54,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    
   },
   title: {
     [theme.breakpoints.down('xs')]: {
@@ -88,16 +76,21 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: "100%",
+    textEmphasisColor:'white',
     marginTop: theme.spacing(1),
+    backgroundColor:'secondary',
+    
   },
+  
 }));
 
 const Login = () => {
   const classes = useStyles();
-
+  
+  const isLoggingIn = useSelector((store) => store.auth.isLoggedIn)
+ 
   const failedLoginUser = useSelector((store) => store.auth.hasErrors);
   const isLoading = useSelector((store) => store.auth.loadingLogin);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -107,65 +100,79 @@ const Login = () => {
     dispatch(loginUser({ email, password }));
   };
 
+  // Error Message if you provide the wrong credentials to log in 
+  const errorMessage = (<Typography
+        variant="h6"
+        >
+          <div style = {{color:"white"}}> Invalid Credentials Provided  </div>
+        </Typography>)
+
+    
+    
   if (isLoading) {
     return (
       <Container component="main" maxWidth="xs" className={classes.loading}>
         <CircularProgress color="secondary" />
       </Container>
+      
     );
   }
 
   return (
 
     <Container component="main" maxWidth="xs" className={classes.root} >
-      <Paper className={classes.paper}>
-        <Typography 
-        variant="h1" 
+      <Paper className={classes.paper} elevation={10}>
+        <Typography
+        variant="h1"
         className={classes.title}>
               <b style = {{color: "white"}} >MENTOR</b>
               <b style= {{color: '#f3bb44'}}>Q</b>
         </Typography>
-        <Typography 
-        variant="h6" 
-        style = {{color: 'white'}}
+        <Typography
+        variant="h6"
+        className={classes.subheading}
+        style = {{color: 'white '}}
         >
             <div className= {classes.headertexts} align = "center"> Have a question? Get matched with a mentor for help! </div>
         </Typography>
+        
+        <Typography
+        variant="h6"
+        >
+          <div style = {{color:"white"}}> Sign In </div>
+        </Typography>
+
         <form className={classes.form}>
-          <Input
-            label={"email"}
+          
+          <Input className={classes.form} 
+            label="email"
             type="email"
+            inputProps= {{ style: {color:'white'}}}
             value={email}
             onChange={({ target }) => setEmail(target.value)}
+            error={failedLoginUser && errorMessage}
           />
 
-          <Input
+          <Input className={classes.form}
             label="password"
             type="password"
+            inputProps= {{ style: {color:'white'}}}
             value={password}
             onChange={({ target }) => setPassword(target.value)}
+            error={failedLoginUser && errorMessage}
           />
-          <Link to="/Dashboard" style={{ textDecoration: "none" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onSubmit}
-            >
+
+          <Button 
+            
+            type="submit"
+            variant="contained"
+            color="secondary"
+            onClick={onSubmit}
+          >
           <div style= {{color: 'white'}}> {">"} </div>
         </Button>
-        </Link>
         </form>
-        <div className={classes.text}> 
-          <div align = "center" style = {{color: "#ededed"}}> Not a member? Create an Account! </div>
-          <div align = "center" style = {{color: "#ededed"}}> Forgot your password? </div> 
-        </div> 
-          
-          <Link to="/Home" style={{ textDecoration: "none" }}>
-            <div className={classes.text} style = {{color: "#ededed"}}> Return Home </div>
-          </Link>
-        <div className={classes.text} align = "center">
-          <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
-        </div>
+          <b>{!failedLoginUser ? "" : errorMessage}</b>
       </Paper>
     </Container>
 

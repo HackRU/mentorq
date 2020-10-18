@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
@@ -13,12 +13,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const TicketButton = ({
   type, handleClick
 }) =>  {
   const classes = useStyles();
-  return <Button className={classes.button} onClick={handleClick}>
+  return <Button variant="contained" className={classes.button} onClick={handleClick}>
             {type}
           </Button>
 }

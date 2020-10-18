@@ -44,14 +44,6 @@ export default function MenuListComposition() {
               <HomeIcon className={classes.icon} color="action" /> Home
             </MenuItem>
           </Link>
-          <MenuItem className={classes.item}>
-            <PeopleIcon className={classes.icon} color="action" />
-            Users
-          </MenuItem>
-          <MenuItem className={classes.item}>
-            <PersonAddIcon className={classes.icon} color="action" />
-            User Creation
-          </MenuItem>
           <Link to="/admin/alltickets" style={{ textDecoration: "none" }}>
             <MenuItem to="/admin/alltickets" className={classes.item}>
               <ConfirmationNumberIcon className={classes.icon} color="action" />

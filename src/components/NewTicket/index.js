@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
 import {
   TextField,
   Box,
@@ -8,19 +8,9 @@ import {
   FormLabel,
   CardContent,
   makeStyles,
+  Typography,
 } from "@material-ui/core";
-
-const Input = ({ value, type, onChange }) => (
-  <Box my={2}>
-    <TextField
-      fullWidth
-      variant="outlined"
-      type={type}
-      value={value}
-      onChange={onChange}
-    />
-  </Box>
-);
+import { Input } from '.././Input';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.tertiary.dark,
     },
   },
+  greeting: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 }));
 
 const defaultState = {
@@ -49,6 +44,8 @@ const defaultState = {
 
 const NewTicket = ({ onAddTicket }) => {
   const [ticket, setTicket] = useState(defaultState);
+  const name = useSelector((store) => store.auth.name);
+  const isDirector = useSelector((store) => store.auth.director);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -72,31 +69,38 @@ const NewTicket = ({ onAddTicket }) => {
   return (
     <Card className={classes.root}>
       <CardContent>
+        <Typography variant="h6" className={classes.greeting}>
+          <Box fontWeight="fontWeightBold">
+            Hey {name != undefined ? name.toUpperCase() : ""}!
+          </Box>
+        </Typography>
+        <Typography variant="subtitle1" className={classes.greeting} >
+          <div>How can we help you?</div>
+        </Typography>
         <form onSubmit={onSubmit}>
-          <FormLabel>Title</FormLabel>
           <Input
             onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
             value={ticket.title}
+            label="Title"
           />
-          <FormLabel>Contact</FormLabel>
           <Input
             onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
             value={ticket.contact}
+            label="Contact"
           />
-          <FormLabel>Comment</FormLabel>
           <Input
             onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
             value={ticket.comment}
+            label="Comment"
           />
-
-          <FormLabel>Location</FormLabel>
           <Input
             onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
             value={ticket.location}
+            label="Location"
           />
 
           <Button type="submit" variant="contained" className={classes.button}>
-            Create Ticket
+            Help Me!
           </Button>
         </form>
       </CardContent>
