@@ -7,6 +7,7 @@ import {
   Button,
   Palette, 
   Container,
+  flexbox,
   Typography,
   makeStyles,
   Avatar,
@@ -54,6 +55,33 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  title: {
+    [theme.breakpoints.down('xs')]: {
+        fontSize: "20px",
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "30px",
+    },
+  },
+  text: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5px",
+    },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "13px",
+    },
+  },
+  headertexts: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5px",
+    },
+    [theme.breakpoints.down('sm')]: {
+    fontSize: "12px",
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: "16px",
+      },
+  },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
@@ -99,10 +127,9 @@ const Login = () => {
         </Typography>
         <Typography 
         variant="h6" 
-        className={classes.subheading}
         style = {{color: 'white'}}
         >
-            <div>Have a question? Get matched with a mentor for help!</div>
+            <div className= {classes.headertexts} align = "center"> Have a question? Get matched with a mentor for help! </div>
         </Typography>
         <form className={classes.form}>
           <Input
@@ -127,14 +154,18 @@ const Login = () => {
           <div style= {{color: 'white'}}> {">"} </div>
         </Button>
         </Link>
-        </form> 
-          <div style = {{color: "#ededed"}}> Not a member? Create an Account! </div>
-          <div style = {{color: "#ededed"}}> Forgot your password? </div>
-          <Link to="/Home" style={{ textDecoration: "none" }}>
-            <div style = {{color: "#ededed"}}> Return Home </div>
-          </Link>
+        </form>
+        <div className={classes.text}> 
+          <div align = "center" style = {{color: "#ededed"}}> Not a member? Create an Account! </div>
+          <div align = "center" style = {{color: "#ededed"}}> Forgot your password? </div> 
+        </div> 
           
+          <Link to="/Home" style={{ textDecoration: "none" }}>
+            <div className={classes.text} style = {{color: "#ededed"}}> Return Home </div>
+          </Link>
+        <div className={classes.text} align = "center">
           <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
+        </div>
       </Paper>
     </Container>
 
