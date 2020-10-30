@@ -96,11 +96,6 @@ const NewTicket = ({ onAddTicket }) => {
             value={ticket.comment}
             label="Comment"
           />
-          <Input
-            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
-            value={ticket.location}
-            label="Location"
-          />
 
           <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
             Help Me!
