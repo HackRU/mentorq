@@ -50,6 +50,8 @@ const TicketDropdown = ({
     tickets.sort((a, b) => new Date(b.created_datetime).valueOf() - new Date(a.created_datetime).valueOf())
   }
 
+  console.log(initFeedback);
+
   return (
     <div>
       <Accordion className={classes.body} expanded={expanded === 'panel1'} onChange={handleChange('panel1')} defaultExpanded={defaultOpen}>
