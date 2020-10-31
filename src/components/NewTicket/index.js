@@ -21,7 +21,7 @@ import CloseIcon from '@material-ui/icons/Close';
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "fit-content",
-    position: "sticky",
+    position: "static",
     top: 0,
   },
   button: {
