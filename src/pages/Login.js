@@ -7,6 +7,7 @@ import {
   Button,
   Palette,
   Container,
+  flexbox,
   Typography,
   makeStyles,
   Avatar,
@@ -41,6 +42,33 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     
+  },
+  title: {
+    [theme.breakpoints.down('xs')]: {
+        fontSize: "20px",
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "30px",
+    },
+  },
+  text: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5px",
+    },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "13px",
+    },
+  },
+  headertexts: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5px",
+    },
+    [theme.breakpoints.down('sm')]: {
+    fontSize: "12px",
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: "16px",
+      },
   },
   avatar: {
     margin: theme.spacing(1),
@@ -104,7 +132,7 @@ const Login = () => {
         className={classes.subheading}
         style = {{color: 'white '}}
         >
-            <div>Have a question? Get matched with a mentor for help!</div>
+            <div className= {classes.headertexts} align = "center"> Have a question? Get matched with a mentor for help! </div>
         </Typography>
         
         <Typography
@@ -142,9 +170,7 @@ const Login = () => {
           >
           <div style= {{color: 'white'}}> {">"} </div>
         </Button>
-
         </form>
-
           <b>{!failedLoginUser ? "" : errorMessage}</b>
       </Paper>
     </Container>
