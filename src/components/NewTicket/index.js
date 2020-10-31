@@ -63,11 +63,10 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     setIsAnonymous(event.target.checked);
 
     if (event.target.checked == true) {
-        setNameToSubmit("Anonymous");
+      setNameToSubmit("Anonymous");
     }
     else {
-        //console.log(name);
-        setNameToSubmit(name);
+      setNameToSubmit(name);
     }
   };
 

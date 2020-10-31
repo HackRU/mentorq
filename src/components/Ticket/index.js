@@ -255,9 +255,8 @@ const Ticket = ({
         </div>;
     }
   }
-
+  
   //SLACK
-
   if (currStatus !== "OPEN") {
       //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
       slacklink = <Grid item xs={12}>
@@ -280,7 +279,6 @@ const Ticket = ({
   else {
       slacklink = null;
   }
-
   //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
   //If above conditions met -> return Alert of ticket claimed
