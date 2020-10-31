@@ -25,7 +25,7 @@ const AdminMain = () => {
             setTickets(await request({ path: "/tickets/" }));
         };
 
-        const interval = setInterval(update, 3000);
+        const interval = setInterval(update, 30000);
         update();
         return () => {
             clearInterval(interval);

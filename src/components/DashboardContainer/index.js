@@ -33,7 +33,6 @@ export default ({ children }) => {
       <Container maxWidth={"md"} className={classes.root}>
         <Paper className={classes.paper}>{children}</Paper>
       </Container>
-      {/* <Stats /> */}
     </Main>
   );
 };

@@ -9,13 +9,19 @@ import {
   CardContent,
   makeStyles,
   Typography,
+  IconButton,
+  Collapse
 } from "@material-ui/core";
 import { Input } from '.././Input';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Alert from '@material-ui/lab/Alert';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "fit-content",
-    position: "sticky",
+    position: "static",
     top: 0,
   },
   button: {
@@ -42,15 +48,41 @@ const defaultState = {
   locationError: "",
 };
 
-const NewTicket = ({ onAddTicket }) => {
+const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
   const isDirector = useSelector((store) => store.auth.director);
+  const [nameToSubmit, setNameToSubmit] = useState(name);
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [open, setOpen] = useState(false); // max number of tickest reached alert
+
+  //console.log(numTickets);
+
+  // Detect change in checkbox
+  const handleChange = (event) => {
+    setIsAnonymous(event.target.checked);
+
+    if (event.target.checked == true) {
+      setNameToSubmit("Anonymous");
+    }
+    else {
+      setNameToSubmit(name);
+    }
+  };
+
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (numTickets >= 5) {
+      setOpen(true);
+      setTicket(defaultState);
+      setIsAnonymous(false);
+      setNameToSubmit(name);
+    }
 
-    if (ticket.title && ticket.comment && ticket.contact && ticket.location) {
+    if (ticket.title && ticket.comment && ticket.contact && ticket.location && numTickets < 5) {
+      console.log(nameToSubmit);
+      setOpen(false);
       onAddTicket({
         status: ticket.status,
         title: ticket.title,
@@ -58,11 +90,17 @@ const NewTicket = ({ onAddTicket }) => {
         contact: ticket.contact,
         location: ticket.location,
         feedback: "",
+        owner: nameToSubmit,
       });
 
       setTicket(defaultState);
+      setIsAnonymous(false);
+      setNameToSubmit(name);
     }
   };
+
+  const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0 
+
 
   const classes = useStyles();
 
@@ -71,11 +109,11 @@ const NewTicket = ({ onAddTicket }) => {
       <CardContent>
         <Typography variant="h6" className={classes.greeting}>
           <Box fontWeight="fontWeightBold">
-            Hey { name.toUpperCase() }!
+            Hey {name != undefined ? name.toUpperCase() : ""}!
           </Box>
         </Typography>
         <Typography variant="subtitle1" className={classes.greeting} >
-            <div>How can we help you?</div>
+          <div>How can we help you?</div>
         </Typography>
         <form onSubmit={onSubmit}>
           <Input
@@ -98,13 +136,41 @@ const NewTicket = ({ onAddTicket }) => {
             value={ticket.location}
             label="Location"
           />
-
-          <Button type="submit" variant="contained" className={classes.button}>
-            Help Me!
+          <FormControlLabel control={<Checkbox
+            checked={isAnonymous}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />} label="Anonymous" />
+          <br /><br />
+          <div align="center">
+            <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
+              Help Me!
           </Button>
+          </div>
         </form>
       </CardContent>
-    </Card>
+      <Collapse in={open}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                {
+                  setOpen(false);
+                }
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          Maximum number of open tickets reached. Please wait or cancel an open ticket and reload page.
+        </Alert>
+      </Collapse>
+    </Card >
   );
 };
 

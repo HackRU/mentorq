@@ -33,18 +33,20 @@ const auth = (state = defaultState, action) => {
     name,
   } = action;
 
+  // I was playing with this to see how i could manipulate the loading screen  
   switch (type) {
     case REFRESH_TOKEN_RECEIVED:
       return { ...state, accessToken };
     case LOGOUT:
       return defaultState;
     case REQUEST_LOGIN:
-      return { ...state, hasErrors: false, loadingLogin: true };
+      // If you change this to false it will not load at all 
+      return { ...state, hasErrors: false, loadingLogin: true};
     case RECEIVED_LOGIN:
       return {
         ...state,
         isLoggedIn: true,
-        loadingLogin: true,
+        loadingLogin: false,
         lcsToken: lcsToken,
         hasErrors: false,
         refreshToken,
@@ -56,7 +58,7 @@ const auth = (state = defaultState, action) => {
         name,
       };
     case FAILED_LOGIN:
-      return { ...state, loadingLogin: false, hasErrors: true };
+      return { ...state, loadingLogin:false, hasErrors: true };
     default:
       return state;
   }

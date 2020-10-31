@@ -14,10 +14,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const Dashboard = () => {
   // State for tickets and a way to change the tickets. The array will hold the tickets
   const [tickets, setTickets] = useState([]);
+  const [numTickets, setNumTickets] = useState(tickets.length || null);
+  const [userFeedback, setUserFeedback] = useState([]);
   // State variable for emails
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
@@ -28,16 +29,13 @@ const Dashboard = () => {
       setTickets(await request({ path: "/tickets/" }));
     };
 
-    const interval = setInterval(update, 3000);
+    const interval = setInterval(update, 30000);
     update();
 
     return () => {
       clearInterval(interval);
     };
   }, []);
-
-
-
 
   const onAddTicket = async (ticket) => {
     setTickets([...tickets, ticket]);
@@ -52,9 +50,11 @@ const Dashboard = () => {
         comment: ticket.comment,
         contact: ticket.contact,
         location: ticket.location,
+        owner: ticket.owner,
       },
     });
   };
+
   if (isDirector) {
     return (
       <AdminMain />
@@ -64,10 +64,10 @@ const Dashboard = () => {
     return (
       <DashboardContainer>
         <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <NewTicket onAddTicket={onAddTicket} />
+          <Grid item xs={12} sm={4}>
+            <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN")).length} />
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} sm={8}>
             <TicketContainer tickets={tickets} />
           </Grid>
         </Grid>

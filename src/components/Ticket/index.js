@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { request } from "../.././util";
 import clsx from 'clsx';
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +7,7 @@ import { TicketButton } from './TicketButton';
 import { Notification } from '.././Notification';
 import { ClaimNote } from './ClaimNote';
 import { DialogBox } from './Dialog';
+import { CancelDialog } from './CancelDialog'
 
 import {
   Card,
@@ -17,20 +17,12 @@ import {
   Collapse,
   FormLabel as Label,
   Grid,
+  Link,
   Typography,
-  Button,
-  ButtonGroup,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from "@material-ui/core";
-import Rating from "@material-ui/lab/Rating";
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 const useStyles = makeStyles((theme) => ({
   open: {
@@ -96,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "rotate(180deg)"
   },
   cardheader: {
-    paddingBottom:0
+    paddingBottom: 0
   },
   cardcontent: {
     paddingTop: 0
@@ -107,7 +99,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, status, feedback, mentor_email },
+  ticket: { id, created_datetime, title, comment, contact, location, slack, status, feedback, mentor_email, owner },
+  initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
@@ -119,9 +112,12 @@ const Ticket = ({
   const [openFeedback, setFeedbackOpen] = useState(false); // determines whether dialogue box for feedback should be opened
   const [openClaimNote, setClaimNoteOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [existingFeedback, setExistingFeedback] = useState([]);
+  const [openCancelNote, setCancelNoteOpen] = useState(false);
+
   const classes = useStyles();
 
-  let button, dialog, claimnote;
+  let button, dialog, claimnote, canceldialog, slacklink;
 
   const getTimeDifference = (timeA, timeB) => {
     const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
@@ -130,7 +126,7 @@ const Ticket = ({
   }
 
   useEffect(() => {
-    const timeout = setTimeout(() => setDate(new Date()), 1000);
+    const timeout = setTimeout(() => setDate(new Date()), 10000);
     return () => clearTimeout(timeout);
   }, [date])
 
@@ -139,7 +135,6 @@ const Ticket = ({
     setCurrStatus(status);
     setMentorEmail(mentor_email);
   }, [status, mentor_email]);
-
 
   const getResponse = async (type, m_email) => {
     await request({
@@ -168,7 +163,10 @@ const Ticket = ({
     setCurrStatus("OPEN");
     getResponse("OPEN", "")
   };
+  const cancelTicket = async () => {
+    handleCancelNoteOpen();
 
+  };
   const checkFeedback = () => {
     return feedbackURL === "" ? "feedback" : "edit feedback"
   }
@@ -183,26 +181,46 @@ const Ticket = ({
     setClaimNoteOpen(false);
   };
 
-  // open dialogue box
+  const handleCancelNoteOpen = () => {
+    setCancelNoteOpen(true);
+  }
+
+  const handleCancelNoteClose = (event) => {
+    setCancelNoteOpen(false);
+  }
+
+  const handleCancelTicket = (event) => {
+    setCurrStatus("CANCELLED");
+    getResponse("CANCELLED", "");
+    setCancelNoteOpen(false);
+
+  }
+  const handleDeleteTicket = (event) => {
+    setCurrStatus("DELETED");
+    getResponse("DELETED", "");
+    setCancelNoteOpen(false);
+  }
   const handleClickOpen = () => {
     console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
-
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
   };
 
- // Open or Close Collapse for more info
+  // Open or Close Collapse for more info
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
 
   const claimButton = <TicketButton type="claim" handleClick={claimTicket} />
   const reopenButton = <TicketButton type="reopen" handleClick={reopenTicket} />
   const closeButton = <TicketButton type="close" handleClick={closeTicket} />
   const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
+  const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
+  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket} />
 
   //IF Else for Buttons
   if (isMentor || isDirector) {
@@ -229,10 +247,41 @@ const Ticket = ({
     button = null;
   }
 
+  if (!isDirector && !isMentor) {
+    if (!isDirector && !isMentor && currStatus === "OPEN") {
+      button =
+        <div>
+          {cancelButton}
+        </div>;
+    }
+  }
+  
+  //SLACK
+  if (currStatus !== "OPEN") {
+      //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
+      slacklink = <Grid item xs={12}>
+        <Label
+          className={
+            currStatus === "CLAIMED"
+              ? classes.claimedLabel
+              : classes.openClosedLabel
+          }
+        >
+          {"Slack-Link"}
+        </Label>
+        <Typography variant="body1" gutterBottom>
+        <Link href='props.slack' style={{display: "table-cell"}} target="_blank" color='tertiary'>
+            props.slack
+        </Link>
+        </Typography>
+      </Grid>
+  }
+  else {
+      slacklink = null;
+  }
   //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
   //If above conditions met -> return Alert of ticket claimed
-
   //Notification to mentor that they have successfully claimed a ticket
   if (openClaimNote) {
     claimnote = <ClaimNote message="Ticket Claimed!"
@@ -240,10 +289,39 @@ const Ticket = ({
       handleClose={handleClaimNoteClose}
     />
   }
+
   //FEEDBACK DIALOG BOX
-  dialog = <DialogBox id={id} feedback={feedback}
-    feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
-    openFeedback={openFeedback} handleClose={handleClose} />
+  if (feedbackURL != "" && existingFeedback.length == 0) {
+    for (var i = 0; i < initFeedback.length; i++) {
+      if (initFeedback[i].ticket == id) {
+        setExistingFeedback(initFeedback[i]);
+      }
+    }
+  }
+
+  const setFeedback = () => {
+    dialog = <DialogBox id={id}
+      feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
+      openFeedback={openFeedback} handleClose={handleClose}
+      initFeedback={existingFeedback} />
+    return dialog;
+  }
+
+  if (openCancelNote) {
+    canceldialog = <CancelDialog
+      open={true}
+      handleClose={handleCancelNoteClose}
+      handleCancel={handleCancelTicket}
+    />
+  }
+
+  if (openCancelNote && isDirector) {
+    canceldialog = <CancelDialog
+      open={true}
+      handleClose={handleCancelNoteClose}
+      handleCancel={handleCancelTicket}
+    />
+  }
 
   //FIELD OF A TICKET
   function TicketField(props) {
@@ -278,14 +356,14 @@ const Ticket = ({
       }
     >
       <CardHeader
-        className = {classes.cardheader}
+        className={classes.cardheader}
         title={title}
-        subheader="First LastName"
+        subheader={owner}
       />
 
-      <CardContent className = {classes.cardcontent}>
+      <CardContent className={classes.cardcontent}>
         <Grid item>
-          <CardActions className = {classes.gridmargin}>
+          <CardActions className={classes.gridmargin}>
             <Grid container spacing={1}>
               <TicketField size={3} name="Status" value={currStatus} />
               <TicketField size={3} name="Time Open" value={getTimeDifference(date, new Date(created_datetime))} />
@@ -303,18 +381,21 @@ const Ticket = ({
           </CardActions>
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent className = {classes.gridmargin}>
+            <CardContent className={classes.gridmargin}>
               <Grid container spacing={1}>
                 <TicketField size={6} name="Contact" value={contact} />
                 <TicketField size={6} name="Mentor" value={mentorEmail} />
                 <TicketField size={12} name="Comment" value={comment} />
+                {slacklink}
                 {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
                 {button}
+                {isDirector && deleteButton}
               </Grid>
             </CardContent>
           </Collapse>
-          {dialog}
+          {setFeedback()}
           {claimnote}
+          {canceldialog}
         </Grid>
       </CardContent>
     </Card>

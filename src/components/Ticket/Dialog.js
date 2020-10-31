@@ -12,33 +12,19 @@ import {
 import Rating from '@material-ui/lab/Rating';
 
 const DialogBox = ({
-  id, feedback, feedbackURL, setFeedbackURL, openFeedback, handleClose
-}) =>  {
-  const [existingFeedback, setExistingFeedback] = useState([]); // retrieve from feedback endpoint allowing users to edit feedback
+  id, feedback, feedbackURL, setFeedbackURL, openFeedback, handleClose, initFeedback
+}) => {
   const [value, setValue] = useState(0); // value of star rating
   const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
-
-  useEffect(() => {
-    const update = async () => {
-      setExistingFeedback(await request({ path: `/feedback/${id}` }));
-      setValue(existingFeedback.rating);
-      setWrittenFeedback(existingFeedback.comments);
-    };
-    if (feedbackURL !== "" && openFeedback === false) {
-      const interval = setInterval(update, 3000);
-      update();
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, [existingFeedback]);
 
   const submitFeedback = async () => {
     handleClose();
     console.log(id, value, writtenFeedback);
 
     if (feedbackURL === "") {
+      setFeedbackURL("temp URL");
+      console.log(feedbackURL);
       await request({
         path: `/feedback/`,
         type: "POST",
@@ -49,8 +35,9 @@ const DialogBox = ({
         },
       });
     } else {
+      console.log("edit feedback", value, writtenFeedback);
       await request({
-        path: `/feedback/${id}`,
+        path: `/feedback/${id}/`,
         type: "PATCH",
         body: {
           rating: value,
@@ -58,8 +45,15 @@ const DialogBox = ({
         },
       });
     }
-    setFeedbackURL("temp URL");
+
   };
+
+  useEffect(() => {
+    if (initFeedback.length != 0) {
+      setValue(initFeedback.rating);
+      setWrittenFeedback(initFeedback.comments);
+    }
+  }, [initFeedback])
 
   return <Dialog
     open={openFeedback}
@@ -72,15 +66,12 @@ const DialogBox = ({
         Please rate the help you received from your mentor.
       </DialogContentText>
       <Rating
-        name="hover-feedback"
-        value={value || -1}
+        name="simple-controlled"
+        defaultValue={value || -1}
         precision={0.5}
         onChange={(event, newValue) => {
-          console.log(openFeedback);
+          console.log(newValue);
           setValue(newValue);
-        }}
-        onChangeActive={(event, newHover) => {
-          setHover(newHover);
         }}
       />
       <br />
