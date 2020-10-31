@@ -7,6 +7,7 @@ import {
   Button,
   Palette,
   Container,
+  flexbox,
   Typography,
   makeStyles,
   Avatar,
@@ -40,23 +41,55 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    
+  },
+  title: {
+    [theme.breakpoints.down('xs')]: {
+        fontSize: "20px",
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "30px",
+    },
+  },
+  text: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5px",
+    },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "13px",
+    },
+  },
+  headertexts: {
+    [theme.breakpoints.down('xs')]: {
+      fontSize: "5px",
+    },
+    [theme.breakpoints.down('sm')]: {
+    fontSize: "12px",
+    },
+    [theme.breakpoints.down('md')]: {
+      fontSize: "16px",
+      },
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
-  },
+  },  
   form: {
     width: "100%",
+    textEmphasisColor:'white',
     marginTop: theme.spacing(1),
+    backgroundColor:'secondary',
   },
+  
 }));
 
 const Login = () => {
   const classes = useStyles();
-
+  
+  const isLoggingIn = useSelector((store) => store.auth.isLoggedIn)
+ 
   const failedLoginUser = useSelector((store) => store.auth.hasErrors);
   const isLoading = useSelector((store) => store.auth.loadingLogin);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -66,11 +99,21 @@ const Login = () => {
     dispatch(loginUser({ email, password }));
   };
 
+  // Error Message if you provide the wrong credentials to log in 
+  const errorMessage = (<Typography
+        variant="h6"
+        >
+          <div style = {{color:"white"}}> Invalid Credentials Provided  </div>
+        </Typography>)
+
+    
+    
   if (isLoading) {
     return (
       <Container component="main" maxWidth="xs" className={classes.loading}>
         <CircularProgress color="secondary" />
       </Container>
+      
     );
   }
 
@@ -87,36 +130,48 @@ const Login = () => {
         <Typography
         variant="h6"
         className={classes.subheading}
-        style = {{color: 'white'}}
+        style = {{color: 'white '}}
         >
-            <div>Have a question? Get matched with a mentor for help!</div>
+            <div className= {classes.headertexts} align = "center"> Have a question? Get matched with a mentor for help! </div>
         </Typography>
+        
+        <Typography
+        variant="h6"
+        >
+          <div style = {{color:"white"}}> Sign In </div>
+        </Typography>
+
         <form className={classes.form}>
-          <Input
+          
+          <Input className={classes.form} 
             label="email"
             type="email"
+            inputProps= {{ style: {color:'white'}}}
             value={email}
             onChange={({ target }) => setEmail(target.value)}
+            error={failedLoginUser && errorMessage}
           />
 
-          <Input
+          <Input className={classes.form}
             label="password"
             type="password"
+            inputProps= {{ style: {color:'white'}}}
             value={password}
             onChange={({ target }) => setPassword(target.value)}
+            error={failedLoginUser && errorMessage}
           />
-          <Link to="/Dashboard" style={{ textDecoration: "none" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onSubmit}
-            >
+
+          <Button 
+            
+            type="submit"
+            variant="contained"
+            color="secondary"
+            onClick={onSubmit}
+          >
           <div style= {{color: 'white'}}> {">"} </div>
         </Button>
-        </Link>
         </form>
-
-          <b>{!failedLoginUser ? "" : "Invalid credentials provided."}</b>
+          <b>{!failedLoginUser ? "" : errorMessage}</b>
       </Paper>
     </Container>
 

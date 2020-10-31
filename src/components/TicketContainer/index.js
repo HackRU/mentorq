@@ -35,8 +35,51 @@ const TicketContainer = ({ tickets = [] }) => {
   const isMentor = useSelector((store) => store.auth.mentor);
   const email = useSelector((store) => store.auth.email);
 
+  useEffect(() => {
+    const update = async () => {
+        for( const ticket of tickets ){
+            getSlackLink(ticket);
+        }
+    };
+
+    const interval = setInterval(update, 30000);
+    update();
+
+    return () => {
+      clearInterval(interval);
+    };
+}, [tickets]);
+
+    //UPDATE ONCE CLEAR WHAT SLACK RESPONSE LOOKS LIKE
+  const getSlackLink = async (ticket) => {
+      var response;
+      console.log("ID: " + ticket.id);
+      response = await request({
+          path: `/tickets/${ticket.id}/slack-dm`,
+          type: "GET",
+      });
+      console.log(response);
+      updateSlack(ticket, response);
+    }
+
+    const updateSlack = (ticket, response) => {
+        if (response === "Slack ID not present within LCS for the given user(s)") {
+            console.log("User Missing Slack-ID");
+            ticket.slack = "";
+        }
+        else if (response === "Other user not found within LCS"){
+            ticket.slack = "";
+        }
+        else {
+            console.log(response);
+            ticket.slack = response;
+        }
+    }
+
   const updateFeedback = async () => {
-    setInitFeedback(await request({ path: `/feedback/` }));
+    if (tickets.filter(ticket => (ticket.feedback != "")).length > 0) {
+      setInitFeedback(await request({ path: `/feedback/` }));
+    }
   };
 
   if (initFeedback.length == 0 && !isDirector && !isMentor) {
@@ -58,7 +101,7 @@ const TicketContainer = ({ tickets = [] }) => {
     </div>
   }
 
-  return(
+  return (
     <div>
       {dropdowns}
     </div>

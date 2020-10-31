@@ -13,11 +13,11 @@ const Stats = () => {
   useEffect(() => {
     if (token) {
       (async () => {
-        // console.log(token)
-        response = await request({
+        console.log(token)
+        //response = await request({
           path: "/tickets/stats/",
         });
-        // console.log(response)
+        //console.log(response)
         setStats({
           averageClaimed: response.average_claimed_datetime_seconds,
           averageClosed: response.average_closed_datetime_seconds,
