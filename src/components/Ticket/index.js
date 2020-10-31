@@ -271,7 +271,7 @@ const Ticket = ({
           {"Slack-Link"}
         </Label>
         <Typography variant="body1" gutterBottom>
-        <Link href="https://www.geeksforgeeks.org" style={{display: "table-cell"}} target="_blank" color='tertiary'>
+        <Link href='props.slack' style={{display: "table-cell"}} target="_blank" color='tertiary'>
             props.slack
         </Link>
         </Typography>

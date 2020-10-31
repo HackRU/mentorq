@@ -58,18 +58,20 @@ const TicketContainer = ({ tickets = [] }) => {
           path: `/tickets/${ticket.id}/slack-dm`,
           type: "GET",
       });
-      //console.log(response);
+      console.log(response);
       updateSlack(ticket, response);
-      console.log(ticket);
     }
 
     const updateSlack = (ticket, response) => {
-        if (response === undefined) {
+        if (response === "Slack ID not present within LCS for the given user(s)") {
             console.log("User Missing Slack-ID");
             ticket.slack = "";
         }
+        else if (response === "Other user not found within LCS"){
+            ticket.slack = "";
+        }
         else {
-            console.log("Response");
+            console.log(response);
             ticket.slack = response;
         }
     }
