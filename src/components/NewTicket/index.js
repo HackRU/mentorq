@@ -99,6 +99,9 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     }
   };
 
+  const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0 
+
+
   const classes = useStyles();
 
   return (
@@ -140,7 +143,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
           />} label="Anonymous" />
           <br /><br />
           <div align="center">
-            <Button type="submit" variant="contained" className={classes.button} >
+            <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
               Help Me!
           </Button>
           </div>
