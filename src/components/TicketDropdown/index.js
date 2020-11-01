@@ -50,7 +50,7 @@ const TicketDropdown = ({
     tickets.sort((a, b) => new Date(b.created_datetime).valueOf() - new Date(a.created_datetime).valueOf())
   }
 
-  console.log(initFeedback);
+  //console.log(initFeedback);
 
   return (
     <div>

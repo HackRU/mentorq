@@ -37,9 +37,17 @@ const TicketContainer = ({ tickets = [] }) => {
 
   useEffect(() => {
     const update = async () => {
-        for( const ticket of tickets ){
+      if (isMentor && !isDirector) {
+        for( const ticket of getOwnClaimed(tickets, email) ){
+            console.log(ticket);
             getSlackLink(ticket);
         }
+      }
+      else {
+        for( const ticket of getActive(tickets) ){
+            getSlackLink(ticket);
+        }
+      }
     };
 
     const interval = setInterval(update, 30000);
@@ -53,25 +61,28 @@ const TicketContainer = ({ tickets = [] }) => {
     //UPDATE ONCE CLEAR WHAT SLACK RESPONSE LOOKS LIKE
   const getSlackLink = async (ticket) => {
       var response;
-      console.log("ID: " + ticket.id);
+      //console.log("ID: " + ticket.id);
       response = await request({
           path: `/tickets/${ticket.id}/slack-dm`,
           type: "GET",
       });
-      console.log(response);
-      updateSlack(ticket, response);
+      if(ticket.status == "CLAIMED"){
+        if(response != ticket.slack){
+          updateSlack(ticket, response);
+        }
+      }
     }
 
     const updateSlack = (ticket, response) => {
         if (response === "Slack ID not present within LCS for the given user(s)") {
-            console.log("User Missing Slack-ID");
-            ticket.slack = "";
+            //console.log("User Missing Slack-ID");
+            ticket.slack = "N/A";
         }
         else if (response === "Other user not found within LCS"){
-            ticket.slack = "";
+            ticket.slack = "N/A";
         }
         else {
-            console.log(response);
+            //console.log(response);
             ticket.slack = response;
         }
     }
