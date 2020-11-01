@@ -106,6 +106,7 @@ const Ticket = ({
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
+  const [slackURL, setSlackURL] = useState(slack);
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
@@ -255,7 +256,7 @@ const Ticket = ({
         </div>;
     }
   }
-  
+
   //SLACK
   if (currStatus !== "OPEN") {
       //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
@@ -270,8 +271,9 @@ const Ticket = ({
           {"Slack-Link"}
         </Label>
         <Typography variant="body1" gutterBottom>
-        <Link href='props.slack' style={{display: "table-cell"}} target="_blank" color='tertiary'>
-            props.slack
+        <Link href={slack} style={{display: "table-cell"}} target="_blank" color='tertiary'>
+            {slack}
+            {console.log("SLACK: " + slack)}
         </Link>
         </Typography>
       </Grid>
