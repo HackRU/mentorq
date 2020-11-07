@@ -18,7 +18,7 @@ const getActive = (tickets = []) => {
 }
 
 const getClosed = (tickets = []) => {
-  return tickets.filter(ticket => (ticket.status === "CANCELED" || ticket.status === "CLOSED"))
+  return tickets.filter(ticket => (ticket.status === "CANCELLED" || ticket.status === "CLOSED"))
 }
 
 const getOwnClaimed = (tickets = [], email) => {
