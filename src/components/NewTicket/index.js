@@ -131,6 +131,13 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             value={ticket.comment}
             label="Comment"
           />
+          { /*
+          <Input
+            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
+            value={ticket.location}
+            label="Location"
+          /> */
+          }
           <FormControlLabel control={<Checkbox
             checked={isAnonymous}
             onChange={handleChange}
