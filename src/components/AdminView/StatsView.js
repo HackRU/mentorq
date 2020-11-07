@@ -62,7 +62,7 @@ const Stats = () => {
     let minutes = "";
     let final = "";
     if (time > 60) {
-      hours = Math.round(time / 60);
+      hours = Math.round(time / 3600);
       final = hours + " hours ";
       if (Math.round(time % 60) > 0) {
         minutes = Math.round(time % 60);
