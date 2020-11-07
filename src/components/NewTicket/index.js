@@ -44,7 +44,7 @@ const defaultState = {
   commentError: "",
   contact: "",
   contactError: "",
-  location: "",
+  location: "N/A",
   locationError: "",
 };
 
@@ -99,7 +99,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     }
   };
 
-  const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0 
+  const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0
 
 
   const classes = useStyles();
@@ -130,11 +130,6 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
             value={ticket.comment}
             label="Comment"
-          />
-          <Input
-            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
-            value={ticket.location}
-            label="Location"
           />
           <FormControlLabel control={<Checkbox
             checked={isAnonymous}
