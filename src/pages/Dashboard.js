@@ -53,6 +53,12 @@ const Dashboard = () => {
         owner: ticket.owner,
       },
     });
+
+    const update = async () => {
+      setTickets(await request({ path: "/tickets/" }));
+    };
+
+    update();
   };
 
   if (isDirector) {
