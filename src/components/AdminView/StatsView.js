@@ -58,10 +58,12 @@ const Stats = () => {
   }
 
   function format(time) {
+    // console.log(time);
     let hours = "";
     let minutes = "";
+    let seconds = "";
     let final = "";
-    if (time > 60) {
+    if (time > 3600) { // time greater than 1 hr
       hours = Math.round(time / 3600);
       final = hours + " hours ";
       if (Math.round(time % 60) > 0) {
@@ -69,13 +71,19 @@ const Stats = () => {
         final = final + minutes + " minutes";
       }
       return final;
-    } else if (time > 1) {
-      minutes = Math.round(time);
+    } else if (time > 60) { // time greater than 1 minute
+      minutes = Math.round(time / 60);
       final = minutes + " minutes";
       return final;
-    } else {
-      minutes = Math.round((time + Number.EPSILON) * 100) / 100;
-      final = minutes + " minute";
+    }
+    else if (time > 1) { // time greater than 1 second
+      seconds = Math.round(time);
+      final = seconds + " seconds";
+      return final;
+    }
+    else { // time less than 1 minute
+      seconds = Math.round((time + Number.EPSILON) * 100) / 100;
+      final = seconds + " seconds";
       return final;
     }
   }
