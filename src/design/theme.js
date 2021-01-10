@@ -1,5 +1,6 @@
 import React from "react";
 import { createMuiTheme } from "@material-ui/core/styles";
+import 'fontsource-roboto';
 
 const theme = createMuiTheme({
   breakpoints: {
@@ -24,7 +25,8 @@ const theme = createMuiTheme({
       dark: "#ffad00",
     },
     textPrimary: {
-      main: "white",
+      main: "black",
+      dark: "#545454" // dark grey
     },
     textSecondary: {
       main: "#ededed",
