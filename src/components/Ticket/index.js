@@ -97,8 +97,44 @@ const Ticket = ({
 
   const getTimeDifference = (timeA, timeB) => {
     const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
-    const timeInHours = Math.round((timeInMilliseconds / 1000) / 60 / 60);
-    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`
+    const timeInSecs = Math.round(timeInMilliseconds/1000);
+    let finaltime = "";
+    let timeInHours = "";
+    let timeInMinutes = "";
+    /*const timeInMins = (timeInSecs / 60);
+    const timeInHours = Math.round((timeInMins / 60));
+    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`*/
+    if(timeInSecs > 3600){
+      const timeInHours = Math.round((timeInSecs / 3600));
+      if(timeInHours == 1){
+        finaltime = timeInHours + " hour ";
+        return finaltime;
+      }
+      finaltime = timeInHours + " hours ";
+      return finaltime; 
+    }
+    else if(timeInSecs > 60){
+      timeInMinutes = Math.round(timeInSecs / 60);
+      if(timeInMinutes == 1){
+        finaltime = timeInMinutes + " minute ";
+        return finaltime;
+      }
+      finaltime = timeInMinutes + " minutes ";
+      return finaltime; 
+    }
+    else if(timeInSecs > 1){
+      if(timeInSecs == 1){
+        finaltime = timeInSecs + " second ";
+        return finaltime;
+      }
+      finaltime = timeInSecs + " seconds ";
+      return finaltime; 
+    }
+    else{
+      timeInSecs = Math.round(timeInSecs);
+      finaltime = timeInSecs;
+      return finaltime;
+    }
   }
 
   useEffect(() => {
