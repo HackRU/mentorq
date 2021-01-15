@@ -106,19 +106,27 @@ const Ticket = ({
     return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`*/
     if(timeInSecs > 3600){
       const timeInHours = Math.round((timeInSecs / 3600));
-      finaltime = timeInHours + " hours ";
-      if((timeInSecs % 60) > 0){
-        timeInMinutes = Math.round(timeInSecs%60);
-        finaltime = finaltime + timeInMinutes + " minutes ";
+      if(timeInHours == 1){
+        finaltime = timeInHours + " hour ";
+        return finaltime;
       }
+      finaltime = timeInHours + " hours ";
       return finaltime; 
     }
     else if(timeInSecs > 60){
       timeInMinutes = Math.round(timeInSecs / 60);
+      if(timeInMinutes == 1){
+        finaltime = timeInMinutes + " minute ";
+        return finaltime;
+      }
       finaltime = timeInMinutes + " minutes ";
       return finaltime; 
     }
     else if(timeInSecs > 1){
+      if(timeInSecs == 1){
+        finaltime = timeInSecs + " second ";
+        return finaltime;
+      }
       finaltime = timeInSecs + " seconds ";
       return finaltime; 
     }
