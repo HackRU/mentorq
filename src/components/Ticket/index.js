@@ -96,43 +96,43 @@ const Ticket = ({
   let button, dialog, claimnote, canceldialog, slacklink;
 
   const getTimeDifference = (timeA, timeB) => {
-    const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
-    const timeInSecs = Math.round(timeInMilliseconds/1000);
+    let timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
+    let timeInSecs = Math.round(timeInMilliseconds / 1000);
     let finaltime = "";
     let timeInHours = "";
     let timeInMinutes = "";
     /*const timeInMins = (timeInSecs / 60);
     const timeInHours = Math.round((timeInMins / 60));
     return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`*/
-    if(timeInSecs > 3600){
+    if (timeInSecs > 3600) {
       const timeInHours = Math.round((timeInSecs / 3600));
-      if(timeInHours == 1){
+      if (timeInHours == 1) {
         finaltime = timeInHours + " hour ";
         return finaltime;
       }
       finaltime = timeInHours + " hours ";
-      return finaltime; 
+      return finaltime;
     }
-    else if(timeInSecs > 60){
+    else if (timeInSecs > 60) {
       timeInMinutes = Math.round(timeInSecs / 60);
-      if(timeInMinutes == 1){
+      if (timeInMinutes == 1) {
         finaltime = timeInMinutes + " minute ";
         return finaltime;
       }
       finaltime = timeInMinutes + " minutes ";
-      return finaltime; 
+      return finaltime;
     }
-    else if(timeInSecs > 1){
-      if(timeInSecs == 1){
+    else if (timeInSecs > 1) {
+      if (timeInSecs == 1) {
         finaltime = timeInSecs + " second ";
         return finaltime;
       }
       finaltime = timeInSecs + " seconds ";
-      return finaltime; 
+      return finaltime;
     }
-    else{
+    else {
       timeInSecs = Math.round(timeInSecs);
-      finaltime = timeInSecs;
+      finaltime = timeInSecs + " second";
       return finaltime;
     }
   }
@@ -367,6 +367,7 @@ const Ticket = ({
           <CardContent className={classes.gridmargin}>
             <Grid container spacing={5} >
               <Grid item xs={12} sm={isDirector ? 6 : 7} md={8}>
+                {console.log(owner)}
                 <TicketField size={12} name="Owner" value={owner} />
                 <TicketField size={12} name="Contact" value={contact} />
                 {currStatus !== "OPEN" && currStatus !== "CANCELLED" ? <TicketField size={12} name="Mentor" value={mentorEmail} /> : ""}

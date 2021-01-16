@@ -12,8 +12,6 @@ import Background from "./design/Background.jsx"
 import theme from "./design/theme.js"
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import { AllTickets } from "./pages/Admin/Tickets";
-import Feedback from "./pages/Admin/Feedback";
 
 export default () => {
   const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
@@ -31,15 +29,6 @@ export default () => {
             <Route path="/login">
               {isLoggedIn ? <Redirect to="/" /> : <Login />}
             </Route>
-
-            <Route path="/admin/alltickets">
-              {isLoggedIn ? <AllTickets /> : <Redirect to="/login" />}
-            </Route>
-
-            <Route path="/admin/feedback">
-              {isLoggedIn ? <Feedback /> : <Redirect to="/login" />}
-            </Route>
-
           </Switch>
         </Router>
       </ThemeProvider>
