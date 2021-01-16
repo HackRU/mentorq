@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Stats = () => {
+const AdminStats = () => {
   const token = useSelector(({ auth: { accessToken } }) => accessToken);
   const [stats, setStats] = useState({
     averageClaimed: 0,
@@ -143,4 +143,4 @@ const Stats = () => {
   );
 };
 
-export { Stats };
+export default AdminStats;
