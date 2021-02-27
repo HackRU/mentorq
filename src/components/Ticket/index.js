@@ -250,7 +250,6 @@ const Ticket = ({
   const closeButton = <TicketButton type="close" handleClick={closeTicket} />
   const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
   const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
-  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket} />
 
   //IF Else for Buttons
   if (isMentor || isDirector) {
@@ -397,7 +396,7 @@ const Ticket = ({
               <Grid item xs={12} sm={isDirector ? 6 : 5} md={4} alignItems="stretch" >
                 {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
                 {button}
-                {isDirector && deleteButton}
+                {isDirector && currStatus !== "CANCELLED" && cancelButton}
               </Grid>
             </Grid>
           </CardContent>
