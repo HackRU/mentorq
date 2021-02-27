@@ -25,13 +25,31 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const useStyles = makeStyles((theme) => ({
-  ticket: {
-    borderLeftWidth: 4,
+  openticket: {
+    borderLeftWidth: 6,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.secondary.light,
+    color: theme.palette.textPrimary.dark,
+  },
+  claimedticket: {
+    borderLeftWidth: 6,
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderBottomWidth: 0,
     borderStyle: "solid",
     borderColor: theme.palette.secondary.main,
+    color: theme.palette.textPrimary.dark,
+  },
+  closedticket: {
+    borderLeftWidth: 6,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.secondary.dark,
     color: theme.palette.textPrimary.dark,
   },
   cancelledticket: {
@@ -337,7 +355,10 @@ const Ticket = ({
   }
 
   return (
-    <Card className={status === "CANCELLED" ? classes.cancelledticket : classes.ticket}>
+    <Card className={status === "OPEN" ? classes.openticket :
+      status === "CLAIMED" ? classes.claimedticket :
+        status === "CLOSED" ? classes.closedticket :
+          classes.cancelledticket}>
       <CardHeader
         className={classes.cardheader}
         title={title}
