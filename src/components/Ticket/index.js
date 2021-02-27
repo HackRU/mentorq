@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import { request } from "../.././util";
 import clsx from 'clsx';
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
 import { TicketButton } from './TicketButton';
 import { Notification } from '.././Notification';
 import { ClaimNote } from './ClaimNote';
 import { DialogBox } from './Dialog';
 import { CancelDialog } from './CancelDialog'
-
 import {
   Card,
   CardContent,
@@ -17,11 +15,13 @@ import {
   Collapse,
   FormLabel as Label,
   Grid,
+  IconButton,
   Link,
+  makeStyles,
   Typography,
 } from "@material-ui/core";
-import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ActivePopover from "./ActivePopover";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -67,6 +67,11 @@ const useStyles = makeStyles((theme) => ({
   },
   cardcontent: {
     paddingTop: 0
+  },
+  cardsubheader: {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap"
   },
   gridmargin: {
     paddingLeft: 0
@@ -343,10 +348,13 @@ const Ticket = ({
         title={title}
         titleTypographyProps={{ variant: "h5", color: "theme.palette.textPrimary.main" }}
         subheaderTypographyProps={{ variant: "overline" }}
-        subheader={status === "OPEN" ? "Open for " + getTimeDifference(date, new Date(created_datetime)) : status}
-      />
+        subheader={
+          <div className={classes.cardsubheader}>
+            {status === "OPEN" ? "Open for " + getTimeDifference(date, new Date(created_datetime)) : status}
+            <ActivePopover />
+          </div>}>
+      </CardHeader>
       <CardContent className={classes.cardcontent}>
-
         <CardActions className={classes.gridmargin}>
           <TicketField size={12} name="" value={comment} />
           <IconButton
@@ -362,7 +370,6 @@ const Ticket = ({
             <ExpandMoreIcon />
           </IconButton>
         </CardActions>
-
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent className={classes.gridmargin}>
             <Grid container spacing={5} >
@@ -381,11 +388,10 @@ const Ticket = ({
             </Grid>
           </CardContent>
         </Collapse>
-        {setFeedback()}{claimnote}{canceldialog}
+        {setFeedback()} {claimnote} {canceldialog}
+      </CardContent >
 
-      </CardContent>
-
-    </Card>
+    </Card >
   );
 };
 
