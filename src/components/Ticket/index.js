@@ -53,12 +53,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.textPrimary.dark,
   },
   cancelledticket: {
-    borderLeftWidth: 4,
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-    borderStyle: "solid",
-    borderColor: theme.palette.secondary.main,
     color: theme.palette.textPrimary.dark,
     backgroundColor: "#dedede",
   },
