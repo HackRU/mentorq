@@ -18,10 +18,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ActivePopover() {
+export default function ActivePopover(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [active, setActive] = React.useState(true);
+    const [active, setActive] = React.useState(props.isActive);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -44,8 +44,10 @@ export default function ActivePopover() {
 
     return (
         <div>
-            <IconButton aria-label={id} onClick={handleClick}>
-                {active ? <ActiveIcon className={classes.icon} color="secondary" /> : <InactiveIcon className={classes.icon} />}
+            <IconButton aria-label={id} onClick={handleClick} disabled={!props.editable}>
+                {active ?
+                    <ActiveIcon className={classes.icon} color="secondary" /> :
+                    <InactiveIcon className={classes.icon} />}
             </IconButton>
             <Popover
                 id={id}
