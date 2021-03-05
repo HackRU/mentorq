@@ -84,6 +84,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
       console.log(nameToSubmit);
       setOpen(false);
       onAddTicket({
+        active: ticket.active,
         status: ticket.status,
         title: ticket.title,
         comment: ticket.comment,

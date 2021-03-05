@@ -86,11 +86,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, slack, status, feedback, mentor_email, owner },
+  ticket: { id, created_datetime, title, comment, contact, location, slack, status, feedback, mentor_email, owner, active },
   initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
+  const [isActive, setActive] = useState(active);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
   const [slackURL, setSlackURL] = useState(slack);
