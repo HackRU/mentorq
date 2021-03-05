@@ -89,6 +89,7 @@ const Dashboard = () => {
       path: "/tickets/",
       type: "POST",
       body: {
+        active: ticket.active,
         status: "OPEN",
         owner_email: email,
         title: ticket.title,
