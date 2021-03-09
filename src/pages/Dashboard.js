@@ -96,6 +96,7 @@ const Dashboard = () => {
         contact: ticket.contact,
         location: ticket.location,
         owner: ticket.owner,
+        active: ticket.active,
       },
     });
 
