@@ -367,8 +367,9 @@ const Ticket = ({
           <div className={classes.cardsubheader}>
             {status === "OPEN" ? "Open for " + getTimeDifference(date, new Date(created_datetime)) : status}
             <ActivePopover
-              isActive={status === "CLOSED" | status === "CANCELLED" ? false : true}
-              editable={status === "CLOSED" | status === "CANCELLED" ? false : true} />
+              isActive={!isActive | status === "CLOSED" | status === "CANCELLED" ? false : true}
+              editable={(!isDirector && !isMentor && isActive) || status === "CLOSED" || status === "CANCELLED" ? false : true}
+              id={id} />
           </div>}>
       </CardHeader>
       <CardContent className={classes.cardcontent}>

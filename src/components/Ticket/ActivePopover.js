@@ -1,4 +1,5 @@
 import React from 'react';
+import { request } from "../.././util";
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Button,
@@ -23,6 +24,16 @@ export default function ActivePopover(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [active, setActive] = React.useState(props.isActive);
 
+    const toggleActive = async (isActive) => {
+        await request({
+            path: `/tickets/${props.id}/`,
+            type: "PATCH",
+            body: {
+                active: isActive,
+            },
+        });
+    }
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -33,10 +44,14 @@ export default function ActivePopover(props) {
 
     const markActive = () => {
         setActive(true);
+        console.log("active: true");
+        toggleActive(true);
     }
 
     const markInactive = () => {
         setActive(false);
+        console.log("active: false");
+        toggleActive(false);
     }
 
     const open = Boolean(anchorEl);
