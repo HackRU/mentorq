@@ -4,9 +4,7 @@ import {
   RECEIVED_LOGIN,
   FAILED_LOGIN,
   LOGOUT,
-  REFRESH_TOKEN_RECEIVED,
-  UPDATE_OPEN,
-  UPDATE_CLAIMED
+  REFRESH_TOKEN_RECEIVED
 } from "../constants";
 
 const defaultState = {
@@ -20,9 +18,7 @@ const defaultState = {
   director: false,
   mentor: false,
   name: "",
-  loadingLogin: false,
-  numOpen: 0,
-  numClaimed: 0
+  loadingLogin: false
 };
 
 const auth = (state = defaultState, action) => {
@@ -35,9 +31,7 @@ const auth = (state = defaultState, action) => {
     // validUntil,
     director,
     mentor,
-    name,
-    numOpen,
-    numClaimed
+    name
   } = action;
 
   // I was playing with this to see how i could manipulate the loading screen  
@@ -66,16 +60,6 @@ const auth = (state = defaultState, action) => {
       };
     case FAILED_LOGIN:
       return { ...state, loadingLogin: false, hasErrors: true };
-    case UPDATE_OPEN:
-      return {
-        ...state,
-        numOpen: numOpen
-      }
-    case UPDATE_CLAIMED:
-      return {
-        ...state,
-        numClaimed: numClaimed
-      }
     default:
       return state;
   }

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Ticket } from "../Ticket";
 import { TicketList } from "../TicketList";
 import styled from "styled-components";
 import { request } from "../.././util";
-import { updateOpen, updateClaimed } from "../../actions";
 import TicketNumbers from "../TicketNumbers";
 
 const Container = styled.div`
@@ -38,13 +36,12 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
   const email = useSelector((store) => store.auth.email);
   const [numOpen, setNumOpen] = useState(tickets.filter(ticket => (ticket.status === "OPEN")).length);
   const [numClaimed, setNumClaimed] = useState(tickets.filter(ticket => (ticket.status === "CLAIMED")).length);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const update = async () => {
       if (isMentor && !isDirector) {
         for (const ticket of getOwnClaimed(tickets, email)) {
-          console.log(ticket);
+          // console.log(ticket);
           getSlackLink(ticket);
         }
       }
@@ -57,28 +54,15 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
       if (isDirector) {
         setNumOpen(tickets.filter(ticket => (ticket.status === "OPEN")).length);
         setNumClaimed(tickets.filter(ticket => (ticket.status === "CLAIMED")).length);
-        console.log("numOpen: " + numOpen + " numClaimed: " + numClaimed);
-        console.log(tickets);
-        dispatch(updateOpen({ numOpen }));
-        dispatch(updateClaimed({ numClaimed }));
       }
       else if (isMentor) {
         setNumOpen(tickets.filter(ticket => (ticket.status === "OPEN")).length);
         setNumClaimed(tickets.filter(ticket => (ticket.status === "CLAIMED" && ticket.mentor_email === email)).length);
-        console.log("numOpen: " + numOpen + " numClaimed: " + numClaimed);
-        console.log(tickets);
-        dispatch(updateOpen({ numOpen }));
-        dispatch(updateClaimed({ numClaimed }));
       }
       else {
         setNumOpen(tickets.filter(ticket => (ticket.status === "OPEN" && ticket.owner_email === email)).length);
         setNumClaimed(tickets.filter(ticket => (ticket.status === "CLAIMED" && ticket.owner_email === email)).length);
-        console.log("numOpen: " + numOpen + " numClaimed: " + numClaimed);
-        console.log(tickets);
-        dispatch(updateOpen({ numOpen }));
-        dispatch(updateClaimed({ numClaimed }));
       }
-
     };
 
     const interval = setInterval(update, 30000);
