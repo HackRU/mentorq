@@ -68,6 +68,8 @@ const Dashboard = () => {
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
   const classes = useStyles();
+  const [numOpen, setNumOpen] = useState(useSelector((store) => store.auth.numOpen) || 0);
+  const [numClaimed, setNumClaimed] = useState(useSelector((store) => store.auth.numClaimed) || 0);
 
   useEffect(() => {
     const update = async () => {
@@ -134,19 +136,19 @@ const Dashboard = () => {
           {isMentor ?
             <div>
               <TabPanel value={value} index={0} >
-                <TicketContainer tickets={tickets} ticketType="my tickets" />
+                <TicketContainer tickets={tickets} ticketType="my tickets" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
               <TabPanel value={value} index={1}>
-                <TicketContainer tickets={tickets} ticketType="ticket queue" />
+                <TicketContainer tickets={tickets} ticketType="ticket queue" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
             </div>
             :
             <div>
               <TabPanel value={value} index={0}>
-                <TicketContainer tickets={tickets} ticketType="active" />
+                <TicketContainer tickets={tickets} ticketType="active" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
               <TabPanel value={value} index={1}>
-                <TicketContainer tickets={tickets} ticketType="closed" />
+                <TicketContainer tickets={tickets} ticketType="closed" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
             </div>
           }
@@ -160,18 +162,18 @@ const Dashboard = () => {
           {isDirector && isMentor ?
             <div>
               <TabPanel value={value} index={4}>
-                <TicketContainer tickets={tickets} ticketType="active" />
+                <TicketContainer tickets={tickets} ticketType="active" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
               <TabPanel value={value} index={5}>
-                <TicketContainer tickets={tickets} ticketType="closed" />
+                <TicketContainer tickets={tickets} ticketType="closed" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
             </div> : ""
           }
         </Grid>
       </Grid>
+      {console.log("open: " + numOpen + " claimed: " + numClaimed)}
     </DashboardContainer >
   );
-
 };
 
 export default Dashboard;

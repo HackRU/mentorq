@@ -20,6 +20,10 @@ export const REFRESH_TOKEN_REQUEST = Symbol("refresh_token_request");
 export const REFRESH_TOKEN_FAILED = Symbol("refresh_token_failed");
 export const REFRESH_TOKEN_RECEIVED = Symbol("refresh_token_received");
 
+// Update Number of Current Tickets
+export const UPDATE_OPEN = Symbol("update_open");
+export const UPDATE_CLAIMED = Symbol("update_claimed");
+
 // HackRU authorization constants
 export const HACKRU_PROD = "https://api.hackru.org/prod"
 export const HACKRU_DEV = "https://api.hackru.org/dev"

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Ticket } from "../Ticket";
 import { TicketList } from "../TicketList";
 import styled from "styled-components";
 import { request } from "../.././util";
+import { updateOpen, updateClaimed } from "../../actions";
+import TicketNumbers from "../TicketNumbers";
 
 const Container = styled.div`
   display: grid;
@@ -29,11 +31,14 @@ const getOtherActive = (tickets = [], email) => {
   return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED"))
 }
 
-const TicketContainer = ({ tickets = [], ticketType }) => {
+const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp }) => {
   const [initFeedback, setInitFeedback] = useState([]);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
   const email = useSelector((store) => store.auth.email);
+  const [numOpen, setNumOpen] = useState(tickets.filter(ticket => (ticket.status === "OPEN")).length);
+  const [numClaimed, setNumClaimed] = useState(tickets.filter(ticket => (ticket.status === "CLAIMED")).length);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const update = async () => {
@@ -48,6 +53,32 @@ const TicketContainer = ({ tickets = [], ticketType }) => {
           getSlackLink(ticket);
         }
       }
+
+      if (isDirector) {
+        setNumOpen(tickets.filter(ticket => (ticket.status === "OPEN")).length);
+        setNumClaimed(tickets.filter(ticket => (ticket.status === "CLAIMED")).length);
+        console.log("numOpen: " + numOpen + " numClaimed: " + numClaimed);
+        console.log(tickets);
+        dispatch(updateOpen({ numOpen }));
+        dispatch(updateClaimed({ numClaimed }));
+      }
+      else if (isMentor) {
+        setNumOpen(tickets.filter(ticket => (ticket.status === "OPEN")).length);
+        setNumClaimed(tickets.filter(ticket => (ticket.status === "CLAIMED" && ticket.mentor_email === email)).length);
+        console.log("numOpen: " + numOpen + " numClaimed: " + numClaimed);
+        console.log(tickets);
+        dispatch(updateOpen({ numOpen }));
+        dispatch(updateClaimed({ numClaimed }));
+      }
+      else {
+        setNumOpen(tickets.filter(ticket => (ticket.status === "OPEN" && ticket.owner_email === email)).length);
+        setNumClaimed(tickets.filter(ticket => (ticket.status === "CLAIMED" && ticket.owner_email === email)).length);
+        console.log("numOpen: " + numOpen + " numClaimed: " + numClaimed);
+        console.log(tickets);
+        dispatch(updateOpen({ numOpen }));
+        dispatch(updateClaimed({ numClaimed }));
+      }
+
     };
 
     const interval = setInterval(update, 30000);
@@ -56,7 +87,7 @@ const TicketContainer = ({ tickets = [], ticketType }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [tickets]);
+  }, [tickets], numOpen, numClaimed);
 
   //UPDATE ONCE CLEAR WHAT SLACK RESPONSE LOOKS LIKE
   const getSlackLink = async (ticket) => {
@@ -99,22 +130,34 @@ const TicketContainer = ({ tickets = [], ticketType }) => {
 
   if (ticketType === "active") {
     return (
-      < TicketList group="active" initFeedback={initFeedback} tickets={getActive(tickets)} />
+      <div>
+        <TicketList group="active" initFeedback={initFeedback} tickets={getActive(tickets)} />
+        <TicketNumbers numClaimed={numClaimed} numOpen={numOpen} />
+      </div>
     )
   }
   else if (ticketType === "closed") {
     return (
-      <TicketList group="closed" initFeedback={initFeedback} tickets={getClosed(tickets)} />
+      <div>
+        <TicketList group="closed" initFeedback={initFeedback} tickets={getClosed(tickets)} />
+        <TicketNumbers numClaimed={numClaimed} numOpen={numOpen} />
+      </div>
     )
   }
   else if (ticketType === "my tickets") {
     return (
-      <TicketList group="my tickets" initFeedback={initFeedback} tickets={getOwnClaimed(tickets, email)} />
+      <div>
+        <TicketList group="my tickets" initFeedback={initFeedback} tickets={getOwnClaimed(tickets, email)} />
+        <TicketNumbers numClaimed={numClaimed} numOpen={numOpen} />
+      </div>
     )
   }
   else if (ticketType === "ticket queue") {
     return (
-      <TicketList group="ticket queue" initFeedback={initFeedback} tickets={getOtherActive(tickets, email)} />
+      <div>
+        <TicketList group="ticket queue" initFeedback={initFeedback} tickets={getOtherActive(tickets, email)} />
+        <TicketNumbers numClaimed={numClaimed} numOpen={numOpen} />
+      </div>
     )
   }
   else {
