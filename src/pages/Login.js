@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { Input } from '../components/Input';
 import { SignInButton } from '../components/Login/SignInButton';
 import { ErrorMessage } from '../components/Login/ErrorMessage';
+import MetaDecorator from "../components/MetaDecorator";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -109,8 +110,12 @@ const Login = () => {
   }
 
   return (
-
     <Container component="main" maxWidth="xs" className={classes.root} >
+      <MetaDecorator
+        description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
+        title={"MentorQ"}
+        notif={false}
+        imageAlt={"HackRU Logo"} />
       <Paper className={classes.paper} elevation={10}>
         <Typography
           variant="h1"
