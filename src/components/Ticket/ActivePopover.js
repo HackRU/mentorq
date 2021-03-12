@@ -6,13 +6,16 @@ import {
     ButtonGroup,
     Popover,
     IconButton,
+    Typography
 } from '@material-ui/core/';
 import ActiveIcon from '@material-ui/icons/Lens';
 import InactiveIcon from '@material-ui/icons/TripOrigin';
 
 const useStyles = makeStyles((theme) => ({
-    typography: {
-        padding: theme.spacing(2),
+    button: {
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        justifyContent: "flex-start"
     },
     icon: {
         width: '15px',
@@ -82,9 +85,20 @@ export default function ActivePopover(props) {
                     orientation="vertical"
                     aria-label="vertical contained primary button group"
                     variant="text"
+                    align="left"
                 >
-                    <Button onClick={markActive}>Mark Active</Button>
-                    <Button onClick={markInactive}>Mark Inactive</Button>
+                    <Button
+                        onClick={markActive}
+                        className={classes.button}
+                        startIcon={<ActiveIcon className={classes.icon} color="secondary" />}>
+                        Mark Active
+                    </Button>
+                    <Button
+                        onClick={markInactive}
+                        className={classes.button}
+                        startIcon={<InactiveIcon className={classes.icon} />}>
+                        Mark Inactive
+                    </Button>
                 </ButtonGroup>
             </Popover>
         </div>
