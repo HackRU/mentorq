@@ -5,7 +5,7 @@ import DashboardContainer from "../components/DashboardContainer";
 import AdminStats from "../components/Stats/AdminStats";
 import MentorLeaderboard from "../components/Stats/MentorLeaderboard";
 import Feedback from "../components/Feedback";
-import { Stats } from "../components/Stats";
+import Stats from "../components/Stats";
 import { request } from "../util";
 import { useSelector } from "react-redux";
 import { Grid } from "@material-ui/core";
