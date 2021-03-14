@@ -5,7 +5,7 @@ import DashboardContainer from "../components/DashboardContainer";
 import AdminStats from "../components/Stats/AdminStats";
 import MentorLeaderboard from "../components/Stats/MentorLeaderboard";
 import Feedback from "../components/Feedback";
-import { Stats } from "../components/Stats";
+import Stats from "../components/Stats";
 import { request } from "../util";
 import { useSelector } from "react-redux";
 import { Grid } from "@material-ui/core";
@@ -125,11 +125,11 @@ const Dashboard = () => {
         <Grid item xs={12} sm={isDirector ? 12 : 8}  >
           <AppBar position="static" className={classes.root}>
             <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="scrollable auto tabs example">
-              {isMentor ? <Tab wrapped label="My Tickets" {...a11yProps(0)} /> : <Tab wrapped label="Active Tickets" {...a11yProps(0)} />}
+              {isMentor ? <Tab wrapped label="My Tickets" {...a11yProps(0)} /> : <Tab wrapped label="Current Tickets" {...a11yProps(0)} />}
               {isMentor ? <Tab wrapped label="Ticket Queue" {...a11yProps(1)} /> : <Tab wrapped label="Closed Tickets" {...a11yProps(1)} />}
               <Tab label="Statistics" {...a11yProps(2)} />
               {isDirector ? <Tab wrapped label="Feedback" {...a11yProps(3)} /> : ""}
-              {isDirector && isMentor ? <Tab wrapped label="Active Tickets" {...a11yProps(4)} /> : ""}
+              {isDirector && isMentor ? <Tab wrapped label="Current Tickets" {...a11yProps(4)} /> : ""}
               {isDirector && isMentor ? <Tab wrapped label="Closed Tickets" {...a11yProps(5)} /> : ""}
             </Tabs>
           </AppBar>
@@ -145,7 +145,7 @@ const Dashboard = () => {
             :
             <div>
               <TabPanel value={value} index={0}>
-                <TicketContainer tickets={tickets} ticketType="active" numClaimed={numClaimed} numOpen={numOpen} />
+                <TicketContainer tickets={tickets} ticketType="current" numClaimed={numClaimed} numOpen={numOpen}/>
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <TicketContainer tickets={tickets} ticketType="closed" numClaimed={numClaimed} numOpen={numOpen} />
@@ -162,7 +162,7 @@ const Dashboard = () => {
           {isDirector && isMentor ?
             <div>
               <TabPanel value={value} index={4}>
-                <TicketContainer tickets={tickets} ticketType="active" numClaimed={numClaimed} numOpen={numOpen} />
+                <TicketContainer tickets={tickets} ticketType="current" numClaimed={numClaimed} numOpen={numOpen} />
               </TabPanel>
               <TabPanel value={value} index={5}>
                 <TicketContainer tickets={tickets} ticketType="closed" numClaimed={numClaimed} numOpen={numOpen} />

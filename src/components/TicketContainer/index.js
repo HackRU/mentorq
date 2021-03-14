@@ -13,7 +13,7 @@ const Container = styled.div`
   word-wrap: break-word;
 `;
 
-const getActive = (tickets = []) => {
+const getCurrent = (tickets = []) => {
   return tickets.filter(ticket => (ticket.status === "OPEN" || ticket.status === "CLAIMED"))
 }
 
@@ -25,7 +25,7 @@ const getOwnClaimed = (tickets = [], email) => {
   return tickets.filter(ticket => (ticket.status === "CLAIMED" && ticket.mentor_email === email))
 }
 
-const getOtherActive = (tickets = [], email) => {
+const getOtherCurrent = (tickets = [], email) => {
   return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED"))
 }
 
@@ -46,7 +46,7 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
         }
       }
       else {
-        for (const ticket of getActive(tickets)) {
+        for (const ticket of getCurrent(tickets)) {
           getSlackLink(ticket);
         }
       }
@@ -112,10 +112,10 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
     updateFeedback();
   }
 
-  if (ticketType === "active") {
+  if (ticketType === "current") {
     return (
       <div>
-        <TicketList group="active" initFeedback={initFeedback} tickets={getActive(tickets)} />
+        < TicketList group="current" initFeedback={initFeedback} tickets={getCurrent(tickets)} />
         <TicketNumbers numClaimed={numClaimed} numOpen={numOpen} />
       </div>
     )
@@ -139,7 +139,7 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
   else if (ticketType === "ticket queue") {
     return (
       <div>
-        <TicketList group="ticket queue" initFeedback={initFeedback} tickets={getOtherActive(tickets, email)} />
+        <TicketList group="ticket queue" initFeedback={initFeedback} tickets={getOtherCurrent(tickets, email)} />
         <TicketNumbers numClaimed={numClaimed} numOpen={numOpen} />
       </div>
     )
