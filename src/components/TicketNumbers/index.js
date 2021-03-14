@@ -30,7 +30,14 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
     const isDirector = useSelector((store) => store.auth.director);
     const isMentor = useSelector((store) => store.auth.mentor);
     if (numOpen == 0 && numClaimed == 0) {
-        return (<div></div>);
+        return (
+            <div>
+                <MetaDecorator
+                    description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
+                    title={"MentorQ"}
+                    notif={false}
+                    imageAlt={"HackRU Logo"} />
+            </div>);
     }
     else if (isDirector && !isMentor) {
         return (
