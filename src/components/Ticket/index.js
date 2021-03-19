@@ -148,6 +148,11 @@ const Ticket = ({
       finaltime = timeInSecs + " seconds ";
       return finaltime;
     }
+    else if (timeInSecs <= 0) {
+      timeInSecs = 0;
+      finaltime = timeInSecs + " seconds";
+      return finaltime;
+    }
     else {
       timeInSecs = Math.round(timeInSecs);
       finaltime = timeInSecs + " second";
