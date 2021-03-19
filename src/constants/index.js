@@ -4,6 +4,7 @@ export const URL = "https://mentorq-backend-dev.herokuapp.com";
 
 // URL of frontend
 export const HOSTNAME = "http://localhost:3000";
+// export const HOSTNAME = "https://mentorq.hackru.org/"
 
 // Types
 export const LOGOUT = Symbol("logout");
