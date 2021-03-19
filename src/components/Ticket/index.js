@@ -287,7 +287,7 @@ const Ticket = ({
   }
 
   //SLACK
-  if (currStatus !== "OPEN" && currStatus !== "CANCELLED") {
+  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack != null && slack != "N/A" && slack != "[object Object]") {
     //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
     let slacklinkcontent = <Link href={slack} target="_blank" color='tertiary'>
       {slack}
@@ -392,7 +392,6 @@ const Ticket = ({
           <CardContent className={classes.gridmargin}>
             <Grid container spacing={5} >
               <Grid item xs={12} sm={isDirector ? 6 : 7} md={8}>
-                {console.log(owner)}
                 <TicketField size={12} name="Owner" value={owner} />
                 <TicketField size={12} name="Contact" value={contact} />
                 {currStatus !== "OPEN" && currStatus !== "CANCELLED" ? <TicketField size={12} name="Mentor" value={mentorEmail} /> : ""}
