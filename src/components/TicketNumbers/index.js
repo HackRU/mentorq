@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
+import React from 'react';
+import {
+    Fab,
+    Hidden,
+    makeStyles
+} from '@material-ui/core/';
 import MetaDecorator from "../MetaDecorator";
-import { Typography } from '@material-ui/core';
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -47,12 +49,14 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
                     title={"MentorQ Director Dashboard"}
                     notif={false}
                     imageAlt={"HackRU Logo"} />
-                <div className={classes.root}>
-                    <Fab variant="extended" className={classes.extendedIcon} href="">
-                        Total Open Tickets: {numOpen} <br />
-                        Total Claimed Tickets: {numClaimed}
-                    </Fab>
-                </div >
+                <Hidden xsDown>
+                    <div className={classes.root}>
+                        <Fab variant="extended" className={classes.extendedIcon} href="">
+                            Total Open Tickets: {numOpen} <br />
+                            Total Claimed Tickets: {numClaimed}
+                        </Fab>
+                    </div >
+                </Hidden>
             </div>
         );
     }
@@ -64,12 +68,14 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
                     title={numOpen > 0 ? "MentorQ (" + numOpen + " Open Tickets)" : "MentorQ"}
                     notif={numOpen > 0 ? true : false}
                     imageAlt={"HackRU Logo"} />
-                <div className={classes.root}>
-                    <Fab variant="extended" className={classes.extendedIcon} href="">
-                        Open Tickets: {numOpen} <br />
-                        My Claimed Tickets: {numClaimed}
-                    </Fab>
-                </div >
+                <Hidden xsDown>
+                    <div className={classes.root}>
+                        <Fab variant="extended" className={classes.extendedIcon} href="">
+                            Open Tickets: {numOpen} <br />
+                            My Claimed Tickets: {numClaimed}
+                        </Fab>
+                    </div >
+                </Hidden>
             </div>
         );
     }
@@ -80,12 +86,14 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
                 title={numClaimed > 0 ? "MentorQ (" + numClaimed + " Claimed Tickets)" : "MentorQ"}
                 notif={numClaimed > 0 ? true : false}
                 imageAlt={"HackRU Logo"} />
-                <div className={classes.root}>
-                    <Fab variant="extended" className={classes.extendedIcon} href="">
-                        Open Tickets: {numOpen} <br />
-                        Claimed Tickets: {numClaimed}
-                    </Fab>
-                </div >
+                <Hidden xsDown>
+                    <div className={classes.root}>
+                        <Fab variant="extended" className={classes.extendedIcon} href="">
+                            Open Tickets: {numOpen} <br />
+                            Claimed Tickets: {numClaimed}
+                        </Fab>
+                    </div >
+                </Hidden>
             </div>
         );
     }
