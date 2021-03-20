@@ -10,6 +10,7 @@ import Stats from "../components/Stats";
 import { request } from "../util";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
+import Tooltip from "@material-ui/core/Tooltip";
 import {
   AppBar,
   Button,
@@ -140,12 +141,22 @@ const Dashboard = () => {
           <Grid item xs={12} sm={isDirector ? 12 : 8}  >
             <AppBar position="static" className={classes.root}>
               <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="scrollable auto tabs example">
-                {isMentor ? <Tab wrapped label="My Tickets" {...a11yProps(0)} /> : <Tab wrapped label="Current Tickets" {...a11yProps(0)} />}
-                {isMentor ? <Tab wrapped label="Ticket Queue" {...a11yProps(1)} /> : <Tab wrapped label="Closed Tickets" {...a11yProps(1)} />}
+                {isMentor ? <Tooltip title="Tickets I Have Claimed" arrow>
+                <Tab wrapped label="My Tickets" {...a11yProps(0)} /> </Tooltip>:
+                <Tooltip title="Open and Claimed Tickets" arrow>
+                <Tab wrapped label="Active Tickets" {...a11yProps(0)} /></Tooltip>}
+
+                {isMentor ?  <Tooltip title="Remaining Open Tickets and Other" arrow>
+                <Tab wrapped label="Ticket Queue" {...a11yProps(1)} /> </Tooltip>:
+                <Tooltip title="Closed and Cancelled Tickets" arrow>
+                <Tab wrapped label="Closed Tickets" {...a11yProps(1)} /></Tooltip>}
+
                 <Tab label="Statistics" {...a11yProps(2)} />
                 {isDirector ? <Tab wrapped label="Feedback" {...a11yProps(3)} /> : ""}
-                {isDirector && isMentor ? <Tab wrapped label="Current Tickets" {...a11yProps(4)} /> : ""}
-                {isDirector && isMentor ? <Tab wrapped label="Closed Tickets" {...a11yProps(5)} /> : ""}
+                {isDirector && isMentor ?   <Tooltip title="Open and Claimed Tickets" arrow>
+                <Tab wrapped label="Active Tickets" {...a11yProps(4)} /> </Tooltip>: ""}
+                {isDirector && isMentor ?  <Tooltip title="Closed and Cancelled Tickets" arrow>
+                <Tab wrapped label="Closed Tickets" {...a11yProps(5)} /></Tooltip> : ""}
               </Tabs>
             </AppBar>
             {isMentor ?
