@@ -17,6 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +49,7 @@ const defaultState = {
   locationError: "",
 };
 
+
 const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
@@ -55,7 +57,8 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
-
+  const [ticketLength, setTicketLength] = useState(0);
+  
   //console.log(numTickets);
 
   // Detect change in checkbox
@@ -128,10 +131,12 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             label="Contact"
           />
           <Input
-            onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
+            onChange={(e) => {setTicket({ ...ticket, comment: e.target.value }); setTicketLength(e.target.value.length)}}
             value={ticket.comment}
             label="Comment"
           />
+          <p>{ticketLength} / 255</p>
+
           { /*
           <Input
             onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
@@ -139,11 +144,12 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             label="Location"
           /> */
           }
+          <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
           <FormControlLabel control={<Checkbox
             checked={isAnonymous}
             onChange={handleChange}
             inputProps={{ 'aria-label': 'primary checkbox' }}
-          />} label="Anonymous" />
+          />} label="Anonymous" /></Tooltip>
           <br /><br />
           <div align="center">
             <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>

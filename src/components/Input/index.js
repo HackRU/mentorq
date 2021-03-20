@@ -8,6 +8,7 @@ import {
 
 
 function Input ({label, value, type, onChange,inputProps,error}){
+  
   return (
     <Box my={2}>
       <TextField
@@ -18,6 +19,7 @@ function Input ({label, value, type, onChange,inputProps,error}){
         onChange={onChange}
         inputProps={inputProps}
         error={error}
+        inputProps={{ maxLength: 255 }}
       />
     </Box>
   );
