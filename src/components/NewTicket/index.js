@@ -58,7 +58,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
   const [ticketLength, setTicketLength] = useState(0);
-  
+
   //console.log(numTickets);
 
   // Detect change in checkbox
@@ -135,6 +135,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             value={ticket.comment}
             label="Comment"
           />
+          
           <p>{ticketLength} / 255</p>
 
           { /*

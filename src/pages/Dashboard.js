@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
+import { logoutUser } from "../actions";
 import { TicketContainer } from "../components/TicketContainer";
 import { NewTicket } from "../components/NewTicket";
 import DashboardContainer from "../components/DashboardContainer";
 import AdminStats from "../components/Stats/AdminStats";
 import MentorLeaderboard from "../components/Stats/MentorLeaderboard";
 import Feedback from "../components/Feedback";
-import { Stats } from "../components/Stats";
+import Stats from "../components/Stats";
 import { request } from "../util";
-import { useSelector } from "react-redux";
-import { Grid } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import Tooltip from "@material-ui/core/Tooltip";
+
+import {
+  AppBar,
+  Button,
+  Box,
+  Grid,
+  Hidden,
+  Link,
+  makeStyles,
+  Tabs,
+  Tab,
+  Typography,
+} from '@material-ui/core/';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +32,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.tertiary.main,
     color: theme.palette.textPrimary.main,
   },
+  button: {
+    margin: 2,
+  },
+  footer: {
+    textAlign: 'center',
+    paddingBottom: 5,
+  }
 }));
 
 // Tab Menu
@@ -69,6 +84,9 @@ const Dashboard = () => {
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
   const classes = useStyles();
+  const [numOpen, setNumOpen] = useState(useSelector((store) => store.auth.numOpen) || 0);
+  const [numClaimed, setNumClaimed] = useState(useSelector((store) => store.auth.numClaimed) || 0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const update = async () => {
@@ -97,7 +115,7 @@ const Dashboard = () => {
         contact: ticket.contact,
         location: ticket.location,
         owner: ticket.owner,
-        active:ticket.active,
+        active: ticket.active,
       },
     });
 
@@ -115,13 +133,14 @@ const Dashboard = () => {
   };
 
   return (
-    <DashboardContainer>
-      <Grid container spacing={3}>
-        {!isDirector ? <Grid item xs={12} sm={4}>
-          <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN" && ticket.owner_email === email)).length} />
-        </Grid> : ""}
+    <div>
+      <DashboardContainer>
+        <Grid container spacing={3}>
+          {!isDirector ? <Grid item xs={12} sm={4}>
+            <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN" && ticket.owner_email === email)).length} />
+          </Grid> : ""}
 
-        <Grid item xs={12} sm={isDirector ? 12 : 8}  >
+          <Grid item xs={12} sm={isDirector ? 12 : 8}  >
           <AppBar position="static" className={classes.root}>
             <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="scrollable auto tabs example">
               {isMentor ? <Tooltip title="Tickets I Have Claimed" arrow>
@@ -130,7 +149,7 @@ const Dashboard = () => {
                 <Tab wrapped label="Active Tickets" {...a11yProps(0)} /></Tooltip>}
 
               {isMentor ?  <Tooltip title="Remaining Open Tickets and Other" arrow>
-                <Tab wrapped label="Ticket Queue" {...a11yProps(1)} /> </Tooltip>: 
+                <Tab wrapped label="Ticket Queue" {...a11yProps(1)} /> </Tooltip>:
                 <Tooltip title="Closed and Cancelled Tickets" arrow>
                 <Tab wrapped label="Closed Tickets" {...a11yProps(1)} /></Tooltip>}
 
@@ -142,47 +161,63 @@ const Dashboard = () => {
                 <Tab wrapped label="Closed Tickets" {...a11yProps(5)} /></Tooltip> : ""}
             </Tabs>
           </AppBar>
-          {isMentor ?
-            <div>
-              <TabPanel value={value} index={0} >
-                <TicketContainer tickets={tickets} ticketType="my tickets" />
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <TicketContainer tickets={tickets} ticketType="ticket queue" />
-              </TabPanel>
-            </div>
-            :
-            <div>
-              <TabPanel value={value} index={0}>
-                <TicketContainer tickets={tickets} ticketType="active" />
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <TicketContainer tickets={tickets} ticketType="closed" />
-              </TabPanel>
-            </div>
-          }
-          <TabPanel value={value} index={2}>
-            {isDirector ? <div><AdminStats /><br /><MentorLeaderboard /></div> : <Stats />}
-          </TabPanel>
-          {isDirector ?
-            <TabPanel value={value} index={3}>
-              <Feedback />
-            </TabPanel> : ""}
-          {isDirector && isMentor ?
-            <div>
-              <TabPanel value={value} index={4}>
-                <TicketContainer tickets={tickets} ticketType="active" />
-              </TabPanel>
-              <TabPanel value={value} index={5}>
-                <TicketContainer tickets={tickets} ticketType="closed" />
-              </TabPanel>
-            </div> : ""
-          }
+            {isMentor ?
+              <div>
+                <TabPanel value={value} index={0} >
+                  <TicketContainer tickets={tickets} ticketType="my tickets" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                  <TicketContainer tickets={tickets} ticketType="ticket queue" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+              </div>
+              :
+              <div>
+                <TabPanel value={value} index={0}>
+                  <TicketContainer tickets={tickets} ticketType="current" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                  <TicketContainer tickets={tickets} ticketType="closed" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+              </div>
+            }
+            <TabPanel value={value} index={2}>
+              {isDirector ? <div><AdminStats /><br /><MentorLeaderboard /></div> : <Stats />}
+            </TabPanel>
+            {isDirector ?
+              <TabPanel value={value} index={3}>
+                <Feedback />
+              </TabPanel> : ""}
+            {isDirector && isMentor ?
+              <div>
+                <TabPanel value={value} index={4}>
+                  <TicketContainer tickets={tickets} ticketType="current" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+                <TabPanel value={value} index={5}>
+                  <TicketContainer tickets={tickets} ticketType="closed" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+              </div> : ""
+            }
+          </Grid>
         </Grid>
-      </Grid>
-    </DashboardContainer >
+      </DashboardContainer >
+      <div className={classes.footer}>
+        <Link to="/login" style={{ textDecoration: "none" }}>
+          <Hidden smUp>
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              onClick={() => {
+                dispatch(logoutUser());
+              }}
+            >
+              Logout
+            </Button>
+          </Hidden>
+        </Link>
+      </div>
+    </div>
   );
-
 };
 
 export default Dashboard;
