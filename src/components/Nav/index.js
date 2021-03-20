@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../actions";
 import {
   AppBar,
+  Hidden,
   Typography,
   Toolbar,
   Button,
@@ -51,16 +52,18 @@ export default () => {
 
           <Typography className={classes.email}>{email}</Typography>
           <Link to="/login" style={{ textDecoration: "none" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              className={classes.button}
-              onClick={() => {
-                dispatch(logoutUser());
-              }}
-            >
-              Logout
+            <Hidden xsDown>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={() => {
+                  dispatch(logoutUser());
+                }}
+              >
+                Logout
             </Button>
+            </Hidden>
           </Link>
         </Toolbar>
       </AppBar>

@@ -1,6 +1,10 @@
 // URL
-// export const URL = "https://mentorq-backend-dev.herokuapp.com";
-export const URL = "http://127.0.0.1:8000";
+export const URL = "https://mentorq-backend-dev.herokuapp.com";
+// export const URL = "http://127.0.0.1:8000";
+
+// URL of frontend
+export const HOSTNAME = "http://localhost:3000";
+// export const HOSTNAME = "https://mentorq.hackru.org/"
 
 // Types
 export const LOGOUT = Symbol("logout");
@@ -19,6 +23,10 @@ export const CREATE_TICKET_RECEIVED = Symbol("create_ticket_received");
 export const REFRESH_TOKEN_REQUEST = Symbol("refresh_token_request");
 export const REFRESH_TOKEN_FAILED = Symbol("refresh_token_failed");
 export const REFRESH_TOKEN_RECEIVED = Symbol("refresh_token_received");
+
+// Update Number of Current Tickets
+export const UPDATE_OPEN = Symbol("update_open");
+export const UPDATE_CLAIMED = Symbol("update_claimed");
 
 // HackRU authorization constants
 export const HACKRU_PROD = "https://api.hackru.org/prod"

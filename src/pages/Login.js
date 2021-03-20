@@ -8,6 +8,7 @@ import {
   Palette,
   Container,
   flexbox,
+  Hidden,
   Typography,
   makeStyles,
   Avatar,
@@ -20,6 +21,7 @@ import { Link } from "react-router-dom";
 import { Input } from '../components/Input';
 import { SignInButton } from '../components/Login/SignInButton';
 import { ErrorMessage } from '../components/Login/ErrorMessage';
+import MetaDecorator from "../components/MetaDecorator";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    [theme.breakpoints.down('sm')]: {
+      width: "70vw",
+    },
   },
   loading: {
     width: "100vw",
@@ -46,12 +51,12 @@ const useStyles = makeStyles((theme) => ({
 
   },
   title: {
-    [theme.breakpoints.down('xs')]: {
-      fontSize: "20px",
-    },
     [theme.breakpoints.down('sm')]: {
       fontSize: "30px",
     },
+    [theme.breakpoints.only('md')]: {
+      fontSize: "50px",
+    }
   },
   text: {
     [theme.breakpoints.down('xs')]: {
@@ -109,8 +114,12 @@ const Login = () => {
   }
 
   return (
-
     <Container component="main" maxWidth="xs" className={classes.root} >
+      <MetaDecorator
+        description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
+        title={"MentorQ"}
+        notif={false}
+        imageAlt={"HackRU Logo"} />
       <Paper className={classes.paper} elevation={10}>
         <Typography
           variant="h1"
@@ -123,17 +132,21 @@ const Login = () => {
           className={classes.subheading}
           style={{ color: 'white ' }}
         >
-          <div className={classes.headertexts} align="center"> Have a question? Get matched with a mentor for help! </div>
+          <div className={classes.headertexts} align="center">
+            <Hidden smUp>
+              Have a question?<br />Get matched with a mentor for help!
+            </Hidden>
+            <Hidden xsDown>
+              Have a question? Get matched with a mentor for help!
+            </Hidden>
+          </div>
         </Typography>
-
-        <Typography
-          variant="h6"
-        >
+        <br />
+        <Typography variant="h5">
           <div style={{ color: "white" }}> Sign In </div>
         </Typography>
 
         <form className={classes.form}>
-
           <Input className={classes.form}
             label="email"
             type="email"
