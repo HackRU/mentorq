@@ -375,6 +375,11 @@ const Ticket = ({
               isActive={!isActive | status === "CLOSED" | status === "CANCELLED" ? false : true}
               editable={(!isDirector && !isMentor && isActive) || status === "CLOSED" || status === "CANCELLED" ? false : true}
               id={id} />
+            <Grid item xs={12} sm={isDirector ? 6 : 5} md={4} alignItems="stretch" >
+                {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
+                {button}
+                {isDirector && currStatus !== "CANCELLED" && cancelButton}
+              </Grid>
           </div>}>
       </CardHeader>
       <CardContent className={classes.cardcontent}>
@@ -401,11 +406,6 @@ const Ticket = ({
                 <TicketField size={12} name="Contact" value={contact} />
                 {currStatus !== "OPEN" && currStatus !== "CANCELLED" ? <TicketField size={12} name="Mentor" value={mentorEmail} /> : ""}
                 {slacklink}
-              </Grid>
-              <Grid item xs={12} sm={isDirector ? 6 : 5} md={4} alignItems="stretch" >
-                {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
-                {button}
-                {isDirector && currStatus !== "CANCELLED" && cancelButton}
               </Grid>
             </Grid>
           </CardContent>
