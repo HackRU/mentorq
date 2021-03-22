@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { request } from "../.././util";
 import clsx from 'clsx';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { TicketButton } from './TicketButton';
-import { Notification } from '.././Notification';
 import { ClaimNote } from './ClaimNote';
-import { DialogBox } from './Dialog';
-import { CancelDialog } from './CancelDialog'
+import { FeedbackDialog } from './FeedbackDialog';
+import { CancelDialog } from './CancelDialog';
+import ActivePopover from "./ActivePopover";
+import FeedbackIcon from "../../design/media/feedbackIcon.png";
 import {
+  Avatar,
   Card,
   CardContent,
   CardActions,
   CardHeader,
   Collapse,
+  Fab,
   FormLabel as Label,
   Grid,
   IconButton,
   Link,
   makeStyles,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ActivePopover from "./ActivePopover";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
     borderStyle: "solid",
     borderColor: theme.palette.secondary.dark,
     color: theme.palette.textPrimary.dark,
+    position: "relative",
   },
   cancelledticket: {
     color: theme.palette.textPrimary.dark,
@@ -87,6 +91,15 @@ const useStyles = makeStyles((theme) => ({
   },
   gridmargin: {
     paddingLeft: 0
+  },
+  feedbackIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "10px",
+    backgroundColor: theme.palette.secondary.dark,
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.main,
+    }
   }
 }));
 
@@ -99,7 +112,6 @@ const Ticket = ({
   const [isActive, setActive] = useState(active);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
-  const [slackURL, setSlackURL] = useState(slack);
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
@@ -239,6 +251,7 @@ const Ticket = ({
     console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
+
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
@@ -324,7 +337,7 @@ const Ticket = ({
   }
 
   const setFeedback = () => {
-    dialog = <DialogBox id={id}
+    dialog = <FeedbackDialog id={id} title={title}
       feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
       openFeedback={openFeedback} handleClose={handleClose}
       initFeedback={existingFeedback} />
@@ -378,6 +391,12 @@ const Ticket = ({
           </div>}>
       </CardHeader>
       <CardContent className={classes.cardcontent}>
+        {currStatus === "CLOSED" && !isDirector && !isMentor ?
+          <Tooltip title="Submit Feedback">
+            <Fab className={classes.feedbackIcon} size="medium" onClick={handleClickOpen}>
+              <Avatar elevation={2} src={FeedbackIcon} />
+            </Fab>
+          </Tooltip> : ""}
         <CardActions className={classes.gridmargin}>
           <TicketField size={12} name="" value={comment} />
           <IconButton
@@ -412,7 +431,6 @@ const Ticket = ({
         </Collapse>
         {setFeedback()} {claimnote} {canceldialog}
       </CardContent >
-
     </Card >
   );
 };
