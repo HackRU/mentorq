@@ -33,4 +33,4 @@ export const HACKRU_PROD = "https://api.hackru.org/prod"
 export const HACKRU_DEV = "https://api.hackru.org/dev"
 
 //Choosing which authorization mode
-export const HACKRU_URL = HACKRU_PROD
+export const HACKRU_URL = HACKRU_DEV
