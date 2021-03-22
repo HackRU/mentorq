@@ -48,7 +48,7 @@ const FeedbackCard = ({ feedback: { ticket, comments, rating } }) => {
     >
       <CardContent>
         <Grid container spacing={1}>
-          <Grid item xs={9}>
+          <Grid item xs={12} sm={9}>
             <Typography variant="h5" gutterBottom>
               Feedback for {origTicket.title}
             </Typography>
@@ -64,13 +64,13 @@ const FeedbackCard = ({ feedback: { ticket, comments, rating } }) => {
               {comments}
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Label>User</Label>
             <Typography variant="body1" gutterBottom>
               {origTicket.owner_email}
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Label>Mentor</Label>
             <Typography variant="body1" gutterBottom>
               {origTicket.mentor_email}

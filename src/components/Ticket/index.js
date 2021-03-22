@@ -1,81 +1,70 @@
 import React, { useState, useEffect } from "react";
 import { request } from "../.././util";
 import clsx from 'clsx';
-import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import { useSelector } from "react-redux";
 import { TicketButton } from './TicketButton';
-import { Notification } from '.././Notification';
 import { ClaimNote } from './ClaimNote';
-import { DialogBox } from './Dialog';
-import { CancelDialog } from './CancelDialog'
-
+import { FeedbackDialog } from './FeedbackDialog';
+import { CancelDialog } from './CancelDialog';
+import ActivePopover from "./ActivePopover";
+import FeedbackIcon from "../../design/media/feedbackIcon.png";
 import {
+  Avatar,
   Card,
   CardContent,
   CardActions,
   CardHeader,
   Collapse,
+  Fab,
   FormLabel as Label,
   Grid,
+  IconButton,
   Link,
+  makeStyles,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
-import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const useStyles = makeStyles((theme) => ({
-  open: {
-    backgroundColor: theme.palette.secondary.main,
-    color: "white",
-    position: "relative",
-    zIndex: "2",
-    borderLeftWidth: 4,
+  openticket: {
+    borderLeftWidth: 6,
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderBottomWidth: 0,
     borderStyle: "solid",
-    borderColor: theme.palette.tertiary.main,
-  },
-  claimed: {
-    backgroundColor: theme.palette.secondary.light,
-    color: "black",
-    position: "relative",
-    zIndex: "2",
-    borderLeftWidth: 4,
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-    borderStyle: "solid",
-    borderColor: theme.palette.tertiary.main,
-  },
-  closed: {
-    backgroundColor: theme.palette.secondary.dark,
-    color: "white",
-    position: "relative",
-    zIndex: "2",
-    borderLeftWidth: 4,
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-    borderStyle: "solid",
-    borderColor: theme.palette.tertiary.main,
-  },
-  openClosedLabel: {
-    color: theme.palette.textSecondary.main,
-  },
-  claimedLabel: {
+    borderColor: theme.palette.secondary.light,
     color: theme.palette.textPrimary.dark,
+  },
+  claimedticket: {
+    borderLeftWidth: 6,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.secondary.main,
+    color: theme.palette.textPrimary.dark,
+  },
+  closedticket: {
+    borderLeftWidth: 6,
+    borderTopWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: "solid",
+    borderColor: theme.palette.secondary.dark,
+    color: theme.palette.textPrimary.dark,
+    position: "relative",
+  },
+  cancelledticket: {
+    color: theme.palette.textPrimary.dark,
+    backgroundColor: "#dedede",
   },
   button: {
     backgroundColor: theme.palette.tertiary.main,
     "&:hover": {
       backgroundColor: theme.palette.tertiary.dark,
     },
-  },
-  title: {
-    color: "white",
-    textDecoration: "none",
   },
   expand: {
     transform: "rotate(0deg)",
@@ -88,25 +77,41 @@ const useStyles = makeStyles((theme) => ({
     transform: "rotate(180deg)"
   },
   cardheader: {
-    paddingBottom: 0
+    color: theme.palette.textPrimary.main,
+    fontWeight: "fontWeightBold",
+    paddingBottom: 0,
   },
   cardcontent: {
     paddingTop: 0
   },
+  cardsubheader: {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap"
+  },
   gridmargin: {
     paddingLeft: 0
+  },
+  feedbackIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "10px",
+    backgroundColor: theme.palette.secondary.dark,
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.main,
+    }
   }
 }));
 
 const Ticket = ({
-  ticket: { id, created_datetime, title, comment, contact, location, slack, status, feedback, mentor_email, owner },
+  ticket: { id, created_datetime, title, comment, contact, location, slack, status, feedback, mentor_email, owner, active },
   initFeedback
 }) => {
   const [date, setDate] = useState(new Date());
   const [mentorEmail, setMentorEmail] = useState(mentor_email);
+  const [isActive, setActive] = useState(active);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
-  const [slackURL, setSlackURL] = useState(slack);
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
@@ -121,9 +126,50 @@ const Ticket = ({
   let button, dialog, claimnote, canceldialog, slacklink;
 
   const getTimeDifference = (timeA, timeB) => {
-    const timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
-    const timeInHours = Math.round((timeInMilliseconds / 1000) / 60 / 60);
-    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`
+    let timeInMilliseconds = timeA.valueOf() - timeB.valueOf();
+    let timeInSecs = Math.round(timeInMilliseconds / 1000);
+    let finaltime = "";
+    let timeInHours = "";
+    let timeInMinutes = "";
+    /*const timeInMins = (timeInSecs / 60);
+    const timeInHours = Math.round((timeInMins / 60));
+    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`*/
+    if (timeInSecs > 3600) {
+      const timeInHours = Math.round((timeInSecs / 3600));
+      if (timeInHours == 1) {
+        finaltime = timeInHours + " hour ";
+        return finaltime;
+      }
+      finaltime = timeInHours + " hours ";
+      return finaltime;
+    }
+    else if (timeInSecs > 60) {
+      timeInMinutes = Math.round(timeInSecs / 60);
+      if (timeInMinutes == 1) {
+        finaltime = timeInMinutes + " minute ";
+        return finaltime;
+      }
+      finaltime = timeInMinutes + " minutes ";
+      return finaltime;
+    }
+    else if (timeInSecs > 1) {
+      if (timeInSecs == 1) {
+        finaltime = timeInSecs + " second ";
+        return finaltime;
+      }
+      finaltime = timeInSecs + " seconds ";
+      return finaltime;
+    }
+    else if (timeInSecs <= 0) {
+      timeInSecs = 0;
+      finaltime = timeInSecs + " seconds";
+      return finaltime;
+    }
+    else {
+      timeInSecs = Math.round(timeInSecs);
+      finaltime = timeInSecs + " second";
+      return finaltime;
+    }
   }
 
   useEffect(() => {
@@ -205,6 +251,7 @@ const Ticket = ({
     console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
+
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
@@ -221,7 +268,6 @@ const Ticket = ({
   const closeButton = <TicketButton type="close" handleClick={closeTicket} />
   const feedbackButton = <TicketButton type={checkFeedback()} handleClick={handleClickOpen} />
   const cancelButton = <TicketButton type="cancel" handleClick={cancelTicket} />
-  const deleteButton = <TicketButton type="delete" handleClick={cancelTicket} />
 
   //IF Else for Buttons
   if (isMentor || isDirector) {
@@ -234,7 +280,8 @@ const Ticket = ({
     else if (currStatus === "CLAIMED" && (isDirector || (isMentor && email === mentorEmail))) {
       button =
         <div>
-          {reopenButton} {closeButton}
+          {reopenButton} <br />
+          {closeButton}
         </div>;
     }
     else if (currStatus === "CLOSED" && isDirector) {
@@ -258,28 +305,16 @@ const Ticket = ({
   }
 
   //SLACK
-  if (currStatus !== "OPEN") {
-      //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
-      slacklink = <Grid item xs={12}>
-        <Label
-          className={
-            currStatus === "CLAIMED"
-              ? classes.claimedLabel
-              : classes.openClosedLabel
-          }
-        >
-          {"Slack-Link"}
-        </Label>
-        <Typography variant="body1" gutterBottom>
-        <Link href={slack} style={{display: "table-cell"}} target="_blank" color='tertiary'>
-            {slack}
-            {console.log("SLACK: " + slack)}
-        </Link>
-        </Typography>
-      </Grid>
+  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack != null && slack != "N/A" && slack != "[object Object]" && slack != undefined) {
+    //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
+    let slacklinkcontent = <Link href={slack} target="_blank" color='tertiary'>
+      {slack}
+      {console.log("SLACK: " + slack)}
+    </Link>
+    slacklink = <TicketField size={6} name="Slack Link" value={slacklinkcontent} />
   }
   else {
-      slacklink = null;
+    slacklink = null;
   }
   //Alert to User that their ticket has been claimed
   //TODO: Check if User associated with ticket matches current email, Change in useState
@@ -302,7 +337,7 @@ const Ticket = ({
   }
 
   const setFeedback = () => {
-    dialog = <DialogBox id={id}
+    dialog = <FeedbackDialog id={id} title={title}
       feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
       openFeedback={openFeedback} handleClose={handleClose}
       initFeedback={existingFeedback} />
@@ -329,78 +364,74 @@ const Ticket = ({
   function TicketField(props) {
     return (
       <Grid item xs={props.size}>
-        <Label
-          className={
-            currStatus === "CLAIMED"
-              ? classes.claimedLabel
-              : classes.openClosedLabel
-          }
-        >
-          {props.name}
-        </Label>
-        <Typography variant="body1" gutterBottom>
-          {props.value}
+        <Typography variant="body2" color="theme.palette.textPrimary.dark" gutterBottom>
+          {props.name != "" ? props.name + ": " : ""} {props.value}
         </Typography>
       </Grid>
     )
   }
 
   return (
-    <Card
-      className={
-        currStatus === "OPEN"
-          ? classes.open
-          : currStatus === "CLAIMED"
-            ? classes.claimed
-            : currStatus === "CLOSED"
-              ? classes.closed
-              : null
-      }
-    >
+    <Card className={status === "OPEN" ? classes.openticket :
+      status === "CLAIMED" ? classes.claimedticket :
+        status === "CLOSED" ? classes.closedticket :
+          classes.cancelledticket}>
       <CardHeader
         className={classes.cardheader}
         title={title}
-        subheader={owner}
-      />
-
+        titleTypographyProps={{ variant: "h5", color: "theme.palette.textPrimary.main" }}
+        subheaderTypographyProps={{ variant: "overline" }}
+        subheader={
+          <div className={classes.cardsubheader}>
+            {status === "OPEN" ? "Open for " + getTimeDifference(date, new Date(created_datetime)) : status}
+            <ActivePopover
+              isActive={!isActive | status === "CLOSED" | status === "CANCELLED" ? false : true}
+              editable={(!isDirector && !isMentor && isActive) || status === "CLOSED" || status === "CANCELLED" ? false : true}
+              id={id} />
+          </div>}>
+      </CardHeader>
       <CardContent className={classes.cardcontent}>
-        <Grid item>
-          <CardActions className={classes.gridmargin}>
-            <Grid container spacing={1}>
-              <TicketField size={3} name="Status" value={currStatus} />
-              <TicketField size={3} name="Time Open" value={getTimeDifference(date, new Date(created_datetime))} />
-            </Grid>
-            <IconButton
-              className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded,
-              })}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          </CardActions>
-
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent className={classes.gridmargin}>
-              <Grid container spacing={1}>
-                <TicketField size={6} name="Contact" value={contact} />
-                <TicketField size={6} name="Mentor" value={mentorEmail} />
-                <TicketField size={12} name="Comment" value={comment} />
+        {currStatus === "CLOSED" && !isDirector && !isMentor ?
+          <Tooltip title="Submit Feedback">
+            <Fab className={classes.feedbackIcon} size="medium" onClick={handleClickOpen}>
+              <Avatar elevation={2} src={FeedbackIcon} />
+            </Fab>
+          </Tooltip> : ""}
+        <CardActions className={classes.gridmargin}>
+          <TicketField size={12} name="" value={comment} />
+          <IconButton
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded,
+            })}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+            spacing={0}
+            paddingBottom={0}
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+        </CardActions>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent className={classes.gridmargin}>
+            <Grid container spacing={5} >
+              <Grid item xs={12} sm={isDirector ? 6 : 7} md={8}>
+                <TicketField size={12} name="Owner" value={owner} />
+                <TicketField size={12} name="Contact" value={contact} />
+                {currStatus !== "OPEN" && currStatus !== "CANCELLED" ? <TicketField size={12} name="Mentor" value={mentorEmail} /> : ""}
                 {slacklink}
+              </Grid>
+              <Grid item xs={12} sm={isDirector ? 6 : 5} md={4} alignItems="stretch" >
                 {currStatus === "CLOSED" && !isDirector && !isMentor ? feedbackButton : ""}
                 {button}
-                {isDirector && deleteButton}
+                {isDirector && currStatus !== "CANCELLED" && cancelButton}
               </Grid>
-            </CardContent>
-          </Collapse>
-          {setFeedback()}
-          {claimnote}
-          {canceldialog}
-        </Grid>
-      </CardContent>
-    </Card>
+            </Grid>
+          </CardContent>
+        </Collapse>
+        {setFeedback()} {claimnote} {canceldialog}
+      </CardContent >
+    </Card >
   );
 };
 
