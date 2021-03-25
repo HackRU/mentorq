@@ -43,7 +43,7 @@ renderRow.propTypes = {
     style: PropTypes.object.isRequired,
 };
 
-export default function VirtualizedList() {
+export default function MentorLeaderboard() {
     const classes = useStyles();
     const [leaderList, setLeaderList] = useState(undefined);
 
