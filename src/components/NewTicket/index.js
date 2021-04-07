@@ -34,6 +34,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  subtitle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: "15px",
+  },
+  input: {
+    marginBottom: "15px",
   }
 }));
 
@@ -113,30 +122,50 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             Hey {name != undefined ? name.toUpperCase() : ""}!
           </Box>
         </Typography>
-        <Typography variant="subtitle1" className={classes.greeting} >
+        <Typography variant="subtitle1" className={classes.subtitle} >
           <div>How can we help you?</div>
         </Typography>
         <form onSubmit={onSubmit}>
-          <Input
-            onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
-            value={ticket.title}
+
+          <TextField
+            id="standard-textarea"
             label="Title"
+            placeholder="Name of Issue"
+            fullWidth
+            className={classes.input}
+            value={ticket.title}
+            onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
           />
-          <Input
-            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
-            value={ticket.contact}
+
+          <TextField
+            id="standard-textarea"
             label="Contact"
+            placeholder="Email, Cell Phone # etc."
+            fullWidth
+            value={ticket.contact}
+            className={classes.input}
+            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
           />
-          <Input
-            onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
+
+          <TextField
+            id="standard-textarea"
+            label="Comments"
+            placeholder="Describe Your Issue"
+            multiline
+            fullWidth
             value={ticket.comment}
-            label="Comment"
+            className={classes.input}
+            onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
           />
           { /*
-          <Input
-            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
-            value={ticket.location}
+           <TextField
+            id="standard-textarea"
             label="Location"
+            placeholder="Campus Location"
+            fullWidth
+            value={ticket.location}
+            className={classes.input}
+            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
           /> */
           }
           <FormControlLabel control={<Checkbox
