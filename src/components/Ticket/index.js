@@ -398,7 +398,7 @@ const Ticket = ({
             </Fab>
           </Tooltip> : ""}
         <CardActions className={classes.gridmargin}>
-          <TicketField size={12} name="" value={comment} />
+          <TicketField size={11} name="" value={comment} />
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
