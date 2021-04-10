@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { FormAlert } from "./FormAlert";
 import {
   TextField,
   Box,
@@ -64,6 +65,8 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
+  const [alertMessage, setAlertMessage] = useState("");
+  const [commentLength, setCommentLength] = useState(0);
 
   //console.log(numTickets);
 
@@ -82,14 +85,20 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(commentLength);
     if (numTickets >= 5) {
+      setAlertMessage("Maximum number of open tickets reached. Please wait or cancel an open ticket and reload page.");
       setOpen(true);
       setTicket(defaultState);
       setIsAnonymous(false);
       setNameToSubmit(name);
     }
+    else if (commentLength > 255) {
+      setAlertMessage("Comment exceeds 255 characters.");
+      setOpen(true);
+    }
 
-    if (ticket.title && ticket.comment && ticket.contact && ticket.location && numTickets < 5) {
+    if (ticket.title && ticket.comment && ticket.contact && ticket.location && numTickets < 5 && commentLength <= 255) {
       console.log(nameToSubmit);
       setOpen(false);
       onAddTicket({
@@ -155,7 +164,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             fullWidth
             value={ticket.comment}
             className={classes.input}
-            onChange={(e) => setTicket({ ...ticket, comment: e.target.value })}
+            onChange={(e) => { setTicket({ ...ticket, comment: e.target.value }); setCommentLength(e.target.value.length) }}
           />
           { /*
            <TextField
@@ -181,27 +190,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
           </div>
         </form>
       </CardContent>
-      <Collapse in={open}>
-        <Alert
-          severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                {
-                  setOpen(false);
-                }
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-        >
-          Maximum number of open tickets reached. Please wait or cancel an open ticket and reload page.
-        </Alert>
-      </Collapse>
+      <FormAlert open={open} setOpen={setOpen} message={alertMessage} />
     </Card >
   );
 };

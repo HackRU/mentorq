@@ -307,11 +307,10 @@ const Ticket = ({
   //SLACK
   if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack != null && slack != "N/A" && slack != "[object Object]" && slack != undefined) {
     //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
-    let slacklinkcontent = <Link href={slack} target="_blank" color='tertiary'>
-      {slack}
+    slacklink = <Link href={slack} target="_blank" color='tertiary'>
+      Connect through Slack
       {console.log("SLACK: " + slack)}
     </Link>
-    slacklink = <TicketField size={6} name="Slack Link" value={slacklinkcontent} />
   }
   else {
     slacklink = null;
