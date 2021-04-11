@@ -65,7 +65,9 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
             <div>
                 <MetaDecorator
                     description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
-                    title={numOpen > 0 ? "MentorQ (" + numOpen + " Open Tickets)" : "MentorQ"}
+                    title={numOpen > 0 ?
+                        (numOpen == 1 ? "MentorQ (" + numOpen + " Open Ticket)" : "MentorQ (" + numOpen + " Open Tickets)")
+                        : "MentorQ"}
                     notif={numOpen > 0 ? true : false}
                     imageAlt={"HackRU Logo"} />
                 <Hidden xsDown>
@@ -83,7 +85,9 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
         return (
             <div><MetaDecorator
                 description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
-                title={numClaimed > 0 ? "MentorQ (" + numClaimed + " Claimed Tickets)" : "MentorQ"}
+                title={numClaimed > 0 ?
+                    (numClaimed == 1 ? "MentorQ (" + numClaimed + " Claimed Ticket)" : "MentorQ (" + numClaimed + " Claimed Tickets)")
+                    : "MentorQ"}
                 notif={numClaimed > 0 ? true : false}
                 imageAlt={"HackRU Logo"} />
                 <Hidden xsDown>
