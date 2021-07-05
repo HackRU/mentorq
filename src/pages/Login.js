@@ -2,26 +2,18 @@ import React, { useState } from "react";
 import { loginUser } from "../actions";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  TextField,
-  Box,
-  Button,
-  Palette,
   Container,
-  flexbox,
   Hidden,
   Typography,
   makeStyles,
-  Avatar,
   CircularProgress,
   Paper,
-  createMuiTheme,
 } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { Link } from "react-router-dom";
 import { Input } from '../components/Input';
 import { SignInButton } from '../components/Login/SignInButton';
 import { ErrorMessage } from '../components/Login/ErrorMessage';
 import MetaDecorator from "../components/MetaDecorator";
+import { CoreModule } from '@hackru/frontend-core';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -90,7 +82,8 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const Login = () => {
+const Login = CoreModule(({ text, profile, children }) => {
+  console.log(profile);
   const classes = useStyles();
 
   const isLoggingIn = useSelector((store) => store.auth.isLoggedIn)
@@ -100,9 +93,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }));
+    console.log("Profile: " + profile);
+    await profile.Login(email, password);
+    dispatch(loginUser({ profile }));
   };
 
   if (isLoading) {
@@ -170,8 +165,7 @@ const Login = () => {
         <b>{!failedLoginUser ? "" : <ErrorMessage />}</b>
       </Paper>
     </Container>
-
-  );
-};
+  )
+}, ["text", "profile"])
 
 export default Login;

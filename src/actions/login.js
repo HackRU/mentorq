@@ -6,6 +6,7 @@ import {
   URL,
   HACKRU_URL,
 } from "../constants";
+import { CoreModule } from '@hackru/frontend-core';
 
 const logoutUser = () => ({
   type: LOGOUT,
@@ -24,34 +25,36 @@ const recievedLoginUser = ({ ...values }) => ({
 
 const failedLoginUser = () => ({ type: FAILED_LOGIN });
 
-function parseJwt(token){
+function parseJwt(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   var jsonPayload = decodeURIComponent(atob(base64).split("").map(function (c) {
-      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(""));
   return JSON.parse(jsonPayload);
 }
 
-const loginUser = ({ email, password }) => {
+const loginUser = ({ profile }) => {
+
   return async (dispatch) => {
-    dispatch(requestLoginUser({ email, password }));
-
+    let email = profile.email;
+    dispatch(requestLoginUser({ email }));
     try {
-      const lcsRequest = await fetch(`${HACKRU_URL}/authorize`, {
-        method: "POST",
-        headers: new Headers({ "content-type": "application/json" }),
-        body: JSON.stringify({ email, password }),
-      });
-      const lcsJson = await lcsRequest.json();
+      // const lcsRequest = await fetch(`${HACKRU_URL}/authorize`, {
+      //   method: "POST",
+      //   headers: new Headers({ "content-type": "application/json" }),
+      //   body: JSON.stringify({ email, password }),
+      // });
+      // const lcsJson = await lcsRequest.json();
 
-      if (lcsJson.statusCode !== 200) {
-        console.log("FAILED!")
-        dispatch(failedLoginUser());
-        return;
-      }
+      // if (lcsJson.statusCode !== 200) {
+      //   console.log("FAILED!")
+      //   dispatch(failedLoginUser());
+      //   return;
+      // }
 
-      const lcsToken = lcsJson.body.token;
+      // const lcsToken = lcsJson.body.token;
+      const lcsToken = profile._token;
       // const lcsValidUntil = lcsJson.body.auth.validUntil;
 
       const mentorQRequest = await fetch(`${URL}/api/auth/token/`, {

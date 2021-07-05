@@ -1,11 +1,11 @@
 import { URL, REFRESH_TOKEN_RECEIVED } from "./constants";
-import { store } from "./store";
+import { localStore } from "./localStore";
 import { refreshTokens } from "./actions";
 
 const request = async ({ type: reqType, path: url, body = null }) => {
   const {
     auth: { accessToken: token },
-  } = store.getState();
+  } = localStore.getState();
 
   const type = reqType ? reqType : body ? "POST" : "GET";
   let opts = { method: type };
@@ -27,10 +27,10 @@ const request = async ({ type: reqType, path: url, body = null }) => {
 
   switch (code) {
     case "token_not_valid":
-      store.dispatch(refreshTokens());
+      localStore.dispatch(refreshTokens());
 
       return new Promise((resolve) => {
-        const unsubscribe = store.subscribe(async (type) => {
+        const unsubscribe = localStore.subscribe(async (type) => {
           switch (type) {
             case REFRESH_TOKEN_RECEIVED:
               resolve(await request({ type, url, body }));

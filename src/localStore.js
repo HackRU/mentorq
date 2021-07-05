@@ -16,10 +16,10 @@ const hydrateStore = () => {
   }
 };
 
-const store = createStore(
+const localStore = createStore(
   reducer,
   hydrateStore(),
   applyMiddleware(thunk, localStorageMiddleware)
 );
 
-export { store };
+export { localStore };
