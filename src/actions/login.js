@@ -6,7 +6,6 @@ import {
   URL,
   HACKRU_URL,
 } from "../constants";
-import { CoreModule } from '@hackru/frontend-core';
 
 const logoutUser = () => ({
   type: LOGOUT,
@@ -37,23 +36,9 @@ function parseJwt(token) {
 const loginUser = ({ profile }) => {
 
   return async (dispatch) => {
-    let email = profile.email;
+    let email = profile._email;
     dispatch(requestLoginUser({ email }));
     try {
-      // const lcsRequest = await fetch(`${HACKRU_URL}/authorize`, {
-      //   method: "POST",
-      //   headers: new Headers({ "content-type": "application/json" }),
-      //   body: JSON.stringify({ email, password }),
-      // });
-      // const lcsJson = await lcsRequest.json();
-
-      // if (lcsJson.statusCode !== 200) {
-      //   console.log("FAILED!")
-      //   dispatch(failedLoginUser());
-      //   return;
-      // }
-
-      // const lcsToken = lcsJson.body.token;
       const lcsToken = profile._token;
       // const lcsValidUntil = lcsJson.body.auth.validUntil;
 

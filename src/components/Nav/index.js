@@ -10,6 +10,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { CoreModule } from '@hackru/frontend-core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,10 +35,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const Nav = CoreModule(({ text, profile, children }) => {
   const dispatch = useDispatch();
   const email = useSelector((store) => store.auth.email);
   const classes = useStyles();
+
+  async function logout() {
+    await dispatch(logoutUser());
+    profile.Logout();
+  }
 
   return (
     <div className={classes.root}>
@@ -58,15 +64,17 @@ export default () => {
                 color="secondary"
                 className={classes.button}
                 onClick={() => {
-                  dispatch(logoutUser());
+                  logout();
                 }}
               >
                 Logout
-            </Button>
+              </Button>
             </Hidden>
           </Link>
         </Toolbar>
       </AppBar>
     </div>
   );
-};
+}, ["text", "profile"]);
+
+export default Nav;

@@ -7,7 +7,7 @@ import { CoreModule } from "@hackru/frontend-core";
 export default () => {
 
   return (
-    <CoreProvider Linker={LINKER} Store>
+    <CoreProvider Linker={LINKER} Store={{ test: 10 }}>
       {CONFIG}
     </ CoreProvider>
   );

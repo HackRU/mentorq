@@ -83,7 +83,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = CoreModule(({ text, profile, children }) => {
-  console.log(profile);
   const classes = useStyles();
 
   const isLoggingIn = useSelector((store) => store.auth.isLoggedIn)
@@ -166,6 +165,6 @@ const Login = CoreModule(({ text, profile, children }) => {
       </Paper>
     </Container>
   )
-}, ["text", "profile"])
+}, ["text", "profile"]);
 
 export default Login;
