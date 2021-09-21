@@ -134,29 +134,40 @@ const Dashboard = () => {
     <div>
       <DashboardContainer>
         <Grid container spacing={3}>
-          {!isDirector ? <Grid item xs={12} sm={4}>
-            <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN" && ticket.owner_email === email)).length} />
-          </Grid> : ""}
+          {!isDirector ?
+            <Grid item xs={12} sm={4}>
+              <NewTicket onAddTicket={onAddTicket} numTickets={tickets.filter(ticket => (ticket.status === "OPEN" && ticket.owner_email === email)).length} />
+            </Grid> : ""}
 
           <Grid item xs={12} sm={isDirector ? 12 : 8}  >
             <AppBar position="static" className={classes.root}>
               <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto" aria-label="scrollable auto tabs example">
-                {isMentor ? <Tooltip title="Tickets I Have Claimed" arrow>
-                <Tab wrapped label="My Tickets" {...a11yProps(0)} /> </Tooltip>:
-                <Tooltip title="Open and Claimed Tickets" arrow>
-                <Tab wrapped label="Active Tickets" {...a11yProps(0)} /></Tooltip>}
+                {isMentor ?
+                  <Tooltip title="Tickets I Have Claimed" arrow>
+                    <Tab wrapped label="My Tickets" {...a11yProps(0)} />
+                  </Tooltip> :
+                  <Tooltip title="Open and Claimed Tickets" arrow>
+                    <Tab wrapped label="Active Tickets" {...a11yProps(0)} />
+                  </Tooltip>}
 
-                {isMentor ?  <Tooltip title="Remaining Open Tickets and Other" arrow>
-                <Tab wrapped label="Ticket Queue" {...a11yProps(1)} /> </Tooltip>:
-                <Tooltip title="Closed and Cancelled Tickets" arrow>
-                <Tab wrapped label="Closed Tickets" {...a11yProps(1)} /></Tooltip>}
+                {isMentor ?
+                  <Tooltip title="Remaining Open Tickets and Other" arrow>
+                    <Tab wrapped label="Ticket Queue" {...a11yProps(1)} />
+                  </Tooltip> :
+                  <Tooltip title="Closed and Cancelled Tickets" arrow>
+                    <Tab wrapped label="Closed Tickets" {...a11yProps(1)} />
+                  </Tooltip>}
 
                 <Tab label="Statistics" {...a11yProps(2)} />
                 {isDirector ? <Tab wrapped label="Feedback" {...a11yProps(3)} /> : ""}
-                {isDirector && isMentor ?   <Tooltip title="Open and Claimed Tickets" arrow>
-                <Tab wrapped label="Active Tickets" {...a11yProps(4)} /> </Tooltip>: ""}
-                {isDirector && isMentor ?  <Tooltip title="Closed and Cancelled Tickets" arrow>
-                <Tab wrapped label="Closed Tickets" {...a11yProps(5)} /></Tooltip> : ""}
+                {isDirector && isMentor ?
+                  <Tooltip title="Open and Claimed Tickets" arrow>
+                    <Tab wrapped label="Active Tickets" {...a11yProps(4)} />
+                  </Tooltip> : ""}
+                {isDirector && isMentor ?
+                  <Tooltip title="Closed and Cancelled Tickets" arrow>
+                    <Tab wrapped label="Closed Tickets" {...a11yProps(5)} />
+                  </Tooltip> : ""}
               </Tabs>
             </AppBar>
             {isMentor ?
