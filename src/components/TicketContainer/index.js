@@ -26,7 +26,7 @@ const getOwnClaimed = (tickets = [], email) => {
 }
 
 const getOtherCurrent = (tickets = [], email) => {
-  return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED"))
+  return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED" && ticket.status !== "CLOSED"))
 }
 
 const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp }) => {
