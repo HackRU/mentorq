@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 import {
-  Button,
   Snackbar,
   IconButton,
 } from "@material-ui/core";
@@ -10,7 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const ClaimNote = ({
   message, open, handleClose
-}) =>  {
+}) => {
   return (
     <div>
       <Snackbar

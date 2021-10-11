@@ -5,8 +5,7 @@ import {
     Button,
     ButtonGroup,
     Popover,
-    IconButton,
-    Typography
+    IconButton
 } from '@material-ui/core/';
 import ActiveIcon from '@material-ui/icons/Lens';
 import InactiveIcon from '@material-ui/icons/TripOrigin';

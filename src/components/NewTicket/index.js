@@ -6,18 +6,12 @@ import {
   Box,
   Button,
   Card,
-  FormLabel,
   CardContent,
   makeStyles,
-  Typography,
-  IconButton,
-  Collapse
+  Typography
 } from "@material-ui/core";
-import { Input } from '.././Input';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Alert from '@material-ui/lab/Alert';
-import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +55,6 @@ const defaultState = {
 const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
-  const isDirector = useSelector((store) => store.auth.director);
   const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
@@ -74,7 +67,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const handleChange = (event) => {
     setIsAnonymous(event.target.checked);
 
-    if (event.target.checked == true) {
+    if (event.target.checked === true) {
       setNameToSubmit("Anonymous");
     }
     else {
@@ -128,7 +121,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
       <CardContent>
         <Typography variant="h6" className={classes.greeting}>
           <Box fontWeight="fontWeightBold">
-            Hey {name != undefined ? name.toUpperCase() : ""}!
+            Hey {name !== undefined ? name.toUpperCase() : ""}!
           </Box>
         </Typography>
         <Typography variant="subtitle1" className={classes.subtitle} >
@@ -186,7 +179,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
           <div align="center">
             <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
               Help Me!
-          </Button>
+            </Button>
           </div>
         </form>
       </CardContent>

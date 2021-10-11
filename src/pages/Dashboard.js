@@ -76,7 +76,6 @@ const Dashboard = () => {
   // State for tickets and a way to change the tickets. The array will hold the tickets
   const [tickets, setTickets] = useState([]);
   // State variable for emails
-  const [numTickets, setNumTickets] = useState(tickets.length || null);
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);

@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { FixedSizeList } from "react-window";
 import Typography from "@material-ui/core/Typography";
 import StarIcon from "@material-ui/icons/Star";
 
@@ -68,7 +67,7 @@ export default function MentorLeaderboard() {
                     <ListItemText primary={"Loading..."} />
                 </ListItem>
             ) : null}
-            {typeof leaderList !== "undefined" && leaderList.length == 0 ? (
+            {typeof leaderList !== "undefined" && leaderList.length === 0 ? (
                 <ListItem button key={0}>
                     <ListItemText primary={"No mentor ratings available."} />
                 </ListItem>
@@ -117,7 +116,7 @@ export default function MentorLeaderboard() {
                     />
                 </ListItem>
             ) : null}
-            {typeof leaderList !== "undefined" && leaderList.length == 5 ? (
+            {typeof leaderList !== "undefined" && leaderList.length === 5 ? (
                 <ListItem button key={4}>
                     <ListItemText primary={"5. " + leaderList[4].mentor} />
                     <Rating

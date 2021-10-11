@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 import {
   TextField,
   Box
@@ -7,7 +6,7 @@ import {
 
 
 
-function Input ({label, value, type, onChange,inputProps,error}){
+function Input({ label, value, type, onChange, inputProps, error }) {
   return (
     <Box my={2}>
       <TextField
