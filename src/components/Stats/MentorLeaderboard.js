@@ -62,8 +62,17 @@ export default function MentorLeaderboard() {
         <div className={classes.root} style={{ position: "relative", zIndex: "1" }}>
             <Typography variant="h6" className={classes.title}>
                 Mentor Leaderboard
-      </Typography>
-
+            </Typography>
+            {typeof leaderList === "undefined" ? (
+                <ListItem button key={0}>
+                    <ListItemText primary={"Loading..."} />
+                </ListItem>
+            ) : null}
+            {typeof leaderList !== "undefined" && leaderList.length == 0 ? (
+                <ListItem button key={0}>
+                    <ListItemText primary={"No mentor ratings available."} />
+                </ListItem>
+            ) : null}
             {typeof leaderList !== "undefined" && leaderList.length >= 1 ? (
                 <ListItem button key={0}>
                     <ListItemText primary={"1. " + leaderList[0].mentor} />
@@ -74,11 +83,7 @@ export default function MentorLeaderboard() {
                         precision={0.1}
                     />
                 </ListItem>
-            ) : (
-                    <ListItem button key={0}>
-                        <ListItemText primary={"Loading..."} />
-                    </ListItem>
-                )}
+            ) : null}
             {typeof leaderList !== "undefined" && leaderList.length >= 2 ? (
                 <ListItem button key={1}>
                     <ListItemText primary={"2. " + leaderList[1].mentor} />

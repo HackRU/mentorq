@@ -179,7 +179,7 @@ const AdminStats = () => {
             <Label className={classes.stat}>
               <Text>Number of Mentors </Text>
               <Typography variant="h4" className={classes.stat}>
-                {stats.numMentors < 1 ? "Loading..." : stats.numMentors + " Mentors"}
+                {stats.numMentors < 0 ? "Loading..." : stats.numMentors + " Mentors"}
               </Typography>
             </Label>
           </div>
@@ -187,7 +187,7 @@ const AdminStats = () => {
             <Label className={classes.stat}>
               <Text>Number of Hackers </Text>
               <Typography variant="h4" className={classes.stat}>
-                {stats.numUsers < 1 ? "Loading..." : stats.numUsers + " Hackers"}
+                {stats.numUsers < 0 ? "Loading..." : stats.numUsers + " Hackers"}
               </Typography>
             </Label>
           </div>
