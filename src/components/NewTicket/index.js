@@ -12,8 +12,6 @@ import {
 } from "@material-ui/core";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Alert from '@material-ui/lab/Alert';
-import CloseIcon from '@material-ui/icons/Close';
 import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme) => ({
@@ -79,6 +77,12 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     }
   };
 
+  const handleCommentChange = (event) => {
+    if (event.target.value.length <= 255) {
+      setTicket({ ...ticket, comment: event.target.value });
+      setCommentLength(event.target.value.length);
+    }
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -116,8 +120,6 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   };
 
   const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0
-
-
   const classes = useStyles();
 
   return (
@@ -161,10 +163,10 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             fullWidth
             value={ticket.comment}
             className={classes.input}
-            onChange={(e) => { setTicket({ ...ticket, comment: e.target.value }); setCommentLength(e.target.value.length); }}
+            onChange={(e) => handleCommentChange(e)}
           />
 
-          <p>{commentLength} / 255</p>
+          <Typography>{commentLength} / 255</Typography>
 
           { /*
            <TextField
@@ -177,6 +179,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
           /> */
           }
+          <br />
           <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
             <FormControlLabel control={<Checkbox
               checked={isAnonymous}
