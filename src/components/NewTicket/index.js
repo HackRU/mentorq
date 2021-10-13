@@ -166,7 +166,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             onChange={(e) => handleCommentChange(e)}
           />
 
-          <Typography>{commentLength} / 255</Typography>
+          <Typography variant="caption">{commentLength} / 255</Typography>
 
           { /*
            <TextField
@@ -179,7 +179,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
           /> */
           }
-          <br />
+          <br /> <br />
           <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
             <FormControlLabel control={<Checkbox
               checked={isAnonymous}
