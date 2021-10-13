@@ -31,7 +31,7 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
     const classes = useStyles();
     const isDirector = useSelector((store) => store.auth.director);
     const isMentor = useSelector((store) => store.auth.mentor);
-    if (numOpen == 0 && numClaimed == 0) {
+    if (numOpen === 0 && numClaimed === 0) {
         return (
             <div>
                 <MetaDecorator
@@ -66,7 +66,7 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
                 <MetaDecorator
                     description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
                     title={numOpen > 0 ?
-                        (numOpen == 1 ? "MentorQ (" + numOpen + " Open Ticket)" : "MentorQ (" + numOpen + " Open Tickets)")
+                        (numOpen === 1 ? "MentorQ (" + numOpen + " Open Ticket)" : "MentorQ (" + numOpen + " Open Tickets)")
                         : "MentorQ"}
                     notif={numOpen > 0 ? true : false}
                     imageAlt={"HackRU Logo"} />
@@ -86,7 +86,7 @@ export default function TicketNumbers({ numOpen, numClaimed }) {
             <div><MetaDecorator
                 description={"MentorQ is a ticket queue to connect users to mentors at Rutgers Universit's HackRU."}
                 title={numClaimed > 0 ?
-                    (numClaimed == 1 ? "MentorQ (" + numClaimed + " Claimed Ticket)" : "MentorQ (" + numClaimed + " Claimed Tickets)")
+                    (numClaimed === 1 ? "MentorQ (" + numClaimed + " Claimed Ticket)" : "MentorQ (" + numClaimed + " Claimed Tickets)")
                     : "MentorQ"}
                 notif={numClaimed > 0 ? true : false}
                 imageAlt={"HackRU Logo"} />

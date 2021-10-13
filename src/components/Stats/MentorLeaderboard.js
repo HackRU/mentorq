@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { FixedSizeList } from "react-window";
 import Typography from "@material-ui/core/Typography";
 import StarIcon from "@material-ui/icons/Star";
 
@@ -62,8 +61,17 @@ export default function MentorLeaderboard() {
         <div className={classes.root} style={{ position: "relative", zIndex: "1" }}>
             <Typography variant="h6" className={classes.title}>
                 Mentor Leaderboard
-      </Typography>
-
+            </Typography>
+            {typeof leaderList === "undefined" ? (
+                <ListItem button key={0}>
+                    <ListItemText primary={"Loading..."} />
+                </ListItem>
+            ) : null}
+            {typeof leaderList !== "undefined" && leaderList.length === 0 ? (
+                <ListItem button key={0}>
+                    <ListItemText primary={"No mentor ratings available."} />
+                </ListItem>
+            ) : null}
             {typeof leaderList !== "undefined" && leaderList.length >= 1 ? (
                 <ListItem button key={0}>
                     <ListItemText primary={"1. " + leaderList[0].mentor} />
@@ -74,11 +82,7 @@ export default function MentorLeaderboard() {
                         precision={0.1}
                     />
                 </ListItem>
-            ) : (
-                    <ListItem button key={0}>
-                        <ListItemText primary={"Loading..."} />
-                    </ListItem>
-                )}
+            ) : null}
             {typeof leaderList !== "undefined" && leaderList.length >= 2 ? (
                 <ListItem button key={1}>
                     <ListItemText primary={"2. " + leaderList[1].mentor} />
@@ -112,7 +116,7 @@ export default function MentorLeaderboard() {
                     />
                 </ListItem>
             ) : null}
-            {typeof leaderList !== "undefined" && leaderList.length == 5 ? (
+            {typeof leaderList !== "undefined" && leaderList.length === 5 ? (
                 <ListItem button key={4}>
                     <ListItemText primary={"5. " + leaderList[4].mentor} />
                     <Rating

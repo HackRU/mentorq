@@ -16,7 +16,6 @@ import {
   CardHeader,
   Collapse,
   Fab,
-  FormLabel as Label,
   Grid,
   IconButton,
   Link,
@@ -131,12 +130,10 @@ const Ticket = ({
     let finaltime = "";
     let timeInHours = "";
     let timeInMinutes = "";
-    /*const timeInMins = (timeInSecs / 60);
-    const timeInHours = Math.round((timeInMins / 60));
-    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`*/
+
     if (timeInSecs > 3600) {
-      const timeInHours = Math.round((timeInSecs / 3600));
-      if (timeInHours == 1) {
+      timeInHours = Math.round((timeInSecs / 3600));
+      if (timeInHours === 1) {
         finaltime = timeInHours + " hour ";
         return finaltime;
       }
@@ -145,7 +142,7 @@ const Ticket = ({
     }
     else if (timeInSecs > 60) {
       timeInMinutes = Math.round(timeInSecs / 60);
-      if (timeInMinutes == 1) {
+      if (timeInMinutes === 1) {
         finaltime = timeInMinutes + " minute ";
         return finaltime;
       }
@@ -153,7 +150,7 @@ const Ticket = ({
       return finaltime;
     }
     else if (timeInSecs > 1) {
-      if (timeInSecs == 1) {
+      if (timeInSecs === 1) {
         finaltime = timeInSecs + " second ";
         return finaltime;
       }
@@ -242,11 +239,11 @@ const Ticket = ({
     setCancelNoteOpen(false);
 
   }
-  const handleDeleteTicket = (event) => {
-    setCurrStatus("DELETED");
-    getResponse("DELETED", "");
-    setCancelNoteOpen(false);
-  }
+  // const handleDeleteTicket = (event) => {
+  //   setCurrStatus("DELETED");
+  //   getResponse("DELETED", "");
+  //   setCancelNoteOpen(false);
+  // }
   const handleClickOpen = () => {
     console.log(id, feedbackURL)
     setFeedbackOpen(true);
@@ -305,7 +302,7 @@ const Ticket = ({
   }
 
   //SLACK
-  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack != null && slack != "N/A" && slack != "[object Object]" && slack != undefined) {
+  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack !== null && slack !== "N/A" && slack !== "[object Object]" && slack !== undefined) {
     //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
     slacklink = <Link href={slack} target="_blank" color='tertiary'>
       Connect through Slack
@@ -327,9 +324,9 @@ const Ticket = ({
   }
 
   //FEEDBACK DIALOG BOX
-  if (feedbackURL != "" && existingFeedback.length == 0) {
+  if (feedbackURL !== "" && existingFeedback.length === 0) {
     for (var i = 0; i < initFeedback.length; i++) {
-      if (initFeedback[i].ticket == id) {
+      if (initFeedback[i].ticket === id) {
         setExistingFeedback(initFeedback[i]);
       }
     }
@@ -364,7 +361,7 @@ const Ticket = ({
     return (
       <Grid item xs={props.size}>
         <Typography variant="body2" color="theme.palette.textPrimary.dark" gutterBottom>
-          {props.name != "" ? props.name + ": " : ""} {props.value}
+          {props.name !== "" ? props.name + ": " : ""} {props.value}
         </Typography>
       </Grid>
     )

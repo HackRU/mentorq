@@ -15,7 +15,6 @@ const FeedbackDialog = ({
   title, id, feedback, feedbackURL, setFeedbackURL, openFeedback, handleClose, initFeedback
 }) => {
   const [value, setValue] = useState(0); // value of star rating
-  const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
 
   const submitFeedback = async () => {
@@ -49,7 +48,7 @@ const FeedbackDialog = ({
   };
 
   useEffect(() => {
-    if (initFeedback.length != 0) {
+    if (initFeedback.length !== 0) {
       setValue(initFeedback.rating);
       setWrittenFeedback(initFeedback.comments);
     }

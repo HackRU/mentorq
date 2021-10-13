@@ -6,18 +6,13 @@ import {
   Box,
   Button,
   Card,
-  FormLabel,
   CardContent,
   makeStyles,
-  Typography,
-  IconButton,
-  Collapse
+  Typography
 } from "@material-ui/core";
-import { Input } from '.././Input';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Alert from '@material-ui/lab/Alert';
-import CloseIcon from '@material-ui/icons/Close';
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,10 +53,10 @@ const defaultState = {
   locationError: "",
 };
 
+
 const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
-  const isDirector = useSelector((store) => store.auth.director);
   const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
@@ -74,7 +69,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const handleChange = (event) => {
     setIsAnonymous(event.target.checked);
 
-    if (event.target.checked == true) {
+    if (event.target.checked === true) {
       setNameToSubmit("Anonymous");
     }
     else {
@@ -82,6 +77,12 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     }
   };
 
+  const handleCommentChange = (event) => {
+    if (event.target.value.length <= 255) {
+      setTicket({ ...ticket, comment: event.target.value });
+      setCommentLength(event.target.value.length);
+    }
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -119,8 +120,6 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   };
 
   const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0
-
-
   const classes = useStyles();
 
   return (
@@ -128,7 +127,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
       <CardContent>
         <Typography variant="h6" className={classes.greeting}>
           <Box fontWeight="fontWeightBold">
-            Hey {name != undefined ? name.toUpperCase() : ""}!
+            Hey {name !== undefined ? name.toUpperCase() : ""}!
           </Box>
         </Typography>
         <Typography variant="subtitle1" className={classes.subtitle} >
@@ -164,8 +163,11 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             fullWidth
             value={ticket.comment}
             className={classes.input}
-            onChange={(e) => { setTicket({ ...ticket, comment: e.target.value }); setCommentLength(e.target.value.length) }}
+            onChange={(e) => handleCommentChange(e)}
           />
+
+          <Typography>{commentLength} / 255</Typography>
+
           { /*
            <TextField
             id="standard-textarea"
@@ -177,16 +179,18 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
           /> */
           }
-          <FormControlLabel control={<Checkbox
-            checked={isAnonymous}
-            onChange={handleChange}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />} label="Anonymous" />
+          <br />
+          <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
+            <FormControlLabel control={<Checkbox
+              checked={isAnonymous}
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />} label="Anonymous" /></Tooltip>
           <br /><br />
           <div align="center">
             <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
               Help Me!
-          </Button>
+            </Button>
           </div>
         </form>
       </CardContent>
