@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { request } from "../.././util";
 import clsx from 'clsx';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { TicketButton } from './TicketButton';
-import { Notification } from '.././Notification';
 import { ClaimNote } from './ClaimNote';
-import { DialogBox } from './Dialog';
-import { CancelDialog } from './CancelDialog'
+import { FeedbackDialog } from './FeedbackDialog';
+import { CancelDialog } from './CancelDialog';
+import ActivePopover from "./ActivePopover";
+import FeedbackIcon from "../../design/media/feedbackIcon.png";
 import {
+  Avatar,
   Card,
   CardContent,
   CardActions,
   CardHeader,
   Collapse,
-  FormLabel as Label,
+  Fab,
   Grid,
   IconButton,
   Link,
   makeStyles,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ActivePopover from "./ActivePopover";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     borderStyle: "solid",
     borderColor: theme.palette.secondary.dark,
     color: theme.palette.textPrimary.dark,
+    position: "relative",
   },
   cancelledticket: {
     color: theme.palette.textPrimary.dark,
@@ -87,6 +90,15 @@ const useStyles = makeStyles((theme) => ({
   },
   gridmargin: {
     paddingLeft: 0
+  },
+  feedbackIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "10px",
+    backgroundColor: theme.palette.secondary.dark,
+    "&:hover": {
+      backgroundColor: theme.palette.secondary.main,
+    }
   }
 }));
 
@@ -99,7 +111,6 @@ const Ticket = ({
   const [isActive, setActive] = useState(active);
   const [currStatus, setCurrStatus] = useState(status);
   const [feedbackURL, setFeedbackURL] = useState(feedback); // feedback url on ticket
-  const [slackURL, setSlackURL] = useState(slack);
   const email = useSelector((store) => store.auth.email);
   const isDirector = useSelector((store) => store.auth.director);
   const isMentor = useSelector((store) => store.auth.mentor);
@@ -119,12 +130,10 @@ const Ticket = ({
     let finaltime = "";
     let timeInHours = "";
     let timeInMinutes = "";
-    /*const timeInMins = (timeInSecs / 60);
-    const timeInHours = Math.round((timeInMins / 60));
-    return `${timeInHours} hour${timeInHours > 1 ? "s" : ""}`*/
+
     if (timeInSecs > 3600) {
-      const timeInHours = Math.round((timeInSecs / 3600));
-      if (timeInHours == 1) {
+      timeInHours = Math.round((timeInSecs / 3600));
+      if (timeInHours === 1) {
         finaltime = timeInHours + " hour ";
         return finaltime;
       }
@@ -133,7 +142,7 @@ const Ticket = ({
     }
     else if (timeInSecs > 60) {
       timeInMinutes = Math.round(timeInSecs / 60);
-      if (timeInMinutes == 1) {
+      if (timeInMinutes === 1) {
         finaltime = timeInMinutes + " minute ";
         return finaltime;
       }
@@ -141,7 +150,7 @@ const Ticket = ({
       return finaltime;
     }
     else if (timeInSecs > 1) {
-      if (timeInSecs == 1) {
+      if (timeInSecs === 1) {
         finaltime = timeInSecs + " second ";
         return finaltime;
       }
@@ -230,15 +239,16 @@ const Ticket = ({
     setCancelNoteOpen(false);
 
   }
-  const handleDeleteTicket = (event) => {
-    setCurrStatus("DELETED");
-    getResponse("DELETED", "");
-    setCancelNoteOpen(false);
-  }
+  // const handleDeleteTicket = (event) => {
+  //   setCurrStatus("DELETED");
+  //   getResponse("DELETED", "");
+  //   setCancelNoteOpen(false);
+  // }
   const handleClickOpen = () => {
     console.log(id, feedbackURL)
     setFeedbackOpen(true);
   };
+
   // close dialogue box
   const handleClose = () => {
     setFeedbackOpen(false);
@@ -292,13 +302,12 @@ const Ticket = ({
   }
 
   //SLACK
-  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack != null && slack != "N/A" && slack != "[object Object]" && slack != undefined) {
+  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack !== null && slack !== "N/A" && slack !== "[object Object]" && slack !== undefined) {
     //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
-    let slacklinkcontent = <Link href={slack} target="_blank" color='tertiary'>
-      {slack}
+    slacklink = <Link href={slack} target="_blank" color='tertiary'>
+      Connect through Slack
       {console.log("SLACK: " + slack)}
     </Link>
-    slacklink = <TicketField size={6} name="Slack Link" value={slacklinkcontent} />
   }
   else {
     slacklink = null;
@@ -315,16 +324,16 @@ const Ticket = ({
   }
 
   //FEEDBACK DIALOG BOX
-  if (feedbackURL != "" && existingFeedback.length == 0) {
+  if (feedbackURL !== "" && existingFeedback.length === 0) {
     for (var i = 0; i < initFeedback.length; i++) {
-      if (initFeedback[i].ticket == id) {
+      if (initFeedback[i].ticket === id) {
         setExistingFeedback(initFeedback[i]);
       }
     }
   }
 
   const setFeedback = () => {
-    dialog = <DialogBox id={id}
+    dialog = <FeedbackDialog id={id} title={title}
       feedbackURL={feedbackURL} setFeedbackURL={setFeedbackURL}
       openFeedback={openFeedback} handleClose={handleClose}
       initFeedback={existingFeedback} />
@@ -352,7 +361,7 @@ const Ticket = ({
     return (
       <Grid item xs={props.size}>
         <Typography variant="body2" color="theme.palette.textPrimary.dark" gutterBottom>
-          {props.name != "" ? props.name + ": " : ""} {props.value}
+          {props.name !== "" ? props.name + ": " : ""} {props.value}
         </Typography>
       </Grid>
     )
@@ -378,8 +387,14 @@ const Ticket = ({
           </div>}>
       </CardHeader>
       <CardContent className={classes.cardcontent}>
+        {currStatus === "CLOSED" && !isDirector && !isMentor ?
+          <Tooltip title="Submit Feedback">
+            <Fab className={classes.feedbackIcon} size="medium" onClick={handleClickOpen}>
+              <Avatar elevation={2} src={FeedbackIcon} />
+            </Fab>
+          </Tooltip> : ""}
         <CardActions className={classes.gridmargin}>
-          <TicketField size={12} name="" value={comment} />
+          <TicketField size={11} name="" value={comment} />
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
@@ -412,7 +427,6 @@ const Ticket = ({
         </Collapse>
         {setFeedback()} {claimnote} {canceldialog}
       </CardContent >
-
     </Card >
   );
 };

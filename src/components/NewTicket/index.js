@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { FormAlert } from "./FormAlert";
 import {
   TextField,
   Box,
   Button,
   Card,
-  FormLabel,
   CardContent,
   makeStyles,
-  Typography,
-  IconButton,
-  Collapse
+  Typography
 } from "@material-ui/core";
-import { Input } from '.././Input';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Alert from '@material-ui/lab/Alert';
@@ -35,6 +32,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  subtitle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: "15px",
+  },
+  input: {
+    marginBottom: "15px",
   }
 }));
 
@@ -53,11 +59,11 @@ const defaultState = {
 const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
-  const isDirector = useSelector((store) => store.auth.director);
   const [nameToSubmit, setNameToSubmit] = useState(name);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [open, setOpen] = useState(false); // max number of tickest reached alert
-  const [ticketLength, setTicketLength] = useState(0);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [commentLength, setCommentLength] = useState(0);
 
   //console.log(numTickets);
 
@@ -65,7 +71,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   const handleChange = (event) => {
     setIsAnonymous(event.target.checked);
 
-    if (event.target.checked == true) {
+    if (event.target.checked === true) {
       setNameToSubmit("Anonymous");
     }
     else {
@@ -76,14 +82,20 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(commentLength);
     if (numTickets >= 5) {
+      setAlertMessage("Maximum number of open tickets reached. Please wait or cancel an open ticket and reload page.");
       setOpen(true);
       setTicket(defaultState);
       setIsAnonymous(false);
       setNameToSubmit(name);
     }
+    else if (commentLength > 255) {
+      setAlertMessage("Comment exceeds 255 characters.");
+      setOpen(true);
+    }
 
-    if (ticket.title && ticket.comment && ticket.contact && ticket.location && numTickets < 5) {
+    if (ticket.title && ticket.comment && ticket.contact && ticket.location && numTickets < 5 && commentLength <= 255) {
       console.log(nameToSubmit);
       setOpen(false);
       onAddTicket({
@@ -113,73 +125,73 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
       <CardContent>
         <Typography variant="h6" className={classes.greeting}>
           <Box fontWeight="fontWeightBold">
-            Hey {name != undefined ? name.toUpperCase() : ""}!
+            Hey {name !== undefined ? name.toUpperCase() : ""}!
           </Box>
         </Typography>
-        <Typography variant="subtitle1" className={classes.greeting} >
+        <Typography variant="subtitle1" className={classes.subtitle} >
           <div>How can we help you?</div>
         </Typography>
         <form onSubmit={onSubmit}>
-          <Input
-            onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
-            value={ticket.title}
+
+          <TextField
+            id="standard-textarea"
             label="Title"
-          />
-          <Input
-            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
-            value={ticket.contact}
-            label="Contact"
-          />
-          <Input
-            onChange={(e) => {setTicket({ ...ticket, comment: e.target.value }); setTicketLength(e.target.value.length)}}
-            value={ticket.comment}
-            label="Comment"
+            placeholder="Name of Issue"
+            fullWidth
+            className={classes.input}
+            value={ticket.title}
+            onChange={(e) => setTicket({ ...ticket, title: e.target.value })}
           />
 
-          <p>{ticketLength} / 255</p>
+          <TextField
+            id="standard-textarea"
+            label="Contact"
+            placeholder="Email, Cell Phone # etc."
+            fullWidth
+            value={ticket.contact}
+            className={classes.input}
+            onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
+          />
+
+          <TextField
+            id="standard-textarea"
+            label="Comments"
+            placeholder="Describe Your Issue"
+            multiline
+            fullWidth
+            value={ticket.comment}
+            className={classes.input}
+            onChange={(e) => { setTicket({ ...ticket, comment: e.target.value }); setCommentLength(e.target.value.length); }}
+          />
+
+          <p>{commentLength} / 255</p>
 
           { /*
-          <Input
-            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
-            value={ticket.location}
+           <TextField
+            id="standard-textarea"
             label="Location"
+            placeholder="Campus Location"
+            fullWidth
+            value={ticket.location}
+            className={classes.input}
+            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
           /> */
           }
           <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
-          <FormControlLabel control={<Checkbox
-            checked={isAnonymous}
-            onChange={handleChange}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />} label="Anonymous" /></Tooltip>
+            <FormControlLabel control={<Checkbox
+              checked={isAnonymous}
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />} label="Anonymous" /></Tooltip>
           <br /><br />
           <div align="center">
             <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
               Help Me!
-          </Button>
+            </Button>
           </div>
         </form>
       </CardContent>
-      <Collapse in={open}>
-        <Alert
-          severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                {
-                  setOpen(false);
-                }
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-        >
-          Maximum number of open tickets reached. Please wait or cancel an open ticket and reload page.
-        </Alert>
-      </Collapse>
+      <FormAlert open={open} setOpen={setOpen} message={alertMessage} />
     </Card >
   );
 };

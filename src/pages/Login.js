@@ -2,22 +2,13 @@ import React, { useState } from "react";
 import { loginUser } from "../actions";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  TextField,
-  Box,
-  Button,
-  Palette,
   Container,
-  flexbox,
   Hidden,
   Typography,
   makeStyles,
-  Avatar,
   CircularProgress,
   Paper,
-  createMuiTheme,
 } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { Link } from "react-router-dom";
 import { Input } from '../components/Input';
 import { SignInButton } from '../components/Login/SignInButton';
 import { ErrorMessage } from '../components/Login/ErrorMessage';

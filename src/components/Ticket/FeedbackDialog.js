@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { request } from "../.././util";
+import { request } from "../../util";
 import {
   Button,
   TextField,
@@ -11,11 +11,10 @@ import {
 } from "@material-ui/core";
 import Rating from '@material-ui/lab/Rating';
 
-const DialogBox = ({
-  id, feedback, feedbackURL, setFeedbackURL, openFeedback, handleClose, initFeedback
+const FeedbackDialog = ({
+  title, id, feedback, feedbackURL, setFeedbackURL, openFeedback, handleClose, initFeedback
 }) => {
   const [value, setValue] = useState(0); // value of star rating
-  const [hover, setHover] = useState(-1); // allows changing value of star rating while hovering
   const [writtenFeedback, setWrittenFeedback] = useState(""); // feedback entered into dialogue box
 
   const submitFeedback = async () => {
@@ -49,7 +48,7 @@ const DialogBox = ({
   };
 
   useEffect(() => {
-    if (initFeedback.length != 0) {
+    if (initFeedback.length !== 0) {
       setValue(initFeedback.rating);
       setWrittenFeedback(initFeedback.comments);
     }
@@ -60,7 +59,7 @@ const DialogBox = ({
     onClose={handleClose}
     aria-labelledby="form-dialog-title"
   >
-    <DialogTitle id="form-dialog-title">Mentor Feedback</DialogTitle>
+    <DialogTitle id="form-dialog-title">Mentor Feedback for {title}</DialogTitle>
     <DialogContent>
       <DialogContentText>
         Please rate the help you received from your mentor.
@@ -74,10 +73,8 @@ const DialogBox = ({
           setValue(newValue);
         }}
       />
-      <br />
-      <br />
-      <br />
-      <DialogContentText>How was your Mentorq experience?</DialogContentText>
+      <br /><br /><br />
+      <DialogContentText>How was your MentorQ experience?</DialogContentText>
       <TextField
         autoFocus
         margin="dense"
@@ -104,4 +101,4 @@ const DialogBox = ({
   </Dialog>
 }
 
-export { DialogBox };
+export { FeedbackDialog };
