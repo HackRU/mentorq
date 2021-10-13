@@ -302,7 +302,7 @@ const Ticket = ({
   }
 
   //SLACK
-  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack !== null && slack !== "N/A" && slack !== "[object Object]" && slack !== undefined) {
+  if (currStatus !== "OPEN" && currStatus !== "CANCELLED" && slack !== null && slack !== "N/A" && slack !== "[object Object]" && slack !== undefined && !slack.includes("There was an error with the user id's provided:")) {
     //slacklink = <TicketField size={12} name="Slack-Link" value={slack} />
     slacklink = <Link href={slack} target="_blank" color='tertiary'>
       Connect through Slack
