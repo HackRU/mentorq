@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +53,7 @@ const defaultState = {
   locationError: "",
 };
 
+
 const NewTicket = ({ onAddTicket, numTickets }) => {
   const [ticket, setTicket] = useState(defaultState);
   const name = useSelector((store) => store.auth.name);
@@ -75,6 +77,12 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     }
   };
 
+  const handleCommentChange = (event) => {
+    if (event.target.value.length <= 255) {
+      setTicket({ ...ticket, comment: event.target.value });
+      setCommentLength(event.target.value.length);
+    }
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -112,8 +120,6 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
   };
 
   const isEnabled = ticket.contact.length && ticket.title.length && ticket.comment.length && ticket.location.length > 0
-
-
   const classes = useStyles();
 
   return (
@@ -157,8 +163,11 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             fullWidth
             value={ticket.comment}
             className={classes.input}
-            onChange={(e) => { setTicket({ ...ticket, comment: e.target.value }); setCommentLength(e.target.value.length) }}
+            onChange={(e) => handleCommentChange(e)}
           />
+
+          <Typography>{commentLength} / 255</Typography>
+
           { /*
            <TextField
             id="standard-textarea"
@@ -170,11 +179,13 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
           /> */
           }
-          <FormControlLabel control={<Checkbox
-            checked={isAnonymous}
-            onChange={handleChange}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />} label="Anonymous" />
+          <br />
+          <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
+            <FormControlLabel control={<Checkbox
+              checked={isAnonymous}
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />} label="Anonymous" /></Tooltip>
           <br /><br />
           <div align="center">
             <Button disabled={!isEnabled} type="submit" variant="contained" className={classes.button}>
