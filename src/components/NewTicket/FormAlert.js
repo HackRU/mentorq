@@ -19,9 +19,7 @@ const FormAlert = ({
           color="inherit"
           size="small"
           onClick={() => {
-            {
-              setOpen(false);
-            }
+            setOpen(false);
           }}
         >
           <CloseIcon fontSize="inherit" />

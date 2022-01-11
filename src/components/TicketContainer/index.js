@@ -1,17 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { TicketList } from "../TicketList";
-import styled from "styled-components";
 import { request } from "../.././util";
 import TicketNumbers from "../TicketNumbers";
-
-const Container = styled.div`
-  display: grid;
-  grid-auto-flow: row;
-  grid-row-gap: 16px;
-  text: 100vw;
-  word-wrap: break-word;
-`;
 
 const getCurrent = (tickets = []) => {
   return tickets.filter(ticket => (ticket.status === "OPEN" || ticket.status === "CLAIMED"))
@@ -26,7 +17,7 @@ const getOwnClaimed = (tickets = [], email) => {
 }
 
 const getOtherCurrent = (tickets = [], email) => {
-  return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED"))
+  return tickets.filter(ticket => ((ticket.status !== "CLAIMED" || ticket.mentor_email !== email) && ticket.status !== "CANCELLED" && ticket.status !== "CLOSED"))
 }
 
 const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp }) => {
@@ -81,8 +72,8 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
       path: `/tickets/${ticket.id}/slack-dm`,
       type: "GET",
     });
-    if (ticket.status == "CLAIMED") {
-      if (response != ticket.slack) {
+    if (ticket.status === "CLAIMED") {
+      if (response !== ticket.slack) {
         updateSlack(ticket, response);
       }
     }
@@ -103,12 +94,12 @@ const TicketContainer = ({ tickets = [], ticketType, numOpenProp, numClaimedProp
   }
 
   const updateFeedback = async () => {
-    if (tickets.filter(ticket => (ticket.feedback != "")).length > 0) {
+    if (tickets.filter(ticket => (ticket.feedback !== "")).length > 0) {
       setInitFeedback(await request({ path: `/feedback/` }));
     }
   };
 
-  if (initFeedback.length == 0 && !isDirector && !isMentor) {
+  if (initFeedback.length === 0 && !isDirector && !isMentor) {
     updateFeedback();
   }
 

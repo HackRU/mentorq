@@ -1,4 +1,3 @@
-import { Satellite } from "@material-ui/icons";
 import {
   REQUEST_LOGIN,
   RECEIVED_LOGIN,
