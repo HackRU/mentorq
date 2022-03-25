@@ -414,6 +414,7 @@ const Ticket = ({
               <Grid item xs={12} sm={isDirector ? 6 : 7} md={8}>
                 <TicketField size={12} name="Owner" value={owner} />
                 <TicketField size={12} name="Contact" value={contact} />
+                <TicketField size={12} name="Location" value={location} />
                 {currStatus !== "OPEN" && currStatus !== "CANCELLED" ? <TicketField size={12} name="Mentor" value={mentorEmail} /> : ""}
                 {slacklink}
               </Grid>

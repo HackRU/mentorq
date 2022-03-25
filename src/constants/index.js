@@ -1,6 +1,6 @@
 // URL
-// export const URL = "https://mentorq-backend-dev.herokuapp.com";
-export const URL = "https://mentorq-backend.herokuapp.com";
+export const URL = "https://mentorq-backend-dev.herokuapp.com";
+// export const URL = "https://mentorq-backend.herokuapp.com";
 // export const URL = "http://127.0.0.1:8000";
 
 // URL of frontend
@@ -34,4 +34,4 @@ export const HACKRU_PROD = "https://api.hackru.org/prod"
 export const HACKRU_DEV = "https://api.hackru.org/dev"
 
 //Choosing which authorization mode
-export const HACKRU_URL = HACKRU_PROD
+export const HACKRU_URL = HACKRU_DEV

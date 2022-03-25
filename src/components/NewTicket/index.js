@@ -49,7 +49,7 @@ const defaultState = {
   commentError: "",
   contact: "",
   contactError: "",
-  location: "N/A",
+  location: "",
   locationError: "",
 };
 
@@ -154,6 +154,15 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
             className={classes.input}
             onChange={(e) => setTicket({ ...ticket, contact: e.target.value })}
           />
+          <TextField
+            id="standard-textarea"
+            label="Location"
+            placeholder="Campus Location"
+            fullWidth
+            value={ticket.location}
+            className={classes.input}
+            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
+          />
 
           <TextField
             id="standard-textarea"
@@ -168,17 +177,6 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
 
           <Typography variant="caption">{commentLength} / 255</Typography>
 
-          { /*
-           <TextField
-            id="standard-textarea"
-            label="Location"
-            placeholder="Campus Location"
-            fullWidth
-            value={ticket.location}
-            className={classes.input}
-            onChange={(e) => setTicket({ ...ticket, location: e.target.value })}
-          /> */
-          }
           <br /> <br />
           <Tooltip title="Display Name as &quot;Anonymous&quot; " arrow>
             <FormControlLabel control={<Checkbox

@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
   const classes = useStyles();
 
-  const isLoggingIn = useSelector((store) => store.auth.isLoggedIn)
+  const isLoggingIn = useSelector((store) => store.auth.isLoggedIn);
   const failedLoginUser = useSelector((store) => store.auth.hasErrors);
   const isLoading = useSelector((store) => store.auth.loadingLogin);
   const [email, setEmail] = useState("");
