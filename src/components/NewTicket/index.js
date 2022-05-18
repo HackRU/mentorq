@@ -84,6 +84,32 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
     }
   }
 
+  
+  // Send post request to OneSignal
+  const makePost = () => {
+    //Import use-selector from react-redux
+
+    var xhr = new XMLHttpRequest();
+    var url = "https://onesignal.com/api/v1/notifications";
+
+    xhr.open("POST", url, true);
+
+    xhr.setRequestHeader("Authorization", "Basic YjVhOGRiMjgtMTBjOS00NjNmLTk4OTItZTQxNDk3NzQxM2M2");
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onload = () => console.log(xhr.responseText);
+
+    let data = `{
+      "app_id": "45002a2d-fe85-4da1-8076-3a9a779af843",
+      "excluded_segments": {"field":"tag", "key":"mentor", "relation":"exists"},
+      "data": {"foo": "bar"},
+      "contents": {"en": "A new ticket has been posted!"}
+    }`;
+
+    xhr.send(data);
+    console.log("also here");
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(commentLength);
@@ -116,6 +142,7 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
       setTicket(defaultState);
       setIsAnonymous(false);
       setNameToSubmit(name);
+      makePost();
     }
   };
 

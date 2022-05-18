@@ -6,6 +6,7 @@ import DashboardContainer from "../components/DashboardContainer";
 import AdminStats from "../components/Stats/AdminStats";
 import MentorLeaderboard from "../components/Stats/MentorLeaderboard";
 import Feedback from "../components/Feedback";
+import { Settings } from "../components/Settings";
 import Stats from "../components/Stats";
 import { request } from "../util";
 import { useDispatch, useSelector } from "react-redux";
@@ -158,23 +159,32 @@ const Dashboard = () => {
                   </Tooltip>}
 
                 <Tab label="Statistics" {...a11yProps(2)} />
+
                 {isDirector ? <Tab wrapped label="Feedback" {...a11yProps(3)} /> : ""}
+
                 {isDirector && isMentor ?
                   <Tooltip title="Open and Claimed Tickets" arrow>
                     <Tab wrapped label="Active Tickets" {...a11yProps(4)} />
                   </Tooltip> : ""}
+
                 {isDirector && isMentor ?
                   <Tooltip title="Closed and Cancelled Tickets" arrow>
                     <Tab wrapped label="Closed Tickets" {...a11yProps(5)} />
                   </Tooltip> : ""}
+
+                <Tab wrapped label="Settings" {...a11yProps(6)} />
+
               </Tabs>
             </AppBar>
+
             {isMentor ?
               <div>
                 <TabPanel value={value} index={0} >
                   <TicketContainer tickets={tickets} ticketType="my tickets" numClaimed={numClaimed} numOpen={numOpen} />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
+                  <Settings></Settings>
+                  <br></br>
                   <TicketContainer tickets={tickets} ticketType="ticket queue" numClaimed={numClaimed} numOpen={numOpen} />
                 </TabPanel>
               </div>
@@ -205,6 +215,13 @@ const Dashboard = () => {
                 </TabPanel>
               </div> : ""
             }
+
+            <div>
+              <TabPanel value={value} index={6}>
+                <Settings />
+              </TabPanel>
+            </div>
+
           </Grid>
         </Grid>
       </DashboardContainer >
