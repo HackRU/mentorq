@@ -24,6 +24,7 @@ import {
   Tab,
   Typography,
 } from '@material-ui/core/';
+import OneSignal from 'react-onesignal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,6 +88,10 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    OneSignal.init({
+      appId: "9857924c-89c4-4d05-80f5-a8422c67e85a"
+    });
+
     const update = async () => {
       setTickets(await request({ path: "/tickets/" }));
     };
@@ -172,7 +177,7 @@ const Dashboard = () => {
                     <Tab wrapped label="Closed Tickets" {...a11yProps(5)} />
                   </Tooltip> : ""}
 
-                <Tab wrapped label="Settings" {...a11yProps(6)} />
+                {isMentor ? <Tab wrapped label="Settings" {...a11yProps(6)} /> : ""}                
 
               </Tabs>
             </AppBar>
@@ -183,9 +188,10 @@ const Dashboard = () => {
                   <TicketContainer tickets={tickets} ticketType="my tickets" numClaimed={numClaimed} numOpen={numOpen} />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                  <Settings></Settings>
-                  <br></br>
                   <TicketContainer tickets={tickets} ticketType="ticket queue" numClaimed={numClaimed} numOpen={numOpen} />
+                </TabPanel>
+                <TabPanel value={value} index={3}>
+                  <Settings />
                 </TabPanel>
               </div>
               :
@@ -216,11 +222,7 @@ const Dashboard = () => {
               </div> : ""
             }
 
-            <div>
-              <TabPanel value={value} index={6}>
-                <Settings />
-              </TabPanel>
-            </div>
+            
 
           </Grid>
         </Grid>

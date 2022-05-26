@@ -94,15 +94,17 @@ const NewTicket = ({ onAddTicket, numTickets }) => {
 
     xhr.open("POST", url, true);
 
-    xhr.setRequestHeader("Authorization", "Basic YjVhOGRiMjgtMTBjOS00NjNmLTk4OTItZTQxNDk3NzQxM2M2");
+    xhr.setRequestHeader("Authorization", "Basic MjQxMmJhMGQtMzBmNy00YWIzLWFiZDItZTgzYTZiMjI5OGM3");
     xhr.setRequestHeader("Content-Type", "application/json");
 
     xhr.onload = () => console.log(xhr.responseText);
 
     let data = `{
-      "app_id": "45002a2d-fe85-4da1-8076-3a9a779af843",
-      "excluded_segments": {"field":"tag", "key":"mentor", "relation":"exists"},
-      "data": {"foo": "bar"},
+      "app_id": "9857924c-89c4-4d05-80f5-a8422c67e85a",
+      "filters": [
+        {"field": "tag", "key": "notifications", "relation": "=", "value": "mentor"}
+      ],
+      "data": {"example": "data"},
       "contents": {"en": "A new ticket has been posted!"}
     }`;
 
