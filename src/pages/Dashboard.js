@@ -88,9 +88,6 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    OneSignal.init({
-      appId: "9857924c-89c4-4d05-80f5-a8422c67e85a"
-    });
 
     const update = async () => {
       setTickets(await request({ path: "/tickets/" }));
@@ -98,6 +95,23 @@ const Dashboard = () => {
 
     const interval = setInterval(update, 30000);
     update();
+
+    if (isMentor)
+    {
+      OneSignal.init({
+        appId: "9857924c-89c4-4d05-80f5-a8422c67e85a"
+        //, subdomainName: "mentorq"
+      });
+
+      console.log("onesignal initialized");
+      
+      //Sends the 'notifications':'mentor' tag to OneSignal
+      OneSignal.sendTag("notifications", "mentor").then(() => {
+        console.log("Sent Tag: (notifications, mentor)");
+      })
+
+      console.log("tag sent");
+    }
 
     return () => {
       clearInterval(interval);
