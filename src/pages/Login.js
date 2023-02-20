@@ -18,9 +18,9 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     zIndex: 1,
     width: "40vw",
-    height: "50vh",
+    height: "60vh",
     padding: theme.spacing(4),
-    backgroundColor: "#c85151",
+    backgroundColor: "#1f6aa0",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
